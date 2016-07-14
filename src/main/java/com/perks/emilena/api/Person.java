@@ -2,6 +2,8 @@ package com.perks.emilena.api;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -31,6 +33,7 @@ public abstract class Person implements Serializable {
     private Address address;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
     public String getForename() {

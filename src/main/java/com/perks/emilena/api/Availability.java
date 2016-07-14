@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
@@ -24,6 +26,7 @@ public class Availability implements Serializable {
     @OneToMany(targetEntity = Person.class, fetch = FetchType.EAGER)
     private List<Person> persons;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
     public LocalDateTime getDateAndTime() {

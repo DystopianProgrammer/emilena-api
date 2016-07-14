@@ -3,6 +3,8 @@ package com.perks.emilena.api;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class Absence implements Serializable {
     private Person person;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
     public Long getId() {
