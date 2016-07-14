@@ -1,21 +1,31 @@
 package com.perks.emilena.api;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@Entity
 public class Absence implements Serializable {
 
-    private Long id;
+    @Enumerated
     private AbsenceType absenceType;
+    @Column
     private LocalDateTime date;
+    @Column
     private String reason;
+    @Column
     private Person person;
+
+    @Id
+    protected Long id;
 
     public Long getId() {
         return id;
@@ -55,5 +65,38 @@ public class Absence implements Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Absence absence = (Absence) o;
+        return absenceType == absence.absenceType &&
+                Objects.equals(date, absence.date) &&
+                Objects.equals(reason, absence.reason) &&
+                Objects.equals(person, absence.person) &&
+                Objects.equals(id, absence.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(absenceType, date, reason, person, id);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Absence{");
+        sb.append("absenceType=").append(absenceType);
+        sb.append(", date=").append(date);
+        sb.append(", reason='").append(reason).append('\'');
+        sb.append(", person=").append(person);
+        sb.append(", id=").append(id);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -1,26 +1,26 @@
 package com.perks.emilena.api;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToMany;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@Entity
 public class Staff extends Person {
 
-    private Long id;
+    @Enumerated
     private ContractType contractType;
+    @Enumerated
     private StaffType staffType;
-    private List<Client> client;
-    private List<Availability> availabilities;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column
+    @ManyToMany(targetEntity = Client.class)
+    private List<Client> clients;
 
     public ContractType getContractType() {
         return contractType;
@@ -38,19 +38,43 @@ public class Staff extends Person {
         this.staffType = staffType;
     }
 
-    public List<Client> getClient() {
-        return client;
+    public List<Client> getClients() {
+        return clients;
     }
 
-    public void setClient(List<Client> client) {
-        this.client = client;
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
     }
 
-    public List<Availability> getAvailabilities() {
-        return availabilities;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Staff staff = (Staff) o;
+        return contractType == staff.contractType &&
+                staffType == staff.staffType &&
+                Objects.equals(clients, staff.clients);
     }
 
-    public void setAvailabilities(List<Availability> availabilities) {
-        this.availabilities = availabilities;
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), contractType, staffType, clients);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Staff{");
+        sb.append("contractType=").append(contractType);
+        sb.append(", staffType=").append(staffType);
+        sb.append(", clients=").append(clients);
+        sb.append('}');
+        return sb.toString();
     }
 }

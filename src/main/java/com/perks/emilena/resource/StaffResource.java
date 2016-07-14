@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -31,5 +32,13 @@ public class StaffResource {
     @UnitOfWork
     public Staff findPerson(@PathParam("id") LongParam id) {
         return staffDAO.findById(id.get());
+    }
+
+    @Path("/all")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Staff> findAll() {
+        return staffDAO.findAll();
     }
 }

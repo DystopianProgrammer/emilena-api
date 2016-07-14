@@ -1,21 +1,37 @@
 package com.perks.emilena.api;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Person implements Serializable {
 
+    @Column
     private String forename;
+    @Column
     private String surname;
+    @Column
     private String email;
+    @Column
     private LocalDate dob;
+    @Column
     private String telephoneNumber;
+    @Column
     private Address address;
+
+    @Id
+    protected Long id;
 
     public String getForename() {
         return forename;
@@ -63,5 +79,50 @@ public abstract class Person implements Serializable {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Person person = (Person) o;
+        return Objects.equals(forename, person.forename) &&
+                Objects.equals(surname, person.surname) &&
+                Objects.equals(email, person.email) &&
+                Objects.equals(dob, person.dob) &&
+                Objects.equals(telephoneNumber, person.telephoneNumber) &&
+                Objects.equals(address, person.address) &&
+                Objects.equals(id, person.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(forename, surname, email, dob, telephoneNumber, address, id);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Person{");
+        sb.append("forename='").append(forename).append('\'');
+        sb.append(", surname='").append(surname).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", dob=").append(dob);
+        sb.append(", telephoneNumber='").append(telephoneNumber).append('\'');
+        sb.append(", address=").append(address);
+        sb.append(", id=").append(id);
+        sb.append('}');
+        return sb.toString();
     }
 }

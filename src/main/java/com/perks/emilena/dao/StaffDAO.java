@@ -25,7 +25,7 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return persist(staff).getId();
     }
 
-    public List<Staff> finalAll() {
-        return list(namedQuery("com.perks.emilena.Staff.finalAll"));
+    public List<Staff> findAll() {
+        return list(namedQuery("com.perks.emilena.Staff.findAll"));
     }
 }
