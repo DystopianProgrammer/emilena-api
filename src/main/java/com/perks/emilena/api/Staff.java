@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +14,10 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "com.perks.emilena.Staff.findAll",
+                    query = "select s from Staff s")
+})
 public class Staff extends Person {
 
     @Enumerated

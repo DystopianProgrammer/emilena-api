@@ -50,7 +50,7 @@ public class StaffResource {
     @POST
     @Timed
     @UnitOfWork
-    public Long add(Staff staff) {
+    public Staff add(Staff staff) {
         return staffDAO.create(staff);
     }
 }

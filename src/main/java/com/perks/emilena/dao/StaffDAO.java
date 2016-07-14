@@ -21,8 +21,8 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return get(id);
     }
 
-    public long create(Staff staff) {
-        return persist(staff).getId();
+    public Staff create(Staff staff) {
+        return persist(staff);
     }
 
     public List<Staff> findAll() {
