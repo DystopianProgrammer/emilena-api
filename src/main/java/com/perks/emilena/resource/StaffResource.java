@@ -7,6 +7,7 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,8 +31,8 @@ public class StaffResource {
         this.staffDAO = staffDAO;
     }
 
-    @Path("/{id}")
     @GET
+    @Path("/{id}")
     @Timed
     @UnitOfWork
     public Staff findPerson(@PathParam("id") LongParam id) {
@@ -46,11 +47,19 @@ public class StaffResource {
         return staffDAO.findAll();
     }
 
-    @Path("/add")
     @POST
+    @Path("/add")
     @Timed
     @UnitOfWork
     public Staff add(Staff staff) {
         return staffDAO.create(staff);
+    }
+
+    @DELETE
+    @Path("/delete/{id}")
+    @Timed
+    @UnitOfWork
+    public void delete(@PathParam("id") LongParam id) {
+        staffDAO.delete(staffDAO.findById(id.get()));
     }
 }

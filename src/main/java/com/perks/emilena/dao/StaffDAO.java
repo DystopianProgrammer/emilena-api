@@ -25,6 +25,10 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return persist(staff);
     }
 
+    public void delete(Staff staff) {
+        currentSession().delete(staff);
+    }
+
     public List<Staff> findAll() {
         return list(namedQuery("com.perks.emilena.Staff.findAll"));
     }
