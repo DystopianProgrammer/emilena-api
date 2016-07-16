@@ -20,13 +20,13 @@ public class Absence implements Serializable {
     @Enumerated
     private AbsenceType absenceType;
 
-    @Column
+    @Column(name = "DATE")
     private LocalDateTime date;
 
-    @Column
+    @Column(name = "REASON")
     private String reason;
 
-    @Column
+    @Column(name = "PERSON")
     private Person person;
 
     @Id

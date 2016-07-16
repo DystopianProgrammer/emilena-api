@@ -22,20 +22,20 @@ import java.util.Objects;
 public abstract class Person implements Serializable {
 
     @NotNull
-    @Column
+    @Column(name = "FORENAME")
     private String forename;
 
     @NotNull
-    @Column
+    @Column(name = "SURNAME")
     private String surname;
 
-    @Column
+    @Column(name = "EMAIL")
     private String email;
 
-    @Column
+    @Column(name = "DATE_OF_BIRTH")
     private LocalDate dob;
 
-    @Column
+    @Column(name = "TELEPHONE_NUMBER")
     private String telephoneNumber;
 
     @Embedded

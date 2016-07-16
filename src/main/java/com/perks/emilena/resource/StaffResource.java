@@ -1,6 +1,7 @@
 package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import com.perks.emilena.dao.StaffDAO;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -54,6 +55,14 @@ public class StaffResource {
     @UnitOfWork
     public Staff add(@Valid Staff staff) {
         return staffDAO.create(staff);
+    }
+
+    @Path("/staff/clients/{id}")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Client> clientsFromStaffId(@PathParam("id") LongParam id) {
+        return staffDAO.clientsByStaffId(id.get());
     }
 
     @DELETE

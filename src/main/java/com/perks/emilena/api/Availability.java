@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -19,12 +18,12 @@ import java.util.Objects;
 @Entity
 public class Availability implements Serializable {
 
-    @Column
+    @Column(name = "DATE_AND_TIME")
     private LocalDateTime dateAndTime;
 
     @Column
-    @OneToMany(targetEntity = Person.class, fetch = FetchType.EAGER)
-    private List<Person> persons;
+    @OneToMany(mappedBy = "availability", targetEntity = Staff.class, fetch = FetchType.EAGER)
+    private List<Staff> staff;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,12 +37,12 @@ public class Availability implements Serializable {
         this.dateAndTime = dateAndTime;
     }
 
-    public List<Person> getPersons() {
-        return persons;
+    public List<Staff> getStaff() {
+        return staff;
     }
 
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
+    public void setStaff(List<Staff> staff) {
+        this.staff = staff;
     }
 
     public Long getId() {
@@ -52,34 +51,5 @@ public class Availability implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Availability that = (Availability) o;
-        return Objects.equals(dateAndTime, that.dateAndTime) &&
-                Objects.equals(persons, that.persons) &&
-                Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(dateAndTime, persons, id);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Availability{");
-        sb.append("dateAndTime=").append(dateAndTime);
-        sb.append(", persons=").append(persons);
-        sb.append(", id=").append(id);
-        sb.append('}');
-        return sb.toString();
     }
 }

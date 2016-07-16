@@ -1,7 +1,9 @@
 package com.perks.emilena.dao;
 
+import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import io.dropwizard.hibernate.AbstractDAO;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
@@ -27,6 +29,11 @@ public class StaffDAO extends AbstractDAO<Staff> {
 
     public void delete(Staff staff) {
         currentSession().delete(staff);
+    }
+
+    public List<Client> clientsByStaffId(Long id) {
+        Query query = currentSession().createQuery("select s from Staff s join s.clients c");
+        return query.list();
     }
 
     public List<Staff> findAll() {

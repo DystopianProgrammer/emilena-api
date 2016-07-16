@@ -3,11 +3,10 @@ package com.perks.emilena.api;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -20,15 +19,17 @@ import java.util.Objects;
 })
 public class Staff extends Person {
 
+    @Column(name = "CONTRACT_TYPE")
     @Enumerated
     private ContractType contractType;
 
+    @Column(name = "STAFF_TYPE")
     @Enumerated
     private StaffType staffType;
 
-    @Column
-    @ManyToMany(targetEntity = Client.class)
-    private List<Client> clients;
+    @ManyToOne
+    @JoinColumn(name = "STAFF_ID", referencedColumnName = "ID")
+    private Availability availability;
 
     public ContractType getContractType() {
         return contractType;
@@ -46,43 +47,5 @@ public class Staff extends Person {
         this.staffType = staffType;
     }
 
-    public List<Client> getClients() {
-        return clients;
-    }
 
-    public void setClients(List<Client> clients) {
-        this.clients = clients;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        Staff staff = (Staff) o;
-        return contractType == staff.contractType &&
-                staffType == staff.staffType &&
-                Objects.equals(clients, staff.clients);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), contractType, staffType, clients);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Staff{");
-        sb.append("contractType=").append(contractType);
-        sb.append(", staffType=").append(staffType);
-        sb.append(", clients=").append(clients);
-        sb.append('}');
-        return sb.toString();
-    }
 }
