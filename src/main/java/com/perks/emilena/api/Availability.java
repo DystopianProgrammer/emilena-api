@@ -1,7 +1,6 @@
 package com.perks.emilena.api;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,9 +21,11 @@ public class Availability implements Serializable {
 
     @Column
     private LocalDateTime dateAndTime;
+
     @Column
     @OneToMany(targetEntity = Person.class, fetch = FetchType.EAGER)
     private List<Person> persons;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;

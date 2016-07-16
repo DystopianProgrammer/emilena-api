@@ -22,8 +22,10 @@ public class Staff extends Person {
 
     @Enumerated
     private ContractType contractType;
+
     @Enumerated
     private StaffType staffType;
+
     @Column
     @ManyToMany(targetEntity = Client.class)
     private List<Client> clients;

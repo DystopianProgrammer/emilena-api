@@ -6,6 +6,7 @@ import com.perks.emilena.dao.StaffDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -51,7 +52,7 @@ public class StaffResource {
     @Path("/add")
     @Timed
     @UnitOfWork
-    public Staff add(Staff staff) {
+    public Staff add(@Valid Staff staff) {
         return staffDAO.create(staff);
     }
 

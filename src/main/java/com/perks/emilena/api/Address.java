@@ -2,6 +2,7 @@ package com.perks.emilena.api;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,12 +15,16 @@ public class Address implements Serializable {
 
     @Column
     private String houseNumber;
+
     @Column
     private String firstLine;
+
     @Column
     private String secondLine;
+
     @Column
     private String town;
+    
     @Column
     private String postCode;
 
@@ -88,8 +93,6 @@ public class Address implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Address{");
         sb.append("houseNumber='").append(houseNumber).append('\'');
-        sb.append(", firstLine='").append(firstLine).append('\'');
-        sb.append(", secondLine='").append(secondLine).append('\'');
         sb.append(", town='").append(town).append('\'');
         sb.append(", postCode='").append(postCode).append('\'');
         sb.append('}');

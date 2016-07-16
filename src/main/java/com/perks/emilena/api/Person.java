@@ -1,12 +1,14 @@
 package com.perks.emilena.api;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -19,17 +21,24 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Person implements Serializable {
 
+    @NotNull
     @Column
     private String forename;
+
+    @NotNull
     @Column
     private String surname;
+
     @Column
     private String email;
+
     @Column
     private LocalDate dob;
+
     @Column
     private String telephoneNumber;
-    @Column
+    
+    @Embedded
     private Address address;
 
     @Id
