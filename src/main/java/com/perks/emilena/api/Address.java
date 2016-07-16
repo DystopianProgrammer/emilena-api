@@ -2,7 +2,6 @@ package com.perks.emilena.api;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class Address implements Serializable {
 
     @Column
     private String town;
-    
+
     @Column
     private String postCode;
 

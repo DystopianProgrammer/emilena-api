@@ -20,8 +20,8 @@ public class ClientDAO extends AbstractDAO<Client> {
         return get(id);
     }
 
-    public long create(Client client) {
-        return persist(client).getId();
+    public Client create(Client client) {
+        return persist(client);
     }
 
     public List<Client> findAll() {

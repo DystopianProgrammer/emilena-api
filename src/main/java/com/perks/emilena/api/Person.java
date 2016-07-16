@@ -37,7 +37,7 @@ public abstract class Person implements Serializable {
 
     @Column
     private String telephoneNumber;
-    
+
     @Embedded
     private Address address;
 

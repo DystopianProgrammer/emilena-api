@@ -6,17 +6,20 @@ import com.perks.emilena.dao.ClientDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import javax.validation.Valid;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
  * Date: 14/07/2016.
  */
-@Path("/client/{id}")
+@Path("/client")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientResource {
 
@@ -26,7 +29,24 @@ public class ClientResource {
         this.clientDAO = clientDAO;
     }
 
+    @Path("/all")
     @GET
+    @Timed
+    @UnitOfWork
+    public List<Client> findAll() {
+        return clientDAO.findAll();
+    }
+
+    @POST
+    @Path("/add")
+    @Timed
+    @UnitOfWork
+    public Client add(@Valid Client client) {
+        return clientDAO.create(client);
+    }
+
+    @GET
+    @Path("/{id}")
     @Timed
     @UnitOfWork
     public Client findPerson(@PathParam("id") LongParam id) {
