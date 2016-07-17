@@ -3,10 +3,9 @@ package com.perks.emilena.api;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -27,10 +26,6 @@ public class Staff extends Person {
     @Enumerated
     private StaffType staffType;
 
-    @ManyToOne
-    @JoinColumn(name = "STAFF_ID", referencedColumnName = "ID")
-    private Availability availability;
-
     public ContractType getContractType() {
         return contractType;
     }
@@ -47,5 +42,33 @@ public class Staff extends Person {
         this.staffType = staffType;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Staff staff = (Staff) o;
+        return contractType == staff.contractType &&
+                staffType == staff.staffType;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), contractType, staffType);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Staff{");
+        sb.append("contractType=").append(contractType);
+        sb.append(", staffType=").append(staffType);
+        sb.append('}');
+        return sb.toString();
+    }
 }

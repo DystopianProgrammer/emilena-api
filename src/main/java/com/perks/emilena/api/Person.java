@@ -8,9 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,6 +42,12 @@ public abstract class Person implements Serializable {
 
     @Embedded
     private Address address;
+
+    @OneToMany(mappedBy="person")
+    private List<Availability> availability;
+
+    @Column(length = 1000)
+    private String preferences;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -93,6 +101,22 @@ public abstract class Person implements Serializable {
         this.address = address;
     }
 
+    public List<Availability> getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(List<Availability> availability) {
+        this.availability = availability;
+    }
+
+    public String getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(String preferences) {
+        this.preferences = preferences;
+    }
+
     public Long getId() {
         return id;
     }
@@ -116,12 +140,14 @@ public abstract class Person implements Serializable {
                 Objects.equals(dob, person.dob) &&
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
+                Objects.equals(availability, person.availability) &&
+                Objects.equals(preferences, person.preferences) &&
                 Objects.equals(id, person.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(forename, surname, email, dob, telephoneNumber, address, id);
+        return Objects.hash(forename, surname, email, dob, telephoneNumber, address, availability, preferences, id);
     }
 
     @Override
@@ -133,6 +159,8 @@ public abstract class Person implements Serializable {
         sb.append(", dob=").append(dob);
         sb.append(", telephoneNumber='").append(telephoneNumber).append('\'');
         sb.append(", address=").append(address);
+        sb.append(", availability=").append(availability);
+        sb.append(", preferences='").append(preferences).append('\'');
         sb.append(", id=").append(id);
         sb.append('}');
         return sb.toString();
