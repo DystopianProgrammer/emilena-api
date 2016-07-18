@@ -16,7 +16,7 @@ import java.util.Objects;
 
 /**
  *
- * In a Many-to-one relationship (Persons.* - Availability.1) The availability represents a single day with the number of hours
+ * In a Many-to-one relationship (Availability.* - Person.1) The availability represents a single day with the number of hours
  * for that day. A person can have many 'availabilities'
  *
  * Created by Geoff Perks
