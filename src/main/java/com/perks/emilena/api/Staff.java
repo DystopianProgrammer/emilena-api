@@ -26,6 +26,9 @@ public class Staff extends Person {
     @Enumerated
     private StaffType staffType;
 
+    @Column(name = "CONTRACTED_HOURS")
+    private Integer contractedHours;
+
     public ContractType getContractType() {
         return contractType;
     }
@@ -42,6 +45,14 @@ public class Staff extends Person {
         this.staffType = staffType;
     }
 
+    public Integer getContractedHours() {
+        return contractedHours;
+    }
+
+    public void setContractedHours(Integer contractedHours) {
+        this.contractedHours = contractedHours;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -55,12 +66,13 @@ public class Staff extends Person {
         }
         Staff staff = (Staff) o;
         return contractType == staff.contractType &&
-                staffType == staff.staffType;
+                staffType == staff.staffType &&
+                Objects.equals(contractedHours, staff.contractedHours);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), contractType, staffType);
+        return Objects.hash(super.hashCode(), contractType, staffType, contractedHours);
     }
 
     @Override
@@ -68,6 +80,7 @@ public class Staff extends Person {
         final StringBuilder sb = new StringBuilder("Staff{");
         sb.append("contractType=").append(contractType);
         sb.append(", staffType=").append(staffType);
+        sb.append(", contractedHours=").append(contractedHours);
         sb.append('}');
         return sb.toString();
     }

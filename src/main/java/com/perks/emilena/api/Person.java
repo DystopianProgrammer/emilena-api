@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ public abstract class Person implements Serializable {
     private String email;
 
     @Column(name = "DATE_OF_BIRTH")
-    private LocalDate dob;
+    private Date dob;
 
     @Column(name = "TELEPHONE_NUMBER")
     private String telephoneNumber;
@@ -77,11 +78,11 @@ public abstract class Person implements Serializable {
         this.email = email;
     }
 
-    public LocalDate getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 

@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -29,7 +30,7 @@ public class Availability implements Serializable {
      * The Date and time the availability is from
      */
     @Column(name = "DATE_AND_TIME")
-    private LocalDateTime dateAndTime;
+    private Date dateAndTime;
 
     /**
      * A representation for the day - this can be derived from date and time.
@@ -52,11 +53,11 @@ public class Availability implements Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    public LocalDateTime getDateAndTime() {
+    public Date getDateAndTime() {
         return dateAndTime;
     }
 
-    public void setDateAndTime(LocalDateTime dateAndTime) {
+    public void setDateAndTime(Date dateAndTime) {
         this.dateAndTime = dateAndTime;
     }
 

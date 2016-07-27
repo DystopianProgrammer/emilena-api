@@ -1,5 +1,6 @@
 package com.perks.emilena;
 
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.perks.emilena.api.Absence;
 import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
@@ -19,6 +20,8 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Geoff Perks
