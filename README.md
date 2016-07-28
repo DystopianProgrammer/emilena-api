@@ -1,16 +1,35 @@
-## Backend service layer for managing staff and clients rota
+# Backend service layer for managing staff and clients rota
 
-### Setup:
+## Setup:
 
 - Java 8
-- Maven
-- Dropwizard hibernate module
+- JPA/Hibernate
+- Maven v3.3
+- Dropwizard - modules [core, hibernate, auth]
 - Postgres SQL v9.5
 
 Database:
 
 - emilena
 
-Local Dev:
+## Security:
 
-Prod:
+
+There are 2 types of Roles
+
+1. ADMIN
+2. SYSTEM
+
+#####ADMIN
+
+1. Grants system wide access
+2. This includes adding, deleting staff members
+3. This includes adding, deleting clients
+4. This includes setting up new users of the system with both ADMIN and SYSTEM roles
+5. Access to updating appointments, and the calendar
+
+#####SYSTEM
+
+1. Grants read-only access
+2. This includes read-only access to client information
+3. This includes read-only access to appointments and the calendar

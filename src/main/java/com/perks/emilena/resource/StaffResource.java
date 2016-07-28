@@ -7,6 +7,7 @@ import com.perks.emilena.dao.StaffDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -53,6 +54,7 @@ public class StaffResource {
     @Path("/add")
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
     public Staff add(@Valid Staff staff) {
         return staffDAO.create(staff);
     }

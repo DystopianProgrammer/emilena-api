@@ -36,3 +36,5 @@ logging:
     io.dropwizard: INFO
   appenders:
     - type: console
+
+authenticationCachePolicy: maximumSize=10000, expireAfterAccess=10m

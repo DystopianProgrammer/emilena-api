@@ -1,6 +1,7 @@
 package com.perks.emilena.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.cache.CacheBuilderSpec;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
 
@@ -18,7 +19,16 @@ public class EmilenaConfiguration extends Configuration {
     @JsonProperty
     private DataSourceFactory database = new DataSourceFactory();
 
+    @Valid
+    @NotNull
+    @JsonProperty
+    private CacheBuilderSpec authenticationCachePolicy;
+
     public DataSourceFactory getDataSourceFactory() {
         return database;
+    }
+
+    public CacheBuilderSpec getAuthenticationCachePolicy() {
+        return authenticationCachePolicy;
     }
 }
