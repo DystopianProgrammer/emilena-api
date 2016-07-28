@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
