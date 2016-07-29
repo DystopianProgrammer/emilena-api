@@ -1,4 +1,4 @@
-package com.perks.emilena.api;
+package com.perks.emilena.api.type;
 
 /**
  * Created by Geoff Perks

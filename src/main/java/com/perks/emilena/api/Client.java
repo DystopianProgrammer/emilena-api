@@ -7,6 +7,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
+@Table(name = "CLIENT")
 @NamedQueries({
         @NamedQuery(name = "com.perks.emilena.Client.findAll",
                 query = "select c from Client c")

@@ -1,10 +1,14 @@
 package com.perks.emilena.api;
 
+import com.perks.emilena.api.type.ContractType;
+import com.perks.emilena.api.type.StaffType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
@@ -12,6 +16,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
+@Table(name = "STAFF")
 @NamedQueries({
         @NamedQuery(name = "com.perks.emilena.Staff.findAll",
                     query = "select s from Staff s")

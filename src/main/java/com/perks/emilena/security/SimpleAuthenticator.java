@@ -1,10 +1,13 @@
 package com.perks.emilena.security;
 
-import com.google.common.base.Optional;
-import com.perks.emilena.api.User;
+import com.perks.emilena.api.SystemUser;
+import com.perks.emilena.dao.SystemUserDAO;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 /**
  * Created by Geoff Perks
@@ -12,26 +15,30 @@ import io.dropwizard.auth.basic.BasicCredentials;
  */
 public class SimpleAuthenticator implements Authenticator<BasicCredentials, User> {
 
+    private final SystemUserDAO systemUserDAO;
 
-    /**
-     * Given a set of user-provided credentials, return an optional principal.
-     * <p/>
-     * If the credentials are valid and map to a principal, returns an {@code Optional.of(p)}.
-     * <p/>
-     * If the credentials are invalid, returns an {@code Optional.absent()}.
-     *
-     * @param credentials a set of user-provided credentials
-     * @return either an authenticated principal or an absent optional
-     * @throws AuthenticationException if the credentials cannot be authenticated due to an
-     * underlying error
-     */
+    public SimpleAuthenticator(SystemUserDAO systemUserDAO) {
+        this.systemUserDAO = systemUserDAO;
+    }
+
+
     @Override
-    public Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException {
-        if ("secret".equals(credentials.getPassword())) {
-            User user = new User();
-            user.setUserName(credentials.getUsername());
-            return Optional.of(user);
+    public Optional<User> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
+
+        SystemUser systemUser = systemUserDAO.findByUserName(basicCredentials.getUsername());
+
+        if(systemUser == null || StringUtils.isBlank(systemUser.getPassword())) {
+            Optional.empty();
+        } else {
+            if(systemUser.getPassword().equals(basicCredentials.getPassword())) {
+                User user = new User();
+                user.setUserName(systemUser.getUserName());
+                user.setPassword(systemUser.getPassword());
+                user.setRoles(systemUser.getRoles());
+                return Optional.of(user);
+            }
         }
-        return Optional.absent();
+
+        return Optional.empty();
     }
 }

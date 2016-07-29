@@ -1,11 +1,14 @@
 package com.perks.emilena.api;
 
+import com.perks.emilena.api.type.AbsenceType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,6 +18,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
+@Table(name = "ABSENCE")
 public class Absence implements Serializable {
 
     @Enumerated

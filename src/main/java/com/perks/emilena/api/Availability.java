@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
+@Table(name = "AVAILABILITY")
 public class Availability implements Serializable {
 
     /**

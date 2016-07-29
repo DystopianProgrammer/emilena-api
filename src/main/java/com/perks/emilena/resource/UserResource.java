@@ -1,8 +1,7 @@
 package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.api.User;
-import com.perks.emilena.dao.UserDAO;
+import com.perks.emilena.security.User;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
@@ -22,18 +21,13 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
 
-    private final UserDAO userDAO;
-
-    public UserResource(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
 
     @POST
     @Path("/login")
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"SYSTEM"})
-    public boolean login(@Valid User user) {
-        return this.userDAO.login(user);
+    public Boolean login(@Valid User user) {
+        return Boolean.TRUE;
     }
 }
