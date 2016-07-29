@@ -30,6 +30,12 @@ public class SystemUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @Column(name = "FORENAME", nullable = false)
+    private String forename;
+
+    @Column(name = "SURNAME", nullable = false)
+    private String surname;
+
     @Column(name = "USER_NAME", nullable = false, unique = true)
     private String userName;
 
@@ -50,6 +56,22 @@ public class SystemUser {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getForename() {
+        return forename;
+    }
+
+    public void setForename(String forename) {
+        this.forename = forename;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getUserName() {
@@ -86,6 +108,8 @@ public class SystemUser {
         }
         SystemUser that = (SystemUser) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(forename, that.forename) &&
+                Objects.equals(surname, that.surname) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(roles, that.roles);
@@ -93,13 +117,15 @@ public class SystemUser {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, password, roles);
+        return Objects.hash(id, forename, surname, userName, password, roles);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SystemUser{");
         sb.append("id=").append(id);
+        sb.append(", forename='").append(forename).append('\'');
+        sb.append(", surname='").append(surname).append('\'');
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", roles=").append(roles);

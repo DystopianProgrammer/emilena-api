@@ -1,11 +1,9 @@
 package com.perks.emilena.security;
 
-import com.perks.emilena.api.Role;
 import com.perks.emilena.api.type.RoleType;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a user of the system
@@ -16,6 +14,7 @@ import java.util.Objects;
 public class User implements Principal {
 
     private String userName;
+    private String name;
     private List<RoleType> roles;
 
     public String getUserName() {
@@ -34,9 +33,13 @@ public class User implements Principal {
         this.roles = roles;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String getName() {
-        return this.userName;
+        return this.name;
     }
 
 }
