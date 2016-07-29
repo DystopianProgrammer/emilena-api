@@ -15,12 +15,8 @@ import java.util.Objects;
  */
 public class User implements Principal {
 
-    /**
-     * Synonmous with Principal. In this system, the subject is identified with the the user name...
-     */
     private String userName;
-    private String password;
-    private List<Role> roles;
+    private List<RoleType> roles;
 
     public String getUserName() {
         return userName;
@@ -30,27 +26,14 @@ public class User implements Principal {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Role> getRoles() {
+    public List<RoleType> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<RoleType> roles) {
         this.roles = roles;
     }
 
-    /**
-     * Returns the name of this principal.
-     *
-     * @return the name of this principal.
-     */
     @Override
     public String getName() {
         return this.userName;

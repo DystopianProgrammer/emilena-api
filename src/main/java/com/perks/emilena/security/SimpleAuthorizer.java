@@ -1,11 +1,9 @@
 package com.perks.emilena.security;
 
-import com.perks.emilena.api.Role;
 import com.perks.emilena.api.type.RoleType;
 import io.dropwizard.auth.Authorizer;
 
 import java.security.Principal;
-import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -24,6 +22,6 @@ public class SimpleAuthorizer implements Authorizer<User> {
     public boolean authorize(User principal, String role) {
         return principal.getRoles()
                 .stream()
-                .anyMatch(r -> r.getRoleType() == RoleType.valueOf(role));
+                .anyMatch(r -> r.equals(RoleType.valueOf(role)));
     }
 }

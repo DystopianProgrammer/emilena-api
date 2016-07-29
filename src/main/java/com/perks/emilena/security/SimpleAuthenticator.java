@@ -8,6 +8,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Geoff Perks
@@ -27,14 +28,17 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, User
 
         SystemUser systemUser = systemUserDAO.findByUserName(basicCredentials.getUsername());
 
-        if(systemUser == null || StringUtils.isBlank(systemUser.getPassword())) {
+        if (systemUser == null || StringUtils.isBlank(systemUser.getPassword())) {
             Optional.empty();
         } else {
-            if(systemUser.getPassword().equals(basicCredentials.getPassword())) {
+            if (systemUser.getPassword().equals(basicCredentials.getPassword())) {
                 User user = new User();
                 user.setUserName(systemUser.getUserName());
-                user.setPassword(systemUser.getPassword());
-                user.setRoles(systemUser.getRoles());
+                user.setRoles(systemUser.getRoles()
+                        .stream()
+                        .map(role -> role.getRoleType())
+                        .collect(Collectors.toList()));
+
                 return Optional.of(user);
             }
         }

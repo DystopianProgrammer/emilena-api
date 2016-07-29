@@ -18,13 +18,14 @@ import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
 import com.perks.emilena.resource.StaffResource;
 import com.perks.emilena.resource.UserResource;
+import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
 import com.perks.emilena.security.User;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.CachingAuthenticator;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -70,12 +71,14 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                 environment.metrics(), simpleAuthenticator, emilenaConfiguration.getAuthenticationCachePolicy());
 
         environment.jersey().register(new AuthDynamicFeature(
-                new BasicCredentialAuthFilter.Builder<User>().setAuthenticator(cachingAuthenticator)
+                new CustomCredentialAuthFilter.Builder<User>().setAuthenticator(cachingAuthenticator)
                         .setAuthorizer(new SimpleAuthorizer())
                         .setRealm("EMILENA")
                         .buildAuthFilter()));
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
+        // If you want to use @Auth to inject a custom Principal type into your resource
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
     }
 
     @Override
