@@ -3,12 +3,14 @@ package com.perks.emilena.api;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +24,10 @@ import java.util.Objects;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Person implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
     @NotNull
     @Column(name = "FORENAME")
@@ -43,15 +49,14 @@ public abstract class Person implements Serializable {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy="person")
+    @OneToMany(mappedBy = "person")
     private List<Availability> availability;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private GeneralAvailability generalAvailability;
 
     @Column(length = 1000)
     private String preferences;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
 
     public String getForename() {
         return forename;
@@ -123,6 +128,14 @@ public abstract class Person implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public GeneralAvailability getGeneralAvailability() {
+        return generalAvailability;
+    }
+
+    public void setGeneralAvailability(GeneralAvailability generalAvailability) {
+        this.generalAvailability = generalAvailability;
     }
 
     @Override

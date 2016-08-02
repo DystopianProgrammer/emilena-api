@@ -3,6 +3,7 @@ package com.perks.emilena;
 import com.perks.emilena.api.Absence;
 import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
+import com.perks.emilena.api.GeneralAvailability;
 import com.perks.emilena.api.Person;
 import com.perks.emilena.api.Role;
 import com.perks.emilena.api.Staff;
@@ -99,6 +100,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                     Absence.class,
                     Availability.class,
                     SystemUser.class,
+                    GeneralAvailability.class,
                     Role.class) {
 
                 @Override
