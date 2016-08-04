@@ -23,30 +23,31 @@ import java.util.Objects;
  * Date: 28/07/2016.
  */
 @Entity
-@Table(name = "SYSTEM_USER")
+@Table(name = "system_user")
 public class SystemUser {
 
     @Id
+    @Column(name = "su_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @Column(name = "FORENAME", nullable = false)
+    @Column(name = "forename", nullable = false)
     private String forename;
 
-    @Column(name = "SURNAME", nullable = false)
+    @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "USER_NAME", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "password", nullable = false)
     @Length(min = 8)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "systemuser_role", joinColumns = {
-            @JoinColumn(name = "SYSTEM_USER_ID", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "ROLE_ID",
+            @JoinColumn(name = "system_user_id", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "role_id",
                     nullable = false, updatable = false) })
     private List<Role> roles;
 

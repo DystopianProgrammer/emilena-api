@@ -22,14 +22,15 @@ import java.util.Objects;
  * Date: 29/07/2016.
  */
 @Entity
-@Table(name = "ROLE")
+@Table(name = "role")
 public class Role {
 
     @Id
+    @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @Column(name = "ROLE_TYPE")
+    @Column(name = "role_type")
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 

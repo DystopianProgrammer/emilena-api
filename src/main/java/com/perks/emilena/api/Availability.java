@@ -26,10 +26,11 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "AVAILABILITY")
+@Table(name = "availability")
 public class Availability implements Serializable {
 
     @Id
+    @Column(name = "avail_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -37,41 +38,42 @@ public class Availability implements Serializable {
      * The availability date
      */
     @Temporal(TemporalType.DATE)
-    @Column(name = "DATE", nullable = false)
+    @Column(name = "date", nullable = false)
     private Date date;
 
     /**
      * The availability time from
      */
     @Temporal(TemporalType.TIME)
-    @Column(name = "FROM_TIME")
+    @Column(name = "from_time", nullable = false)
     private Date fromDate;
 
     /**
      * The availability time to
      */
     @Temporal(TemporalType.TIME)
-    @Column(name = "TO_TIME")
+    @Column(name = "to_time", nullable = false)
     private Date toDate;
 
     /**
      * A representation for the day - this can be derived from date and time.
+     * This is inferred.
      */
-    @Column(name = "DAY_OF_WEEK")
+    @Column(name = "day_of_week")
     @Enumerated
     private DayOfWeek dayOfWeek;
 
     /**
      * The number of hours for the given day that can be allocated.
      */
-    @Column(name = "NUMBER_OF_HOURS")
+    @Column(name = "number_of_hours")
     private Integer numberOfHours;
 
     /**
      * The person associated to this availability
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "PERSON_ID")
+    @JoinColumn(name = "person_id")
     private Person person;
 
     public Long getId() {

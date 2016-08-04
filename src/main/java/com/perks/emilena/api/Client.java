@@ -8,15 +8,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import java.util.List;
-import java.util.Objects;
+import java.util.Collection;
 
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "CLIENT")
+@Table(name = "client")
 @NamedQueries({
         @NamedQuery(name = "com.perks.emilena.Client.findAll",
                 query = "select c from Client c")
@@ -24,46 +23,18 @@ import java.util.Objects;
 public class Client extends Person {
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)
-    @JoinTable(name = "CLIENTS_STAFF",
+    @JoinTable(name = "clients_staff",
             joinColumns =
-            @JoinColumn(name = "CLIENT_ID", referencedColumnName = "ID"),
+            @JoinColumn(name = "client_id", referencedColumnName = "id"),
             inverseJoinColumns =
-            @JoinColumn(name = "STAFF_ID", referencedColumnName = "ID"))
-    private List<Staff> staff;
+            @JoinColumn(name = "staff_id", referencedColumnName = "id"))
+    private Collection<Staff> staff;
 
-    public List<Staff> getStaff() {
+    public Collection<Staff> getStaff() {
         return staff;
     }
 
-    public void setStaff(List<Staff> staff) {
+    public void setStaff(Collection<Staff> staff) {
         this.staff = staff;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        Client client = (Client) o;
-        return Objects.equals(staff, client.staff);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), staff);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Client{");
-        sb.append("staff=").append(staff);
-        sb.append('}');
-        return sb.toString();
     }
 }

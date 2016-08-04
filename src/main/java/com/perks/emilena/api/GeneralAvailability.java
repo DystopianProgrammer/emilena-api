@@ -22,21 +22,22 @@ import java.util.Objects;
  * Date: 01/08/2016.
  */
 @Entity
-@Table(name = "GENERAL_AVAILABILITY")
+@Table(name = "general_availability")
 public class GeneralAvailability {
 
     @Id
+    @Column(name = "ga_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
     @ElementCollection(targetClass = DayOfWeek.class)
-    @JoinTable(name = "DAYS_OF_WEEK_LINK", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "DAYS_OF_WEEK", nullable = false)
+    @JoinTable(name = "days_of_week_link", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "days_of_week", nullable = false)
     @Enumerated(EnumType.STRING)
     private Collection<DayOfWeek> daysOfWeek;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "PERSON_ID")
+    @JoinColumn(name = "person_id")
     private Person person;
 
     public Long getId() {

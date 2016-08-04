@@ -11,10 +11,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,7 @@ import java.util.Objects;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "person")
 public abstract class Person implements Serializable {
 
     @Id
@@ -30,33 +32,47 @@ public abstract class Person implements Serializable {
     protected Long id;
 
     @NotNull
-    @Column(name = "FORENAME")
+    @Column(name = "forename")
     private String forename;
 
     @NotNull
-    @Column(name = "SURNAME")
+    @Column(name = "surname")
     private String surname;
 
-    @Column(name = "EMAIL")
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "DATE_OF_BIRTH")
+    @Column(name = "date_of_birth")
     private Date dob;
 
-    @Column(name = "TELEPHONE_NUMBER")
+    @Column(name = "telephone_number")
     private String telephoneNumber;
 
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "person")
-    private List<Availability> availability;
+    @OneToMany(mappedBy = "id")
+    private Collection<Availability> availabilities;
+
+    @OneToMany(mappedBy = "id")
+    private Collection<Absence> absences;
 
     @OneToOne(fetch = FetchType.EAGER)
     private GeneralAvailability generalAvailability;
 
+    @OneToMany(mappedBy = "id")
+    private Collection<Appointment> appointments;
+
     @Column(length = 1000)
     private String preferences;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getForename() {
         return forename;
@@ -106,28 +122,20 @@ public abstract class Person implements Serializable {
         this.address = address;
     }
 
-    public List<Availability> getAvailability() {
-        return availability;
+    public Collection<Availability> getAvailabilities() {
+        return availabilities;
     }
 
-    public void setAvailability(List<Availability> availability) {
-        this.availability = availability;
+    public void setAvailabilities(Collection<Availability> availabilities) {
+        this.availabilities = availabilities;
     }
 
-    public String getPreferences() {
-        return preferences;
+    public Collection<Absence> getAbsences() {
+        return absences;
     }
 
-    public void setPreferences(String preferences) {
-        this.preferences = preferences;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setAbsences(Collection<Absence> absences) {
+        this.absences = absences;
     }
 
     public GeneralAvailability getGeneralAvailability() {
@@ -136,6 +144,22 @@ public abstract class Person implements Serializable {
 
     public void setGeneralAvailability(GeneralAvailability generalAvailability) {
         this.generalAvailability = generalAvailability;
+    }
+
+    public Collection<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(Collection<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public String getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(String preferences) {
+        this.preferences = preferences;
     }
 
     @Override
@@ -147,34 +171,41 @@ public abstract class Person implements Serializable {
             return false;
         }
         Person person = (Person) o;
-        return Objects.equals(forename, person.forename) &&
+        return Objects.equals(id, person.id) &&
+                Objects.equals(forename, person.forename) &&
                 Objects.equals(surname, person.surname) &&
                 Objects.equals(email, person.email) &&
                 Objects.equals(dob, person.dob) &&
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
-                Objects.equals(availability, person.availability) &&
-                Objects.equals(preferences, person.preferences) &&
-                Objects.equals(id, person.id);
+                Objects.equals(availabilities, person.availabilities) &&
+                Objects.equals(absences, person.absences) &&
+                Objects.equals(generalAvailability, person.generalAvailability) &&
+                Objects.equals(appointments, person.appointments) &&
+                Objects.equals(preferences, person.preferences);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(forename, surname, email, dob, telephoneNumber, address, availability, preferences, id);
+        return Objects
+                .hash(id, forename, surname, email, dob, telephoneNumber, address, availabilities, absences, generalAvailability, appointments, preferences);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Person{");
-        sb.append("forename='").append(forename).append('\'');
+        sb.append("id=").append(id);
+        sb.append(", forename='").append(forename).append('\'');
         sb.append(", surname='").append(surname).append('\'');
         sb.append(", email='").append(email).append('\'');
         sb.append(", dob=").append(dob);
         sb.append(", telephoneNumber='").append(telephoneNumber).append('\'');
         sb.append(", address=").append(address);
-        sb.append(", availability=").append(availability);
+        sb.append(", availabilities=").append(availabilities);
+        sb.append(", absences=").append(absences);
+        sb.append(", generalAvailability=").append(generalAvailability);
+        sb.append(", appointments=").append(appointments);
         sb.append(", preferences='").append(preferences).append('\'');
-        sb.append(", id=").append(id);
         sb.append('}');
         return sb.toString();
     }

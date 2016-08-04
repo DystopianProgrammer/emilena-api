@@ -5,9 +5,12 @@ import com.perks.emilena.api.type.AbsenceType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,24 +21,26 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "ABSENCE")
+@Table(name = "absence")
 public class Absence implements Serializable {
+
+    @Id
+    @Column(name = "absence_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
     @Enumerated
     private AbsenceType absenceType;
 
-    @Column(name = "DATE")
+    @Column(name = "date")
     private LocalDateTime date;
 
-    @Column(name = "REASON")
+    @Column(name = "reason")
     private String reason;
 
-    @Column(name = "PERSON")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "person_absence")
     private Person person;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
 
     public Long getId() {
         return id;

@@ -12,19 +12,19 @@ import java.util.Objects;
 @Embeddable
 public class Address implements Serializable {
 
-    @Column(name = "HOUSE_NUMBER")
+    @Column(name = "house_number")
     private String houseNumber;
 
-    @Column(name = "FIRST_LINE")
+    @Column(name = "first_line")
     private String firstLine;
 
-    @Column(name = "SECOND_LINE")
+    @Column(name = "second_line")
     private String secondLine;
 
-    @Column(name = "TOWN")
+    @Column(name = "town")
     private String town;
 
-    @Column(name = "POST_CODE")
+    @Column(name = "post_code")
     private String postCode;
 
     public String getHouseNumber() {

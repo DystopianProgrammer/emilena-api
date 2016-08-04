@@ -1,6 +1,7 @@
 package com.perks.emilena;
 
 import com.perks.emilena.api.Absence;
+import com.perks.emilena.api.Appointment;
 import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.GeneralAvailability;
@@ -10,11 +11,13 @@ import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
 import com.perks.emilena.dao.AbsenceDAO;
+import com.perks.emilena.dao.AppointmentDAO;
 import com.perks.emilena.dao.AvailabilityDAO;
 import com.perks.emilena.dao.ClientDAO;
 import com.perks.emilena.dao.StaffDAO;
 import com.perks.emilena.dao.SystemUserDAO;
 import com.perks.emilena.resource.AbsenceResource;
+import com.perks.emilena.resource.AppointmentResource;
 import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
 import com.perks.emilena.resource.StaffResource;
@@ -51,6 +54,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         ClientDAO clientDAO = new ClientDAO(hibernate.getSessionFactory());
         AbsenceDAO absenceDAO = new AbsenceDAO(hibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(hibernate.getSessionFactory());
+        AppointmentDAO appointmentDAO = new AppointmentDAO((hibernate.getSessionFactory()));
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -58,6 +62,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new ClientResource(clientDAO));
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
+        environment.jersey().register(new AppointmentResource(appointmentDAO));
 
         SystemUserDAO systemUserDAO = new SystemUserDAO(hibernate.getSessionFactory());
 
@@ -101,6 +106,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                     Availability.class,
                     SystemUser.class,
                     GeneralAvailability.class,
+                    Appointment.class,
                     Role.class) {
 
                 @Override
