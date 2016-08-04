@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -54,13 +55,13 @@ public abstract class Person implements Serializable {
     @OneToMany(mappedBy = "id")
     private Collection<Availability> availabilities;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private Collection<Absence> absences;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private GeneralAvailability generalAvailability;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private Collection<Appointment> appointments;
 
     @Column(length = 1000)
