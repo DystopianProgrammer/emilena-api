@@ -67,6 +67,12 @@ public abstract class Person implements Serializable {
     @Column(length = 1000)
     private String preferences;
 
+    /**
+     * Used to indicate whether the person is active or not - rather than deleting the person.
+     */
+    @Column(name = "active")
+    private Boolean active;
+
     public Long getId() {
         return id;
     }
@@ -163,6 +169,14 @@ public abstract class Person implements Serializable {
         this.preferences = preferences;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -179,17 +193,12 @@ public abstract class Person implements Serializable {
                 Objects.equals(dob, person.dob) &&
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
-                Objects.equals(availabilities, person.availabilities) &&
-                Objects.equals(absences, person.absences) &&
-                Objects.equals(generalAvailability, person.generalAvailability) &&
-                Objects.equals(appointments, person.appointments) &&
-                Objects.equals(preferences, person.preferences);
+                Objects.equals(active, person.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects
-                .hash(id, forename, surname, email, dob, telephoneNumber, address, availabilities, absences, generalAvailability, appointments, preferences);
+        return Objects.hash(id, forename, surname, email, dob, telephoneNumber, address, active);
     }
 
     @Override
@@ -207,6 +216,7 @@ public abstract class Person implements Serializable {
         sb.append(", generalAvailability=").append(generalAvailability);
         sb.append(", appointments=").append(appointments);
         sb.append(", preferences='").append(preferences).append('\'');
+        sb.append(", active=").append(active);
         sb.append('}');
         return sb.toString();
     }
