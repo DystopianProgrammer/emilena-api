@@ -39,4 +39,8 @@ public class StaffDAO extends AbstractDAO<Staff> {
     public List<Staff> findAll() {
         return list(namedQuery("com.perks.emilena.Staff.findAll"));
     }
+
+    public List<Staff> findAllActive() {
+        return list(currentSession().createQuery("select s from staff s where s.active = true"));
+    }
 }

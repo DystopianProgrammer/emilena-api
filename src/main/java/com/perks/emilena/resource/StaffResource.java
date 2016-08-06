@@ -74,4 +74,13 @@ public class StaffResource {
     public void delete(@PathParam("id") LongParam id) {
         staffDAO.delete(staffDAO.findById(id.get()));
     }
+
+    @Path("/all/active")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Staff> findAllActive() {
+        return staffDAO.findAllActive();
+    }
+
 }

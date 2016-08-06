@@ -52,5 +52,13 @@ public class ClientResource {
     public Client findPerson(@PathParam("id") LongParam id) {
         return clientDAO.findById(id.get());
     }
+
+    @Path("/all/active")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Client> findAllActive() {
+        return clientDAO.findAllActive();
+    }
 }
 
