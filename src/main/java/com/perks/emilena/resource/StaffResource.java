@@ -62,6 +62,15 @@ public class StaffResource {
         return staffService.create(staff);
     }
 
+    @POST
+    @Path("/update")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Staff update(@Valid Staff staff) {
+        return staffDAO.update(staff);
+    }
+
     @Path("/staff/clients/{id}")
     @GET
     @Timed

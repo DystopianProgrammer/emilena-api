@@ -25,6 +25,10 @@ public class ClientDAO extends AbstractDAO<Client> {
         return persist(client);
     }
 
+    public Client update(Client client) {
+        return persist(client);
+    }
+
     public List<Client> findAll() {
         return list(namedQuery("com.perks.emilena.Client.findAll"));
     }

@@ -48,6 +48,14 @@ public class ClientResource {
         return clientService.create(client);
     }
 
+    @POST
+    @Path("/update")
+    @Timed
+    @UnitOfWork
+    public Client update(@Valid Client client) {
+        return clientDAO.update(client);
+    }
+
     @GET
     @Path("/{id}")
     @Timed
