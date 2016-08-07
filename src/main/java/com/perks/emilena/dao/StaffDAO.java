@@ -41,6 +41,8 @@ public class StaffDAO extends AbstractDAO<Staff> {
     }
 
     public List<Staff> findAllActive() {
-        return list(currentSession().createQuery("select s from staff s where s.active = true"));
+        Query query = currentSession().createQuery("select s from Staff s where s.active = :isActive");
+        query.setParameter("isActive", true);
+        return list(query);
     }
 }

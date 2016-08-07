@@ -1,0 +1,46 @@
+{
+  "address": {
+    "houseNumber": "2 Chapel Street",
+    "town": "Calne",
+    "postCode": "SN14 0GB"
+  },
+  "availabilities": [],
+  "forename": "Geoffrey",
+  "surname": "Perks",
+  "email": "gperksy@gmail.com",
+  "telephoneNumber": "+447730890336",
+  "staff": [
+    {
+      "id": 6,
+      "forename": "Emily",
+      "surname": "Boyle",
+      "email": "emily.boyle@live.com",
+      "dob": null,
+      "telephoneNumber": "07730890337",
+      "address": {
+        "houseNumber": "128",
+        "firstLine": "Stapley Road",
+        "secondLine": null,
+        "town": "Hove",
+        "postCode": "BN3 7FG"
+      },
+      "availabilities": [],
+      "absences": [],
+      "generalAvailability": {
+        "id": 7,
+        "daysOfWeek": [
+          "MONDAY",
+          "WEDNESDAY",
+          "FRIDAY"
+        ],
+        "person": null
+      },
+      "appointments": [],
+      "preferences": null,
+      "active": true,
+      "contractType": "CONTRACT",
+      "staffType": null,
+      "contractedHours": 16
+    }
+  ]
+}

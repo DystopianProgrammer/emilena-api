@@ -3,6 +3,7 @@ package com.perks.emilena.resource;
 import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.dao.ClientDAO;
+import com.perks.emilena.service.ClientService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -23,10 +24,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientResource {
 
+    private final ClientService clientService;
     private final ClientDAO clientDAO;
 
-    public ClientResource(ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+    public ClientResource(ClientService clientService) {
+        this.clientService = clientService;
+        this.clientDAO = clientService.getDataAccessObject();
     }
 
     @Path("/all")
@@ -42,7 +45,7 @@ public class ClientResource {
     @Timed
     @UnitOfWork
     public Client add(@Valid Client client) {
-        return clientDAO.create(client);
+        return clientService.create(client);
     }
 
     @GET
@@ -53,7 +56,7 @@ public class ClientResource {
         return clientDAO.findById(id.get());
     }
 
-    @Path("/all/active")
+    @Path("/active")
     @GET
     @Timed
     @UnitOfWork

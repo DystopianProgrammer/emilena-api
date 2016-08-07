@@ -2,6 +2,7 @@ package com.perks.emilena.dao;
 
 import com.perks.emilena.api.Client;
 import io.dropwizard.hibernate.AbstractDAO;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class ClientDAO extends AbstractDAO<Client> {
     }
 
     public List<Client> findAllActive() {
-        return list(currentSession().createQuery("select c from client c where c.active = true"));
+        Query query = currentSession().createQuery("select c from Client c where c.active = :isActive");
+        query.setParameter("isActive", true);
+        return list(query);
     }
 }

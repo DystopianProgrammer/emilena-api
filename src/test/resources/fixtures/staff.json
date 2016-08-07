@@ -1,0 +1,21 @@
+{
+  "address": {
+    "houseNumber": "128",
+    "firstLine": "Stapley Road",
+    "town": "Hove",
+    "postCode": "BN3 7FG"
+  },
+  "forename": "Emily",
+  "surname": "Boyle",
+  "email": "emily.boyle@live.com",
+  "telephoneNumber": "07730890337",
+  "contractType": "CONTRACT",
+  "contractedHours": 16,
+  "generalAvailability": {
+    "daysOfWeek": [
+      "MONDAY",
+      "WEDNESDAY",
+      "FRIDAY"
+    ]
+  }
+}
