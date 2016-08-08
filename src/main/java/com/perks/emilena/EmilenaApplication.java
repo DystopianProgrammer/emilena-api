@@ -26,6 +26,8 @@ import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
 import com.perks.emilena.security.User;
+import com.perks.emilena.service.AppointmentService;
+import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
 import com.perks.emilena.service.StaffService;
 import io.dropwizard.Application;
@@ -61,6 +63,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO);
+        AppointmentService appointmentService = new AppointmentServiceImpl(appointmentDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -68,7 +71,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new ClientResource(clientService));
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
-        environment.jersey().register(new AppointmentResource(appointmentDAO));
+        environment.jersey().register(new AppointmentResource(appointmentService));
 
         SystemUserDAO systemUserDAO = new SystemUserDAO(hibernate.getSessionFactory());
 

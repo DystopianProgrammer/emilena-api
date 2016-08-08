@@ -2,7 +2,7 @@ package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Appointment;
-import com.perks.emilena.dao.AppointmentDAO;
+import com.perks.emilena.service.AppointmentService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -25,26 +26,34 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class AppointmentResource {
 
-    private final AppointmentDAO appointmentDAO;
+    private final AppointmentService appointmentService;
 
-    public AppointmentResource(AppointmentDAO appointmentDAO) {
-        this.appointmentDAO = appointmentDAO;
+    public AppointmentResource(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
     }
 
-    @POST
     @Path("/add")
+    @POST
     @Timed
     @UnitOfWork
-    @RolesAllowed(value = {"STAFF"})
+    @RolesAllowed(value = {"ADMIN"})
     public Appointment add(@Valid Appointment appointment) {
-        return this.appointmentDAO.persist(appointment);
+        return this.appointmentService.create(appointment);
     }
 
-    @GET
     @Path("/{id}")
+    @GET
     @Timed
     @UnitOfWork
     public Appointment get(@PathParam("id") LongParam id) {
-        return this.appointmentDAO.get(id.get());
+        return this.appointmentService.fetchById(id.get());
+    }
+
+    @Path("/all")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Appointment> findAll() {
+        return this.appointmentService.all();
     }
 }

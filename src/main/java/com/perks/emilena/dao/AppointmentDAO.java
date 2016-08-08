@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -47,6 +48,15 @@ public class AppointmentDAO extends AbstractDAO<Appointment> {
     @Override
     public Appointment get(Serializable id) {
         return super.get(id);
+    }
+
+    /**
+     * Returns all appointments, both completed an incomplete
+     *
+     * @return list of appointments
+     */
+    public List<Appointment> findAll() {
+        return list(currentSession().createQuery("select a from Appointment a"));
     }
 
 
