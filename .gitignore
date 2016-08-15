@@ -1,3 +1,4 @@
 emilena-api.iml
 .idea/
 target/
+dependency-reduced-pom.xml
