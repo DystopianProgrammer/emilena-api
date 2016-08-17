@@ -33,3 +33,19 @@ There are 2 types of Roles
 1. Grants read-only access
 2. This includes read-only access to client information
 3. This includes read-only access to appointments and the calendar
+
+#####Database - Postgres
+
+Some useful commands:
+
+dropdb [dbname], createdb [dbname], psql [dbname]
+
+To run a script against the DB: psql -d [dbname] -a -f [script location]
+
+#####Docker
+
+See emilena-api/Dockerfile
+
+1. docker build -t emilena-api .
+2. docker run -p 9090:9090 emilena-api
+
