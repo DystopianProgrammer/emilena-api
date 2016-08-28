@@ -36,7 +36,7 @@ public class AppointmentResource {
     @POST
     @Timed
     @UnitOfWork
-    @RolesAllowed(value = {"ADMIN"})
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Appointment add(@Valid Appointment appointment) {
         return this.appointmentService.create(appointment);
     }
@@ -45,6 +45,7 @@ public class AppointmentResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Appointment get(@PathParam("id") LongParam id) {
         return this.appointmentService.fetchById(id.get());
     }
@@ -53,6 +54,7 @@ public class AppointmentResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Appointment> findAll() {
         return this.appointmentService.all();
     }

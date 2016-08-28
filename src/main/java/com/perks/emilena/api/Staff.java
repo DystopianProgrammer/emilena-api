@@ -6,8 +6,10 @@ import com.perks.emilena.api.type.StaffType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,6 +35,10 @@ public class Staff extends Person {
     @Column(name = "contracted_hours")
     private Integer contractedHours;
 
+    @OneToOne
+    @JoinColumn(name = "system_user_id")
+    private SystemUser systemUser;
+
     public ContractType getContractType() {
         return contractType;
     }
@@ -55,5 +61,13 @@ public class Staff extends Person {
 
     public void setContractedHours(Integer contractedHours) {
         this.contractedHours = contractedHours;
+    }
+
+    public SystemUser getSystemUser() {
+        return systemUser;
+    }
+
+    public void setSystemUser(SystemUser systemUser) {
+        this.systemUser = systemUser;
     }
 }

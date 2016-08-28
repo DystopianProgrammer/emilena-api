@@ -12,12 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * A user of the system
+ * A user of the system - this is linked to some staff
  *
  * Created by Geoff Perks
  * Date: 28/07/2016.
@@ -31,11 +32,6 @@ public class SystemUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @Column(name = "forename", nullable = false)
-    private String forename;
-
-    @Column(name = "surname", nullable = false)
-    private String surname;
 
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
@@ -44,8 +40,12 @@ public class SystemUser {
     @Length(min = 8)
     private String password;
 
+    @OneToOne
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "systemuser_role", joinColumns = {
+    @JoinTable(name = "system_user_role", joinColumns = {
             @JoinColumn(name = "system_user_id", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "role_id",
                     nullable = false, updatable = false) })
@@ -59,21 +59,6 @@ public class SystemUser {
         this.id = id;
     }
 
-    public String getForename() {
-        return forename;
-    }
-
-    public void setForename(String forename) {
-        this.forename = forename;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
 
     public String getUserName() {
         return userName;
@@ -89,6 +74,14 @@ public class SystemUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public List<Role> getRoles() {
@@ -109,26 +102,24 @@ public class SystemUser {
         }
         SystemUser that = (SystemUser) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(forename, that.forename) &&
-                Objects.equals(surname, that.surname) &&
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(password, that.password) &&
+                Objects.equals(staff, that.staff) &&
                 Objects.equals(roles, that.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, forename, surname, userName, password, roles);
+        return Objects.hash(id, userName, password, staff, roles);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SystemUser{");
         sb.append("id=").append(id);
-        sb.append(", forename='").append(forename).append('\'');
-        sb.append(", surname='").append(surname).append('\'');
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", password='").append(password).append('\'');
+        sb.append(", staff=").append(staff);
         sb.append(", roles=").append(roles);
         sb.append('}');
         return sb.toString();

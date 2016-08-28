@@ -7,6 +7,7 @@ import com.perks.emilena.service.ClientService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +37,7 @@ public class ClientResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> findAll() {
         return clientDAO.findAll();
     }
@@ -44,6 +46,7 @@ public class ClientResource {
     @Path("/add")
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
     public Client add(@Valid Client client) {
         return clientService.create(client);
     }
@@ -52,6 +55,7 @@ public class ClientResource {
     @Path("/update")
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
     public Client update(@Valid Client client) {
         return clientDAO.update(client);
     }
@@ -60,6 +64,7 @@ public class ClientResource {
     @Path("/{id}")
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Client findPerson(@PathParam("id") LongParam id) {
         return clientDAO.findById(id.get());
     }
@@ -68,6 +73,7 @@ public class ClientResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> findAllActive() {
         return clientDAO.findAllActive();
     }

@@ -38,7 +38,7 @@ public class UserResource {
     @Path("/login")
     @Timed
     @UnitOfWork
-    @RolesAllowed(value = {"SYSTEM"})
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public User login(@Auth User user) {
         return user;
     }

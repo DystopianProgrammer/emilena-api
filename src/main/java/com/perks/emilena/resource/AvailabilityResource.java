@@ -5,6 +5,7 @@ import com.perks.emilena.api.Availability;
 import com.perks.emilena.dao.AvailabilityDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -28,6 +29,7 @@ public class AvailabilityResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Availability> findAll() {
         return null;
     }

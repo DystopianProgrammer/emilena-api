@@ -1,9 +1,11 @@
 package com.perks.emilena.security;
 
+import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.type.RoleType;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a user of the system
@@ -14,8 +16,13 @@ import java.util.List;
 public class User implements Principal {
 
     private String userName;
-    private String name;
+    private Staff staff;
     private List<RoleType> roles;
+
+    @Override
+    public String getName() {
+        return this.userName;
+    }
 
     public String getUserName() {
         return userName;
@@ -23,6 +30,14 @@ public class User implements Principal {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public List<RoleType> getRoles() {
@@ -33,13 +48,32 @@ public class User implements Principal {
         this.roles = roles;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(userName, user.userName) &&
+                Objects.equals(staff, user.staff) &&
+                Objects.equals(roles, user.roles);
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public int hashCode() {
+        return Objects.hash(userName, staff, roles);
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("userName='").append(userName).append('\'');
+        sb.append(", staff=").append(staff);
+        sb.append(", roles=").append(roles);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -34,7 +34,7 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, User
             if (systemUser.getPassword().equals(basicCredentials.getPassword())) {
                 User user = new User();
                 user.setUserName(systemUser.getUserName());
-                user.setName(String.format("%s, %s", systemUser.getSurname(), systemUser.getForename()));
+                user.setStaff(systemUser.getStaff());
                 user.setRoles(systemUser.getRoles()
                         .stream()
                         .map(role -> role.getRoleType())

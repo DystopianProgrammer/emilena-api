@@ -41,6 +41,7 @@ public class StaffResource {
     @Path("/{id}")
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Staff findPerson(@PathParam("id") LongParam id) {
         return staffDAO.findById(id.get());
     }
@@ -49,6 +50,7 @@ public class StaffResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Staff> findAll() {
         return staffDAO.findAll();
     }
@@ -75,22 +77,17 @@ public class StaffResource {
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> clientsFromStaffId(@PathParam("id") LongParam id) {
         return staffDAO.clientsByStaffId(id.get());
     }
 
-    @DELETE
-    @Path("/delete/{id}")
-    @Timed
-    @UnitOfWork
-    public void delete(@PathParam("id") LongParam id) {
-        staffDAO.delete(staffDAO.findById(id.get()));
-    }
 
     @Path("/active")
     @GET
     @Timed
     @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Staff> findAllActive() {
         return staffDAO.findAllActive();
     }
