@@ -1,11 +1,11 @@
 package com.perks.emilena.security;
 
+import com.perks.emilena.api.Staff;
+import com.perks.emilena.api.type.RoleType;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
-
-import com.perks.emilena.api.Staff;
-import com.perks.emilena.api.type.RoleType;
 
 /**
  * Represents a user of the system

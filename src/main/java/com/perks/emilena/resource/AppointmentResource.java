@@ -1,6 +1,10 @@
 package com.perks.emilena.resource;
 
-import java.util.List;
+import com.codahale.metrics.annotation.Timed;
+import com.perks.emilena.api.Appointment;
+import com.perks.emilena.service.AppointmentService;
+import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.params.LongParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -11,13 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.api.Appointment;
-import com.perks.emilena.service.AppointmentService;
-
-import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.jersey.params.LongParam;
+import java.util.List;
 
 /**
  * Created by Geoff Perks

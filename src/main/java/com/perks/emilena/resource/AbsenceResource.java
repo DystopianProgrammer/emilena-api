@@ -1,18 +1,16 @@
 package com.perks.emilena.resource;
 
-import java.util.List;
+import com.codahale.metrics.annotation.Timed;
+import com.perks.emilena.api.Absence;
+import com.perks.emilena.dao.AbsenceDAO;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.api.Absence;
-import com.perks.emilena.dao.AbsenceDAO;
-
-import io.dropwizard.hibernate.UnitOfWork;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -28,6 +26,7 @@ public class AbsenceResource {
         this.absenceDAO = absenceDAO;
     }
 
+    @Path("/all")
     @GET
     @Timed
     @UnitOfWork

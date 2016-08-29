@@ -1,5 +1,8 @@
 package com.perks.emilena.api;
 
+import com.perks.emilena.api.type.ContractType;
+import com.perks.emilena.api.type.StaffType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -8,9 +11,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.perks.emilena.api.type.ContractType;
-import com.perks.emilena.api.type.StaffType;
 
 /**
  * Created by Geoff Perks

@@ -1,10 +1,9 @@
 package com.perks.emilena.security;
 
-import java.security.Principal;
-
 import com.perks.emilena.api.type.RoleType;
-
 import io.dropwizard.auth.Authorizer;
+
+import java.security.Principal;
 
 /**
  * Created by Geoff Perks

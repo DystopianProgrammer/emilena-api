@@ -1,9 +1,5 @@
 package com.perks.emilena.api;
 
-import java.time.DayOfWeek;
-import java.util.Collection;
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -17,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.time.DayOfWeek;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks

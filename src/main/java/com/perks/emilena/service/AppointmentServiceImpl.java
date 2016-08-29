@@ -1,9 +1,9 @@
 package com.perks.emilena.service;
 
-import java.util.List;
-
 import com.perks.emilena.api.Appointment;
 import com.perks.emilena.dao.AppointmentDAO;
+
+import java.util.List;
 
 /**
  * Created by Geoff Perks

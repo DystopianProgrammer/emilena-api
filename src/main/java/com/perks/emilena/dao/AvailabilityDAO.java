@@ -1,12 +1,10 @@
 package com.perks.emilena.dao;
 
-import java.util.List;
-
+import com.perks.emilena.api.Availability;
+import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-import com.perks.emilena.api.Availability;
-
-import io.dropwizard.hibernate.AbstractDAO;
+import java.util.List;
 
 /**
  * Created by Geoff Perks

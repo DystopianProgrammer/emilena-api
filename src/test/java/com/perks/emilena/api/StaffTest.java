@@ -1,18 +1,16 @@
 package com.perks.emilena.api;
 
-import static io.dropwizard.testing.FixtureHelpers.fixture;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.perks.emilena.api.type.ContractType;
+import io.dropwizard.jackson.Jackson;
+import org.junit.Test;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.perks.emilena.api.type.ContractType;
-
-import io.dropwizard.jackson.Jackson;
+import static io.dropwizard.testing.FixtureHelpers.fixture;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**

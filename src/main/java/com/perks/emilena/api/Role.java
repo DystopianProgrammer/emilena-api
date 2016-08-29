@@ -1,7 +1,6 @@
 package com.perks.emilena.api;
 
-import java.util.List;
-import java.util.Objects;
+import com.perks.emilena.api.type.RoleType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
-import com.perks.emilena.api.type.RoleType;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * ROLE for system access, this can either be SYSTEM or ADMIN

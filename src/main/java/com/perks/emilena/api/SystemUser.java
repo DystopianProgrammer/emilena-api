@@ -1,7 +1,6 @@
 package com.perks.emilena.api;
 
-import java.util.List;
-import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.Length;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A user of the system - this is linked to some staff

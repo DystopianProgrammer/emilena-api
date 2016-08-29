@@ -1,8 +1,6 @@
 package com.perks.emilena.api;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.perks.emilena.api.type.AbsenceType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.perks.emilena.api.type.AbsenceType;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
