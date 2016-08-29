@@ -1,5 +1,10 @@
 package com.perks.emilena.api;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -14,10 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -28,7 +29,12 @@ import java.util.Objects;
 @Table(name = "person")
 public abstract class Person implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1173286545163491540L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 

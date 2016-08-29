@@ -1,11 +1,6 @@
 package com.perks.emilena.resource;
 
-import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.api.Client;
-import com.perks.emilena.dao.ClientDAO;
-import com.perks.emilena.service.ClientService;
-import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.jersey.params.LongParam;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -15,7 +10,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+
+import com.codahale.metrics.annotation.Timed;
+import com.perks.emilena.api.Client;
+import com.perks.emilena.dao.ClientDAO;
+import com.perks.emilena.service.ClientService;
+
+import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.params.LongParam;
 
 /**
  * Created by Geoff Perks
@@ -28,9 +30,9 @@ public class ClientResource {
     private final ClientService clientService;
     private final ClientDAO clientDAO;
 
-    public ClientResource(ClientService clientService) {
+    public ClientResource(ClientService clientService, ClientDAO clientDAO) {
         this.clientService = clientService;
-        this.clientDAO = clientService.getDataAccessObject();
+        this.clientDAO = clientDAO;
     }
 
     @Path("/all")

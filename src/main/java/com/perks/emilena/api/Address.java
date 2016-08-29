@@ -1,9 +1,10 @@
 package com.perks.emilena.api;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  * Created by Geoff Perks
@@ -12,7 +13,12 @@ import java.util.Objects;
 @Embeddable
 public class Address implements Serializable {
 
-    @Column(name = "house_number")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4366271538166866554L;
+
+	@Column(name = "house_number")
     private String houseNumber;
 
     @Column(name = "first_line")

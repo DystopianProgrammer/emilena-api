@@ -1,5 +1,7 @@
 package com.perks.emilena.api;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -8,7 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import java.util.Collection;
 
 /**
  * Created by Geoff Perks
@@ -22,7 +23,12 @@ import java.util.Collection;
 })
 public class Client extends Person {
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2585794734130213464L;
+	
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)
     @JoinTable(name = "clients_staff",
             joinColumns =
             @JoinColumn(name = "client_id", referencedColumnName = "id"),

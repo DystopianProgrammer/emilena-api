@@ -1,5 +1,7 @@
 package com.perks.emilena;
 
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+
 import com.perks.emilena.api.Absence;
 import com.perks.emilena.api.Appointment;
 import com.perks.emilena.api.Availability;
@@ -30,6 +32,7 @@ import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
 import com.perks.emilena.service.StaffService;
+
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -39,7 +42,6 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 /**
  * Created by Geoff Perks
@@ -63,12 +65,12 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO);
-        AppointmentService appointmentService = new AppointmentServiceImpl(appointmentDAO);
+        AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
-        environment.jersey().register(new StaffResource(staffService));
-        environment.jersey().register(new ClientResource(clientService));
+        environment.jersey().register(new StaffResource(staffService, staffDAO));
+        environment.jersey().register(new ClientResource(clientService, clientDAO));
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new AppointmentResource(appointmentService));

@@ -20,9 +20,4 @@ public class StaffService implements PersonService<Staff> {
         person.setActive(true);
         return staffDAO.create(person);
     }
-
-    @Override
-    public StaffDAO getDataAccessObject() {
-        return staffDAO;
-    }
 }

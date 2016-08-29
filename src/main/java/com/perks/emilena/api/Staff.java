@@ -1,8 +1,5 @@
 package com.perks.emilena.api;
 
-import com.perks.emilena.api.type.ContractType;
-import com.perks.emilena.api.type.StaffType;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -11,6 +8,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.perks.emilena.api.type.ContractType;
+import com.perks.emilena.api.type.StaffType;
 
 /**
  * Created by Geoff Perks
@@ -24,7 +24,12 @@ import javax.persistence.Table;
 })
 public class Staff extends Person {
 
-    @Column(name = "contract_type")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4916650133488161794L;
+
+	@Column(name = "contract_type")
     @Enumerated
     private ContractType contractType;
 

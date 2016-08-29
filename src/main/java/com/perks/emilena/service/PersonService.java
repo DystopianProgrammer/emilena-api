@@ -1,6 +1,7 @@
 package com.perks.emilena.service;
 
 import com.perks.emilena.api.Person;
+
 import io.dropwizard.hibernate.AbstractDAO;
 
 /**
@@ -10,6 +11,4 @@ import io.dropwizard.hibernate.AbstractDAO;
 interface PersonService<T extends Person> {
 
     T create (T person);
-
-    <E extends AbstractDAO<E>> E getDataAccessObject();
 }

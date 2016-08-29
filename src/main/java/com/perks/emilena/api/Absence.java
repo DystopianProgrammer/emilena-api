@@ -1,6 +1,8 @@
 package com.perks.emilena.api;
 
-import com.perks.emilena.api.type.AbsenceType;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Objects;
+
+import com.perks.emilena.api.type.AbsenceType;
 
 /**
  * Created by Geoff Perks
@@ -24,7 +25,12 @@ import java.util.Objects;
 @Table(name = "absence")
 public class Absence implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4724788202551456401L;
+
+	@Id
     @Column(name = "absence_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;

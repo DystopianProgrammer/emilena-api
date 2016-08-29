@@ -1,14 +1,16 @@
 package com.perks.emilena.security;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.dao.SystemUserDAO;
+
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by Geoff Perks

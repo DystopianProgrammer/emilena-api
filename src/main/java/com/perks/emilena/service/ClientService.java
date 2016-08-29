@@ -20,9 +20,4 @@ public class ClientService implements PersonService<Client> {
         person.setActive(true);
         return clientDao.create(person);
     }
-
-    @Override
-    public ClientDAO getDataAccessObject() {
-        return clientDao;
-    }
 }

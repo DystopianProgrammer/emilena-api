@@ -1,10 +1,12 @@
 package com.perks.emilena.dao;
 
-import com.perks.emilena.api.SystemUser;
-import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import com.perks.emilena.api.SystemUser;
+
+import io.dropwizard.hibernate.AbstractDAO;
 
 /**
  * Created by Geoff Perks

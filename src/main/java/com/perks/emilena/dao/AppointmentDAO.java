@@ -1,13 +1,15 @@
 package com.perks.emilena.dao;
 
-import com.perks.emilena.api.Appointment;
-import io.dropwizard.hibernate.AbstractDAO;
+import java.io.Serializable;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import java.io.Serializable;
-import java.util.List;
+import com.perks.emilena.api.Appointment;
+
+import io.dropwizard.hibernate.AbstractDAO;
 
 /**
  * Created by Geoff Perks

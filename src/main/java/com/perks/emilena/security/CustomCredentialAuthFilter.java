@@ -1,10 +1,8 @@
 package com.perks.emilena.security;
 
-import com.google.common.io.BaseEncoding;
-import io.dropwizard.auth.AuthFilter;
-import io.dropwizard.auth.Authenticator;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.basic.BasicCredentials;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 
 import javax.annotation.Nullable;
 import javax.annotation.Priority;
@@ -14,9 +12,13 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.Principal;
+
+import com.google.common.io.BaseEncoding;
+
+import io.dropwizard.auth.AuthFilter;
+import io.dropwizard.auth.Authenticator;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * Created by Geoff Perks

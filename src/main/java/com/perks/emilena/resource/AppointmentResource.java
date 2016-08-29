@@ -1,10 +1,6 @@
 package com.perks.emilena.resource;
 
-import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.api.Appointment;
-import com.perks.emilena.service.AppointmentService;
-import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.jersey.params.LongParam;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -15,7 +11,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+
+import com.codahale.metrics.annotation.Timed;
+import com.perks.emilena.api.Appointment;
+import com.perks.emilena.service.AppointmentService;
+
+import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.params.LongParam;
 
 /**
  * Created by Geoff Perks
@@ -26,9 +28,9 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class AppointmentResource {
 
-    private final AppointmentService appointmentService;
+    private final AppointmentService<Appointment> appointmentService;
 
-    public AppointmentResource(AppointmentService appointmentService) {
+    public AppointmentResource(AppointmentService<Appointment> appointmentService) {
         this.appointmentService = appointmentService;
     }
 
