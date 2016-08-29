@@ -16,7 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -28,7 +30,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "system_user")
-public class SystemUser implements Serializable {
+public class SystemUser implements Serializable, Principal {
 
     private static final long serialVersionUID = 1273286745163391540L;
 
@@ -44,7 +46,7 @@ public class SystemUser implements Serializable {
     @Length(min = 8)
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
@@ -92,6 +94,17 @@ public class SystemUser implements Serializable {
 
     public void setRoleTypes(Collection<RoleType> roleTypes) {
         this.roleTypes = roleTypes;
+    }
+
+    /**
+     * Returns the name of this principal.
+     *
+     * @return the name of this principal.
+     */
+    @Override
+    @Transient
+    public String getName() {
+        return this.getUserName();
     }
 
     @Override

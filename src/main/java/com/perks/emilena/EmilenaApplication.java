@@ -24,7 +24,6 @@ import com.perks.emilena.resource.UserResource;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
-import com.perks.emilena.security.User;
 import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
@@ -80,18 +79,18 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // http://www.dropwizard.io/1.0.0/docs/manual/hibernate.html#transactional-resource-methods
         SimpleAuthenticator simpleAuthenticator = new SimpleAuthenticator(systemUserDAO);
 
-        CachingAuthenticator<BasicCredentials, User> cachingAuthenticator = new CachingAuthenticator<>(
+        CachingAuthenticator<BasicCredentials, SystemUser> cachingAuthenticator = new CachingAuthenticator<>(
                 environment.metrics(), simpleAuthenticator, emilenaConfiguration.getAuthenticationCachePolicy());
 
         environment.jersey().register(new AuthDynamicFeature(
-                new CustomCredentialAuthFilter.Builder<User>().setAuthenticator(cachingAuthenticator)
+                new CustomCredentialAuthFilter.Builder<SystemUser>().setAuthenticator(cachingAuthenticator)
                         .setAuthorizer(new SimpleAuthorizer())
                         .setRealm("EMILENA")
                         .buildAuthFilter()));
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         // If you want to use @Auth to inject a custom Principal type into your resource
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(SystemUser.class));
     }
 
     @Override

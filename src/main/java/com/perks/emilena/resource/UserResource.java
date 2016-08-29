@@ -1,7 +1,7 @@
 package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
-import com.perks.emilena.security.User;
+import com.perks.emilena.api.SystemUser;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -39,7 +39,7 @@ public class UserResource {
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
-    public User login(@Auth User user) {
+    public SystemUser login(@Auth SystemUser user) {
         return user;
     }
 }
