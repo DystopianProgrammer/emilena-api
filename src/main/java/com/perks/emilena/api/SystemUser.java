@@ -1,20 +1,23 @@
 package com.perks.emilena.api;
 
+import com.perks.emilena.api.type.RoleType;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -25,13 +28,14 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "system_user")
-public class SystemUser {
+public class SystemUser implements Serializable {
+
+    private static final long serialVersionUID = 1273286745163391540L;
 
     @Id
     @Column(name = "su_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
-
 
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
@@ -44,12 +48,11 @@ public class SystemUser {
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "system_user_role", joinColumns = {
-            @JoinColumn(name = "system_user_id", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "role_id",
-                    nullable = false, updatable = false) })
-    private List<Role> roles;
+    @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "tbl_roles", joinColumns = @JoinColumn(name = "su_id"))
+    @Column(name = "roles", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Collection<RoleType> roleTypes;
 
     public Long getId() {
         return id;
@@ -58,7 +61,6 @@ public class SystemUser {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getUserName() {
         return userName;
@@ -84,12 +86,12 @@ public class SystemUser {
         this.staff = staff;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Collection<RoleType> getRoleTypes() {
+        return roleTypes;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRoleTypes(Collection<RoleType> roleTypes) {
+        this.roleTypes = roleTypes;
     }
 
     @Override
@@ -105,12 +107,12 @@ public class SystemUser {
                 Objects.equals(userName, that.userName) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(staff, that.staff) &&
-                Objects.equals(roles, that.roles);
+                Objects.equals(roleTypes, that.roleTypes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, password, staff, roles);
+        return Objects.hash(id, userName, password, staff, roleTypes);
     }
 
     @Override
@@ -120,7 +122,7 @@ public class SystemUser {
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", password='").append(password).append('\'');
         sb.append(", staff=").append(staff);
-        sb.append(", roles=").append(roles);
+        sb.append(", roleType=").append(roleTypes);
         sb.append('}');
         return sb.toString();
     }

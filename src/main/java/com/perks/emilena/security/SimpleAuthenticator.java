@@ -1,5 +1,6 @@
 package com.perks.emilena.security;
 
+import com.google.common.collect.Lists;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.dao.SystemUserDAO;
 import io.dropwizard.auth.AuthenticationException;
@@ -35,10 +36,7 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, User
                 User user = new User();
                 user.setUserName(systemUser.getUserName());
                 user.setStaff(systemUser.getStaff());
-                user.setRoles(systemUser.getRoles()
-                        .stream()
-                        .map(role -> role.getRoleType())
-                        .collect(Collectors.toList()));
+                user.setRoles(Lists.newArrayList(systemUser.getRoleTypes()));
 
                 return Optional.of(user);
             }

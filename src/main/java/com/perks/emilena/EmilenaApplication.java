@@ -6,7 +6,6 @@ import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.GeneralAvailability;
 import com.perks.emilena.api.Person;
-import com.perks.emilena.api.Role;
 import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
@@ -59,10 +58,11 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         AbsenceDAO absenceDAO = new AbsenceDAO(hibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(hibernate.getSessionFactory());
         AppointmentDAO appointmentDAO = new AppointmentDAO((hibernate.getSessionFactory()));
+        SystemUserDAO systemUserDAO = new SystemUserDAO(hibernate.getSessionFactory());
 
         // Services
         ClientService clientService = new ClientService(clientDAO);
-        StaffService staffService = new StaffService(staffDAO);
+        StaffService staffService = new StaffService(staffDAO, systemUserDAO);
         AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
 
         // Resources
@@ -72,8 +72,6 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new AppointmentResource(appointmentService));
-
-        SystemUserDAO systemUserDAO = new SystemUserDAO(hibernate.getSessionFactory());
 
         // Security
         //
@@ -115,8 +113,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                     Availability.class,
                     SystemUser.class,
                     GeneralAvailability.class,
-                    Appointment.class,
-                    Role.class) {
+                    Appointment.class) {
 
                 @Override
                 public DataSourceFactory getDataSourceFactory(EmilenaConfiguration configuration) {

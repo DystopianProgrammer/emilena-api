@@ -28,9 +28,6 @@ import java.util.Objects;
 @Table(name = "person")
 public abstract class Person implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1173286545163491540L;
 
 	@Id
