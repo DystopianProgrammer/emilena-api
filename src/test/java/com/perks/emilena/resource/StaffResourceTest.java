@@ -79,11 +79,13 @@ public class StaffResourceTest {
         staff.setForename("Bob");
         staff.setSurname("Smith");
 
-        assertThat(resources.client().target("/staff/add")
+        Staff entity = resources.client().target("/staff/add")
                 .request()
                 .post(Entity.entity(staff, MediaType.APPLICATION_JSON_TYPE))
-                .readEntity(Staff.class))
-                .isNotNull();
+                .readEntity(Staff.class);
+
+        assertThat(entity.getForename()).isEqualTo("Bob");
+        assertThat(entity.getSurname()).isEqualTo("Smith");
 
         verify(service, times(1)).create(staff);
     }
