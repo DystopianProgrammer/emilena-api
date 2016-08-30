@@ -26,6 +26,11 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, Syst
     public Optional<SystemUser> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
         SystemUser systemUser =
                 systemUserDAO.findByUserName(basicCredentials.getUsername());
+
+        // we do this to prevent server-side local cache from throwing hibernate exceptions when attempting to
+        // fetch relationship tables - this is due to the datastore session being closed by this point.
+        systemUser.setStaff(null);
+
         if (systemUser == null || StringUtils.isBlank(systemUser.getPassword())) {
             return Optional.empty();
         }
