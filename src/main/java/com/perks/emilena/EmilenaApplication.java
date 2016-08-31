@@ -1,12 +1,6 @@
 package com.perks.emilena;
 
-import com.perks.emilena.api.Absence;
 import com.perks.emilena.api.Appointment;
-import com.perks.emilena.api.Availability;
-import com.perks.emilena.api.Client;
-import com.perks.emilena.api.GeneralAvailability;
-import com.perks.emilena.api.Person;
-import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
 import com.perks.emilena.dao.AbsenceDAO;
@@ -33,8 +27,8 @@ import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.db.PooledDataSourceFactory;
+import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -52,12 +46,12 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
     public void run(EmilenaConfiguration emilenaConfiguration, Environment environment) throws Exception {
 
         // DAOs
-        StaffDAO staffDAO = new StaffDAO(hibernate.getSessionFactory());
-        ClientDAO clientDAO = new ClientDAO(hibernate.getSessionFactory());
-        AbsenceDAO absenceDAO = new AbsenceDAO(hibernate.getSessionFactory());
-        AvailabilityDAO availabilityDAO = new AvailabilityDAO(hibernate.getSessionFactory());
-        AppointmentDAO appointmentDAO = new AppointmentDAO((hibernate.getSessionFactory()));
-        SystemUserDAO systemUserDAO = new SystemUserDAO(hibernate.getSessionFactory());
+        StaffDAO staffDAO = new StaffDAO(scanningHibernate.getSessionFactory());
+        ClientDAO clientDAO = new ClientDAO(scanningHibernate.getSessionFactory());
+        AbsenceDAO absenceDAO = new AbsenceDAO(scanningHibernate.getSessionFactory());
+        AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
+        AppointmentDAO appointmentDAO = new AppointmentDAO((scanningHibernate.getSessionFactory()));
+        SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
 
         // Services
         ClientService clientService = new ClientService(clientDAO);
@@ -100,22 +94,13 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
 
     @Override
     public void initialize(Bootstrap<EmilenaConfiguration> bootstrap) {
-        bootstrap.addBundle(hibernate);
+        bootstrap.addBundle(scanningHibernate);
     }
 
-    private final HibernateBundle<EmilenaConfiguration> hibernate =
-            new HibernateBundle<EmilenaConfiguration>(
-                    Person.class,
-                    Staff.class,
-                    Client.class,
-                    Absence.class,
-                    Availability.class,
-                    SystemUser.class,
-                    GeneralAvailability.class,
-                    Appointment.class) {
-
+    private final ScanningHibernateBundle<EmilenaConfiguration> scanningHibernate =
+            new ScanningHibernateBundle<EmilenaConfiguration>("com.perks.emilena.api") {
                 @Override
-                public DataSourceFactory getDataSourceFactory(EmilenaConfiguration configuration) {
+                public PooledDataSourceFactory getDataSourceFactory(EmilenaConfiguration configuration) {
                     return configuration.getDataSourceFactory();
                 }
             };
