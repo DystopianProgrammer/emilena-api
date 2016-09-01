@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 import java.util.Objects;
@@ -26,11 +27,11 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     private Staff staff;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
@@ -48,6 +49,9 @@ public class Appointment {
 
     @Column(name = "is_complete")
     private Boolean isComplete;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "appointment")
+    private Invoice invoice;
 
     public Long getId() {
         return id;
@@ -113,6 +117,14 @@ public class Appointment {
         isComplete = complete;
     }
 
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -129,12 +141,13 @@ public class Appointment {
                 Objects.equals(toDate, that.toDate) &&
                 Objects.equals(location, that.location) &&
                 Objects.equals(notes, that.notes) &&
-                Objects.equals(isComplete, that.isComplete);
+                Objects.equals(isComplete, that.isComplete) &&
+                Objects.equals(invoice, that.invoice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, staff, client, fromDate, toDate, location, notes, isComplete);
+        return Objects.hash(id, staff, client, fromDate, toDate, location, notes, isComplete, invoice);
     }
 
     @Override
@@ -148,6 +161,7 @@ public class Appointment {
         sb.append(", location=").append(location);
         sb.append(", notes='").append(notes).append('\'');
         sb.append(", isComplete=").append(isComplete);
+        sb.append(", invoice=").append(invoice);
         sb.append('}');
         return sb.toString();
     }

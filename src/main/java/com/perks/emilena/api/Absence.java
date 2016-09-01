@@ -24,9 +24,6 @@ import java.util.Objects;
 @Table(name = "absence")
 public class Absence implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -4724788202551456401L;
 
 	@Id
@@ -43,7 +40,7 @@ public class Absence implements Serializable {
     @Column(name = "reason")
     private String reason;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_absence")
     private Person person;
 

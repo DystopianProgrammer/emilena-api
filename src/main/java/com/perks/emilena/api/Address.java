@@ -12,9 +12,6 @@ import java.util.Objects;
 @Embeddable
 public class Address implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -4366271538166866554L;
 
 	@Column(name = "house_number")

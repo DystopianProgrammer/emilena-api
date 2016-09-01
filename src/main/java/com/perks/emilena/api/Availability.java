@@ -29,9 +29,6 @@ import java.util.Objects;
 @Table(name = "availability")
 public class Availability implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -6450272490835617137L;
 
 	@Id

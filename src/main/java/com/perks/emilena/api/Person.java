@@ -60,7 +60,7 @@ public abstract class Person implements Serializable {
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private Collection<Absence> absences;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private GeneralAvailability generalAvailability;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)

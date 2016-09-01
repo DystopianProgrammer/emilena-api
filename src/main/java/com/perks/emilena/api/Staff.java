@@ -24,9 +24,6 @@ import javax.persistence.Table;
 })
 public class Staff extends Person {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -4916650133488161794L;
 
 	@Column(name = "contract_type")

@@ -22,9 +22,6 @@ import java.util.Collection;
 })
 public class Client extends Person {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -2585794734130213464L;
 	
 	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)

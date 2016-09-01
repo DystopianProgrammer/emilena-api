@@ -36,7 +36,7 @@ public class GeneralAvailability {
     @Enumerated(EnumType.STRING)
     private Collection<DayOfWeek> daysOfWeek;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
     private Person person;
 

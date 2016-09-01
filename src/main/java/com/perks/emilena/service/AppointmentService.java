@@ -46,4 +46,12 @@ public interface AppointmentService<T extends Appointment> {
      * @return the Appointment
      */
     T fetchById(Long id);
+
+    /**
+     * Gets all active appointments by id
+     *
+     * @param id
+     * @return
+     */
+    List<T> activeStaffAppointments(Long id);
 }

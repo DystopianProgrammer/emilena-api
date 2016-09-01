@@ -1,9 +1,14 @@
 package com.perks.emilena.service;
 
+import com.google.common.collect.Lists;
 import com.perks.emilena.api.Appointment;
+import com.perks.emilena.api.Staff;
 import com.perks.emilena.dao.AppointmentDAO;
+import com.perks.emilena.dao.StaffDAO;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by Geoff Perks
@@ -12,9 +17,11 @@ import java.util.List;
 public class AppointmentServiceImpl implements AppointmentService<Appointment> {
 
     private final AppointmentDAO appointmentDAO;
+    private final StaffDAO staffDAO;
 
-    public AppointmentServiceImpl(AppointmentDAO appointmentDAO) {
+    public AppointmentServiceImpl(AppointmentDAO appointmentDAO, StaffDAO staffDAO) {
         this.appointmentDAO = appointmentDAO;
+        this.staffDAO = staffDAO;
     }
 
     /**
@@ -37,6 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
      */
     @Override
     public Appointment cancel(Long id) {
+
         throw new UnsupportedOperationException("Service method not yet implemented");
     }
 
@@ -47,7 +55,7 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
      */
     @Override
     public List<Appointment> allActive() {
-        throw new UnsupportedOperationException("Service method not yet implemented");
+        return appointmentDAO.listIncomplete();
     }
 
     /**
@@ -69,5 +77,27 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
     @Override
     public Appointment fetchById(Long id) {
         return appointmentDAO.get(id);
+    }
+
+    /**
+     * Gets all active appointments by staff id. Unset appointment complete statuses i.e. nulls are regarded as actionable
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Appointment> activeStaffAppointments(Long id) {
+        Staff staff = staffDAO.findById(id);
+
+        Predicate<Appointment> incompleteAppointment = (appt) -> {
+            if (appt.getComplete() == null) {
+                return true;
+            }
+            return !appt.getComplete();
+        };
+
+        return Lists.newArrayList(staff.getAppointments()).stream()
+                .filter(incompleteAppointment)
+                .collect(Collectors.toList());
     }
 }

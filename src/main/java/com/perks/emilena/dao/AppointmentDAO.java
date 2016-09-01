@@ -3,6 +3,7 @@ package com.perks.emilena.dao;
 import com.perks.emilena.api.Appointment;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -57,6 +58,17 @@ public class AppointmentDAO extends AbstractDAO<Appointment> {
      */
     public List<Appointment> findAll() {
         return list(currentSession().createQuery("select a from Appointment a"));
+    }
+
+    /**
+     * Returns all appointments which are yet to be completed
+     *
+     * @return list of appointments
+     */
+    public List<Appointment> listIncomplete() {
+        Query query = currentSession().createQuery("select a from Appointment a where a.complete = :complete");
+        query.setParameter("complete", false);
+        return list(query);
     }
 
 
