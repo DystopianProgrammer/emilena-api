@@ -2,8 +2,7 @@ package com.perks.emilena.service;
 
 import com.google.common.collect.Lists;
 import com.perks.emilena.api.Appointment;
-import com.perks.emilena.api.Staff;
-import com.perks.emilena.dao.StaffDAO;
+import com.perks.emilena.dao.AppointmentDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AppointmentServiceImplTest {
 
-    private final StaffDAO staffDAO = mock(StaffDAO.class);
+    private final AppointmentDAO appointmentDAO = mock(AppointmentDAO.class);
 
     @InjectMocks
     private AppointmentServiceImpl service;
@@ -42,10 +41,8 @@ public class AppointmentServiceImplTest {
         app4.setComplete(false);
 
         List<Appointment> appointments = Lists.newArrayList(app1, app2, app3, app4);
-        Staff staff = new Staff();
-        staff.setAppointments(appointments);
 
-        when(staffDAO.findById(anyLong())).thenReturn(staff);
+        when(appointmentDAO.listByStaffId(anyLong())).thenReturn(appointments);
 
         assertThat(service.activeStaffAppointments(1L).size()).isEqualTo(3);
     }
