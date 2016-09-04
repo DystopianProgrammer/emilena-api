@@ -46,7 +46,7 @@ public class ClientResource {
     @Path("/add")
     @Timed
     @UnitOfWork
-    @RolesAllowed(value = {"ADMIN"})
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Client add(@Valid Client client) {
         return clientService.create(client);
     }
@@ -55,7 +55,7 @@ public class ClientResource {
     @Path("/update")
     @Timed
     @UnitOfWork
-    @RolesAllowed(value = {"ADMIN"})
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Client update(@Valid Client client) {
         return clientDAO.update(client);
     }

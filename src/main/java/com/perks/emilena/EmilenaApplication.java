@@ -13,6 +13,7 @@ import com.perks.emilena.resource.AbsenceResource;
 import com.perks.emilena.resource.AppointmentResource;
 import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
+import com.perks.emilena.resource.InvoiceResource;
 import com.perks.emilena.resource.StaffResource;
 import com.perks.emilena.resource.UserResource;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
@@ -56,7 +57,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
-        AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO, staffDAO);
+        AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -65,6 +66,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new AppointmentResource(appointmentService));
+        environment.jersey().register(new InvoiceResource(appointmentService));
 
         // Security
         //

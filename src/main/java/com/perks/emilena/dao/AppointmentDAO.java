@@ -71,5 +71,15 @@ public class AppointmentDAO extends AbstractDAO<Appointment> {
         return list(query);
     }
 
-
+    /**
+     * Returns all staff from the foreign key
+     *
+     * @param fk - fk of staff
+     * @return list of appoinments
+     */
+    public List<Appointment> listByStaffId(Long fk) {
+        Query query = currentSession().createQuery("select a from Appointment a where a.staff.id = :fk");
+        query.setParameter("fk", fk);
+        return list(query);
+    }
 }

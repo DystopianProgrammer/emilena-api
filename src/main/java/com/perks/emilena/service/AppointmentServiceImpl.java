@@ -1,10 +1,7 @@
 package com.perks.emilena.service;
 
-import com.google.common.collect.Lists;
 import com.perks.emilena.api.Appointment;
-import com.perks.emilena.api.Staff;
 import com.perks.emilena.dao.AppointmentDAO;
-import com.perks.emilena.dao.StaffDAO;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -17,11 +14,9 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService<Appointment> {
 
     private final AppointmentDAO appointmentDAO;
-    private final StaffDAO staffDAO;
 
-    public AppointmentServiceImpl(AppointmentDAO appointmentDAO, StaffDAO staffDAO) {
+    public AppointmentServiceImpl(AppointmentDAO appointmentDAO) {
         this.appointmentDAO = appointmentDAO;
-        this.staffDAO = staffDAO;
     }
 
     /**
@@ -87,7 +82,6 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
      */
     @Override
     public List<Appointment> activeStaffAppointments(Long id) {
-        Staff staff = staffDAO.findById(id);
 
         Predicate<Appointment> incompleteAppointment = (appt) -> {
             if (appt.getComplete() == null) {
@@ -96,7 +90,7 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
             return !appt.getComplete();
         };
 
-        return Lists.newArrayList(staff.getAppointments()).stream()
+        return appointmentDAO.listByStaffId(id).stream()
                 .filter(incompleteAppointment)
                 .collect(Collectors.toList());
     }
