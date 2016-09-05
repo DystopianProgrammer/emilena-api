@@ -10,6 +10,7 @@ import com.perks.emilena.dao.ClientDAO;
 import com.perks.emilena.dao.StaffDAO;
 import com.perks.emilena.dao.SystemUserDAO;
 import com.perks.emilena.resource.AbsenceResource;
+import com.perks.emilena.resource.AlertsResource;
 import com.perks.emilena.resource.AppointmentResource;
 import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
@@ -19,6 +20,7 @@ import com.perks.emilena.resource.UserResource;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
+import com.perks.emilena.service.AlertsService;
 import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
@@ -58,6 +60,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
         AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
+        AlertsService alertsService = new AlertsService(appointmentDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -67,6 +70,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new UserResource());
         environment.jersey().register(new AppointmentResource(appointmentService));
         environment.jersey().register(new InvoiceResource(appointmentService));
+        environment.jersey().register(new AlertsResource(alertsService));
 
         // Security
         //
