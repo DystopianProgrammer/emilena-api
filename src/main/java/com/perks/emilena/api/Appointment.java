@@ -109,11 +109,11 @@ public class Appointment {
         this.notes = notes;
     }
 
-    public Boolean getComplete() {
+    public Boolean getIsComplete() {
         return isComplete;
     }
 
-    public void setComplete(Boolean complete) {
+    public void setIsComplete(Boolean complete) {
         isComplete = complete;
     }
 

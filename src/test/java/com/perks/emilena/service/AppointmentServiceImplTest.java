@@ -32,13 +32,13 @@ public class AppointmentServiceImplTest {
     public void activeStaffAppointments() throws Exception {
 
         Appointment app1 = new Appointment();
-        app1.setComplete(null);
+        app1.setIsComplete(null);
         Appointment app2 = new Appointment();
-        app2.setComplete(true);
+        app2.setIsComplete(true);
         Appointment app3 = new Appointment();
-        app3.setComplete(false);
+        app3.setIsComplete(false);
         Appointment app4 = new Appointment();
-        app4.setComplete(false);
+        app4.setIsComplete(false);
 
         List<Appointment> appointments = Lists.newArrayList(app1, app2, app3, app4);
 

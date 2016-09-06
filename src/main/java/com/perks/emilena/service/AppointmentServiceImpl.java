@@ -84,10 +84,10 @@ public class AppointmentServiceImpl implements AppointmentService<Appointment> {
     public List<Appointment> activeStaffAppointments(Long id) {
 
         Predicate<Appointment> incompleteAppointment = (appt) -> {
-            if (appt.getComplete() == null) {
+            if (appt.getIsComplete() == null) {
                 return true;
             }
-            return !appt.getComplete();
+            return !appt.getIsComplete();
         };
 
         return appointmentDAO.listByStaffId(id).stream()

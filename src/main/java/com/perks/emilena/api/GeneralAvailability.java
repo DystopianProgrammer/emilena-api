@@ -30,13 +30,13 @@ public class GeneralAvailability {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @ElementCollection(targetClass = DayOfWeek.class)
+    @ElementCollection(targetClass = DayOfWeek.class, fetch = FetchType.EAGER)
     @JoinTable(name = "days_of_week_link", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "days_of_week", nullable = false)
     @Enumerated(EnumType.STRING)
     private Collection<DayOfWeek> daysOfWeek;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "person_id")
     private Person person;
 

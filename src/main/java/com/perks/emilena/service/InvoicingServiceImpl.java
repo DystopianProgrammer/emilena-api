@@ -45,7 +45,7 @@ public class InvoicingServiceImpl implements InvoicingService {
         return person.getAppointments().stream()
                 .filter(startDatePredicate)
                 .filter(endDatePredicate)
-                .filter(Appointment::getComplete)
+                .filter(Appointment::getIsComplete)
                 .filter(appt -> appt.getInvoice() == null)
                 .map(mapToInvoice)
                 .collect(Collectors.toList());

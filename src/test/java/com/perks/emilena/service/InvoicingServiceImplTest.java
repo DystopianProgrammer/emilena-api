@@ -34,25 +34,25 @@ public class InvoicingServiceImplTest {
         Appointment appt1 = new Appointment();
         appt1.setFromDate(fromLocalDateTime(2016, Month.JANUARY, 1, 10, 00));
         appt1.setToDate(fromLocalDateTime(2016, Month.JANUARY, 1, 11, 00));
-        appt1.setComplete(true);
+        appt1.setIsComplete(true);
 
         // fail
         Appointment appt2 = new Appointment();
         appt2.setFromDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 10, 00));
         appt2.setToDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 12, 00));
-        appt2.setComplete(true);
+        appt2.setIsComplete(true);
 
         // fail
         Appointment appt3 = new Appointment();
         appt3.setFromDate(fromLocalDateTime(2016, Month.JANUARY, 20, 10, 00));
         appt3.setToDate(fromLocalDateTime(2016, Month.JANUARY, 20, 13, 00));
-        appt3.setComplete(false);
+        appt3.setIsComplete(false);
 
         // pass
         Appointment appt4 = new Appointment();
         appt4.setFromDate(fromLocalDateTime(2016, Month.JANUARY, 29, 10, 00));
         appt4.setToDate(fromLocalDateTime(2016, Month.JANUARY, 29, 12, 00));
-        appt4.setComplete(true);
+        appt4.setIsComplete(true);
 
         ArrayList<Appointment> appointments = Lists.newArrayList(appt1, appt2, appt3, appt4);
 
@@ -80,25 +80,25 @@ public class InvoicingServiceImplTest {
         Appointment appt1 = new Appointment();
         appt1.setFromDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 10, 30));
         appt1.setToDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 11, 30));
-        appt1.setComplete(true);
+        appt1.setIsComplete(true);
 
         // pass
         Appointment appt2 = new Appointment();
         appt2.setFromDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 10, 15));
         appt2.setToDate(fromLocalDateTime(2016, Month.FEBRUARY, 1, 12, 15));
-        appt2.setComplete(true);
+        appt2.setIsComplete(true);
 
         // fail
         Appointment appt3 = new Appointment();
         appt3.setFromDate(fromLocalDateTime(2016, Month.FEBRUARY, 20, 10, 00));
         appt3.setToDate(fromLocalDateTime(2016, Month.FEBRUARY, 20, 13, 00));
-        appt3.setComplete(false);
+        appt3.setIsComplete(false);
 
         // fail
         Appointment appt4 = new Appointment();
         appt4.setFromDate(fromLocalDateTime(2016, Month.FEBRUARY, 27, 10, 00));
         appt4.setToDate(fromLocalDateTime(2016, Month.FEBRUARY, 27, 12, 00));
-        appt4.setComplete(true);
+        appt4.setIsComplete(true);
         appt4.setInvoice(new Invoice());
 
         ArrayList<Appointment> appointments = Lists.newArrayList(appt1, appt2, appt3, appt4);
@@ -127,25 +127,25 @@ public class InvoicingServiceImplTest {
         Appointment appt1 = new Appointment();
         appt1.setFromDate(fromLocalDateTime(2016, Month.MARCH, 1, 10, 30));
         appt1.setToDate(fromLocalDateTime(2016, Month.MARCH, 1, 11, 00));
-        appt1.setComplete(true);
+        appt1.setIsComplete(true);
 
         // pass
         Appointment appt2 = new Appointment();
         appt2.setFromDate(fromLocalDateTime(2016, Month.MARCH, 1, 13, 15));
         appt2.setToDate(fromLocalDateTime(2016, Month.MARCH, 1, 13, 45));
-        appt2.setComplete(true);
+        appt2.setIsComplete(true);
 
         // pass
         Appointment appt3 = new Appointment();
         appt3.setFromDate(fromLocalDateTime(2016, Month.MARCH, 20, 10, 00));
         appt3.setToDate(fromLocalDateTime(2016, Month.MARCH, 20, 13, 30));
-        appt3.setComplete(true);
+        appt3.setIsComplete(true);
 
         // pass
         Appointment appt4 = new Appointment();
         appt4.setFromDate(fromLocalDateTime(2016, Month.MARCH, 27, 10, 00));
         appt4.setToDate(fromLocalDateTime(2016, Month.MARCH, 27, 12, 00));
-        appt4.setComplete(true);
+        appt4.setIsComplete(true);
 
         ArrayList<Appointment> appointments = Lists.newArrayList(appt1, appt2, appt3, appt4);
 
