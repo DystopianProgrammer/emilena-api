@@ -10,11 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.time.DayOfWeek;
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -37,25 +35,16 @@ public class Availability implements Serializable {
     protected Long id;
 
     /**
-     * The availability date
-     */
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date", nullable = false)
-    private Date date;
-
-    /**
      * The availability time from
      */
-    @Temporal(TemporalType.TIME)
     @Column(name = "from_time", nullable = false)
-    private Date fromDate;
+    private LocalTime fromTime;
 
     /**
      * The availability time to
      */
-    @Temporal(TemporalType.TIME)
     @Column(name = "to_time", nullable = false)
-    private Date toDate;
+    private LocalTime toTime;
 
     /**
      * A representation for the day - this can be derived from date and time.
@@ -69,7 +58,7 @@ public class Availability implements Serializable {
      * The number of hours for the given day that can be allocated.
      */
     @Column(name = "number_of_hours")
-    private Integer numberOfHours;
+    private Long numberOfHours;
 
     /**
      * The person associated to this availability
@@ -77,6 +66,10 @@ public class Availability implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public Long getId() {
         return id;
@@ -86,28 +79,20 @@ public class Availability implements Serializable {
         this.id = id;
     }
 
-    public Date getDate() {
-        return date;
+    public LocalTime getFromTime() {
+        return fromTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setFromTime(LocalTime fromTime) {
+        this.fromTime = fromTime;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public LocalTime getToTime() {
+        return toTime;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public Date getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
+    public void setToTime(LocalTime toTime) {
+        this.toTime = toTime;
     }
 
     public DayOfWeek getDayOfWeek() {
@@ -118,11 +103,11 @@ public class Availability implements Serializable {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public Integer getNumberOfHours() {
+    public Long getNumberOfHours() {
         return numberOfHours;
     }
 
-    public void setNumberOfHours(Integer numberOfHours) {
+    public void setNumberOfHours(Long numberOfHours) {
         this.numberOfHours = numberOfHours;
     }
 
@@ -144,9 +129,8 @@ public class Availability implements Serializable {
         }
         Availability that = (Availability) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(fromDate, that.fromDate) &&
-                Objects.equals(toDate, that.toDate) &&
+                Objects.equals(fromTime, that.fromTime) &&
+                Objects.equals(toTime, that.toTime) &&
                 dayOfWeek == that.dayOfWeek &&
                 Objects.equals(numberOfHours, that.numberOfHours) &&
                 Objects.equals(person, that.person);
@@ -154,16 +138,15 @@ public class Availability implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, fromDate, toDate, dayOfWeek, numberOfHours, person);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours, person);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Availability{");
         sb.append("id=").append(id);
-        sb.append(", date=").append(date);
-        sb.append(", fromDate=").append(fromDate);
-        sb.append(", toDate=").append(toDate);
+        sb.append(", fromTime=").append(fromTime);
+        sb.append(", toTime=").append(toTime);
         sb.append(", dayOfWeek=").append(dayOfWeek);
         sb.append(", numberOfHours=").append(numberOfHours);
         sb.append(", person=").append(person);

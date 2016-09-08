@@ -15,6 +15,7 @@ import com.perks.emilena.resource.AppointmentResource;
 import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
 import com.perks.emilena.resource.InvoiceResource;
+import com.perks.emilena.resource.RotaResource;
 import com.perks.emilena.resource.StaffResource;
 import com.perks.emilena.resource.UserResource;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
@@ -24,6 +25,7 @@ import com.perks.emilena.service.AlertsService;
 import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
+import com.perks.emilena.service.RotaService;
 import com.perks.emilena.service.StaffService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -61,6 +63,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
         AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
         AlertsService alertsService = new AlertsService(appointmentDAO);
+        RotaService rotaService = new RotaService(clientDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -71,6 +74,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new AppointmentResource(appointmentService));
         environment.jersey().register(new InvoiceResource(appointmentService));
         environment.jersey().register(new AlertsResource(alertsService));
+        environment.jersey().register(new RotaResource(rotaService));
 
         // Security
         //

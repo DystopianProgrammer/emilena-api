@@ -10,12 +10,5 @@
   "email": "emily.boyle@live.com",
   "telephoneNumber": "07730890337",
   "contractType": "CONTRACT",
-  "contractedHours": 16,
-  "generalAvailability": {
-    "daysOfWeek": [
-      "MONDAY",
-      "WEDNESDAY",
-      "FRIDAY"
-    ]
-  }
+  "contractedHours": 16
 }

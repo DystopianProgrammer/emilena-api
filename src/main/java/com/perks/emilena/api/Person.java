@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -59,9 +58,6 @@ public abstract class Person implements Serializable {
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Absence> absences;
-
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private GeneralAvailability generalAvailability;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "id")
     private Collection<Appointment> appointments;
@@ -147,14 +143,6 @@ public abstract class Person implements Serializable {
         this.absences = absences;
     }
 
-    public GeneralAvailability getGeneralAvailability() {
-        return generalAvailability;
-    }
-
-    public void setGeneralAvailability(GeneralAvailability generalAvailability) {
-        this.generalAvailability = generalAvailability;
-    }
-
     public Collection<Appointment> getAppointments() {
         return appointments;
     }
@@ -215,7 +203,6 @@ public abstract class Person implements Serializable {
         sb.append(", address=").append(address);
         sb.append(", availabilities=").append(availabilities);
         sb.append(", absences=").append(absences);
-        sb.append(", generalAvailability=").append(generalAvailability);
         sb.append(", appointments=").append(appointments);
         sb.append(", preferences='").append(preferences).append('\'');
         sb.append(", active=").append(active);

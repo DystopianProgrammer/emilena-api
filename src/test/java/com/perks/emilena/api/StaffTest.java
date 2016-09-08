@@ -5,10 +5,6 @@ import com.perks.emilena.api.type.ContractType;
 import io.dropwizard.jackson.Jackson;
 import org.junit.Test;
 
-import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.List;
-
 import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,14 +26,6 @@ public class StaffTest {
         address.setTown("Hove");
         address.setPostCode("BN3 7FG");
 
-        List<DayOfWeek> daysOfWeek = new ArrayList<>();
-        daysOfWeek.add(DayOfWeek.MONDAY);
-        daysOfWeek.add(DayOfWeek.WEDNESDAY);
-        daysOfWeek.add(DayOfWeek.FRIDAY);
-
-        GeneralAvailability generalAvailability = new GeneralAvailability();
-        generalAvailability.setDaysOfWeek(daysOfWeek);
-
         Staff person = new Staff();
         person.setForename("Emily");
         person.setSurname("Boyle");
@@ -47,7 +35,6 @@ public class StaffTest {
         person.setContractedHours(16);
 
         person.setAddress(address);
-        person.setGeneralAvailability(generalAvailability);
 
         String expected = MAPPER.writeValueAsString(
                 MAPPER.readValue(fixture("fixtures/staff.json"), Staff.class));
@@ -64,14 +51,6 @@ public class StaffTest {
         address.setTown("Hove");
         address.setPostCode("BN3 7FG");
 
-        List<DayOfWeek> daysOfWeek = new ArrayList<>();
-        daysOfWeek.add(DayOfWeek.MONDAY);
-        daysOfWeek.add(DayOfWeek.WEDNESDAY);
-        daysOfWeek.add(DayOfWeek.FRIDAY);
-
-        GeneralAvailability generalAvailability = new GeneralAvailability();
-        generalAvailability.setDaysOfWeek(daysOfWeek);
-
         Staff person = new Staff();
         person.setForename("Emily");
         person.setSurname("Boyle");
@@ -81,7 +60,6 @@ public class StaffTest {
         person.setContractedHours(16);
 
         person.setAddress(address);
-        person.setGeneralAvailability(generalAvailability);
 
         assertThat(MAPPER.readValue(fixture("fixtures/staff.json"), Staff.class)).isEqualTo(person);
     }

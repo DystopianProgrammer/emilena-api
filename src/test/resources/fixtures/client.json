@@ -26,15 +26,6 @@
       },
       "availabilities": [],
       "absences": [],
-      "generalAvailability": {
-        "id": 7,
-        "daysOfWeek": [
-          "MONDAY",
-          "WEDNESDAY",
-          "FRIDAY"
-        ],
-        "person": null
-      },
       "appointments": [],
       "preferences": null,
       "active": true,
