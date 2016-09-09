@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -20,7 +21,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "appointment")
-public class Appointment {
+public class Appointment implements Serializable {
+
+    private static final long serialVersionUID = -4912233433488161794L;
 
     @Id
     @Column(name = "appt_id")

@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -17,7 +18,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "rota")
-public class Rota {
+public class Rota implements Serializable {
+
+    private static final long serialVersionUID = -4916650133477722794L;
 
     @Id
     @Column(name = "rota_id")

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -19,7 +20,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "assignment")
-public class Assignment {
+public class Assignment implements Serializable {
+
+    private static final long serialVersionUID = -4916650199922161794L;
 
     @Id
     @Column(name = "assignment_id")
