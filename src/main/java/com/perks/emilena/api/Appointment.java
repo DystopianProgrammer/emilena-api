@@ -12,7 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -38,11 +39,14 @@ public class Appointment implements Serializable {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @Column(name = "from_date", nullable = false)
-    private Date fromDate;
+    @Column(name = "appointment_date")
+    private LocalDate appointmentDate;
 
-    @Column(name = "to_date", nullable = false)
-    private Date toDate;
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
+
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
 
     @Embedded
     private Address location;
@@ -51,7 +55,7 @@ public class Appointment implements Serializable {
     private String notes;
 
     @Column(name = "is_complete")
-    private Boolean isComplete;
+    private Boolean complete;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "appointment")
     private Invoice invoice;
@@ -80,20 +84,28 @@ public class Appointment implements Serializable {
         this.client = client;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public LocalDate getAppointmentDate() {
+        return appointmentDate;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
+    public void setAppointmentDate(LocalDate appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 
-    public Date getToDate() {
-        return toDate;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
     }
 
     public Address getLocation() {
@@ -112,12 +124,12 @@ public class Appointment implements Serializable {
         this.notes = notes;
     }
 
-    public Boolean getIsComplete() {
-        return isComplete;
+    public Boolean getComplete() {
+        return complete;
     }
 
-    public void setIsComplete(Boolean complete) {
-        isComplete = complete;
+    public void setComplete(Boolean complete) {
+        this.complete = complete;
     }
 
     public Invoice getInvoice() {
@@ -140,17 +152,18 @@ public class Appointment implements Serializable {
         return Objects.equals(id, that.id) &&
                 Objects.equals(staff, that.staff) &&
                 Objects.equals(client, that.client) &&
-                Objects.equals(fromDate, that.fromDate) &&
-                Objects.equals(toDate, that.toDate) &&
+                Objects.equals(appointmentDate, that.appointmentDate) &&
+                Objects.equals(startTime, that.startTime) &&
+                Objects.equals(endTime, that.endTime) &&
                 Objects.equals(location, that.location) &&
                 Objects.equals(notes, that.notes) &&
-                Objects.equals(isComplete, that.isComplete) &&
+                Objects.equals(complete, that.complete) &&
                 Objects.equals(invoice, that.invoice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, staff, client, fromDate, toDate, location, notes, isComplete, invoice);
+        return Objects.hash(id, staff, client, appointmentDate, startTime, endTime, location, notes, complete, invoice);
     }
 
     @Override
@@ -159,11 +172,12 @@ public class Appointment implements Serializable {
         sb.append("id=").append(id);
         sb.append(", staff=").append(staff);
         sb.append(", client=").append(client);
-        sb.append(", fromDate=").append(fromDate);
-        sb.append(", toDate=").append(toDate);
+        sb.append(", appointmentDate=").append(appointmentDate);
+        sb.append(", startTime=").append(startTime);
+        sb.append(", endTime=").append(endTime);
         sb.append(", location=").append(location);
         sb.append(", notes='").append(notes).append('\'');
-        sb.append(", isComplete=").append(isComplete);
+        sb.append(", complete=").append(complete);
         sb.append(", invoice=").append(invoice);
         sb.append('}');
         return sb.toString();

@@ -4,8 +4,7 @@ import com.perks.emilena.api.Appointment;
 import com.perks.emilena.dao.AppointmentDAO;
 import com.perks.emilena.value.Alerts;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,20 +34,20 @@ public class AlertsService {
         List<Appointment> appointments = this.appointmentDAO.listByStaffId(id);
 
         Predicate<Appointment> reverseCheck = (appt) -> {
-            if (appt.getIsComplete() == null) {
+            if (appt.getComplete() == null) {
                 return true;
             }
-            return !appt.getIsComplete();
+            return !appt.getComplete();
         };
 
         List<Appointment> pendingList = appointments.stream()
                 .filter(reverseCheck)
-                .filter(appt -> appt.getFromDate().before(Date.from(Instant.now())))
+                .filter(appt -> appt.getAppointmentDate().isBefore(LocalDate.now()))
                 .collect(Collectors.toList());
 
         List<Appointment> futureList = appointments.stream()
                 .filter(reverseCheck)
-                .filter(appt -> appt.getFromDate().after(Date.from(Instant.now())))
+                .filter(appt -> appt.getAppointmentDate().isAfter(LocalDate.now()))
                 .collect(Collectors.toList());
 
 

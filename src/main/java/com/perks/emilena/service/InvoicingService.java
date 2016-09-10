@@ -3,7 +3,8 @@ package com.perks.emilena.service;
 import com.perks.emilena.api.Invoice;
 import com.perks.emilena.api.Person;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 
 /**
@@ -21,5 +22,5 @@ import java.util.Collection;
  */
 public interface InvoicingService<T extends Person> {
 
-    Collection<Invoice> invoiceByDuration(LocalDateTime start, LocalDateTime end, T person);
+    Collection<Invoice> invoiceByDuration(LocalDate appointmentDate, LocalTime start, LocalTime end, T person);
 }

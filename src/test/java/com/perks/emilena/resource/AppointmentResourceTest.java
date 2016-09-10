@@ -13,10 +13,8 @@ import org.junit.Test;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Matchers.any;
@@ -65,8 +63,8 @@ public class AppointmentResourceTest {
         Appointment appointment = new Appointment();
         appointment.setStaff(staff);
         appointment.setClient(client);
-        appointment.setFromDate(new Date());
-        appointment.setToDate(Date.from(LocalDateTime.now().plus(1, ChronoUnit.HOURS).toInstant(ZoneOffset.UTC)));
+        appointment.setAppointmentDate(LocalDate.now());
+        appointment.setStartTime(LocalTime.now().plusHours(1));
 
         assertThat(resources.client().target("/appointment/add")
                 .request()
