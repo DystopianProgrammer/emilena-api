@@ -10,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -40,9 +42,9 @@ public class Absence implements Serializable {
     @Column(name = "reason")
     private String reason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_absence")
-    private Person person;
+    @ManyToMany
+    @JoinColumn(name = "person_id")
+    private Collection<Person> person;
 
     public Long getId() {
         return id;
@@ -76,11 +78,11 @@ public class Absence implements Serializable {
         this.reason = reason;
     }
 
-    public Person getPerson() {
+    public Collection<Person> getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(Collection<Person> person) {
         this.person = person;
     }
 
@@ -93,26 +95,26 @@ public class Absence implements Serializable {
             return false;
         }
         Absence absence = (Absence) o;
-        return absenceType == absence.absenceType &&
+        return Objects.equals(id, absence.id) &&
+                absenceType == absence.absenceType &&
                 Objects.equals(date, absence.date) &&
                 Objects.equals(reason, absence.reason) &&
-                Objects.equals(person, absence.person) &&
-                Objects.equals(id, absence.id);
+                Objects.equals(person, absence.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(absenceType, date, reason, person, id);
+        return Objects.hash(id, absenceType, date, reason, person);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Absence{");
-        sb.append("absenceType=").append(absenceType);
+        sb.append("id=").append(id);
+        sb.append(", absenceType=").append(absenceType);
         sb.append(", date=").append(date);
         sb.append(", reason='").append(reason).append('\'');
         sb.append(", person=").append(person);
-        sb.append(", id=").append(id);
         sb.append('}');
         return sb.toString();
     }

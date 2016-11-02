@@ -5,7 +5,6 @@ import com.perks.emilena.dao.SystemUserDAO;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
 
@@ -26,9 +25,14 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, Syst
     public Optional<SystemUser> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
         SystemUser systemUser =
                 systemUserDAO.findByUserName(basicCredentials.getUsername());
-        if (systemUser == null || StringUtils.isBlank(systemUser.getPassword())) {
+        if (systemUser == null && systemUser.getPassword() == null) {
             return Optional.empty();
         }
-        return Optional.of(systemUser);
+
+        if (systemUser.getPassword().equalsIgnoreCase(basicCredentials.getPassword())) {
+            return Optional.of(systemUser);
+        }
+
+        return Optional.empty();
     }
 }

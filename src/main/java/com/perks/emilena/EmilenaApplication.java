@@ -1,5 +1,6 @@
 package com.perks.emilena;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.perks.emilena.api.Appointment;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
@@ -49,6 +50,8 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
     }
 
     public void run(EmilenaConfiguration emilenaConfiguration, Environment environment) throws Exception {
+
+        environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         // DAOs
         StaffDAO staffDAO = new StaffDAO(scanningHibernate.getSessionFactory());

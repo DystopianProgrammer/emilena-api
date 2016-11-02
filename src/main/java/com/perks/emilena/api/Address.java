@@ -27,7 +27,7 @@ public class Address implements Serializable {
     private String town;
 
     @Column(name = "post_code")
-    private String postCode;
+        private String postCode;
 
     public String getHouseNumber() {
         return houseNumber;

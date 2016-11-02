@@ -29,7 +29,7 @@
       "appointments": [],
       "preferences": null,
       "active": true,
-      "contractType": "CONTRACT",
+      "contractType": "CONTRACTOR",
       "staffType": null,
       "contractedHours": 16
     }

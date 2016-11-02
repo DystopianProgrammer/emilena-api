@@ -8,12 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -31,13 +33,9 @@ public class Appointment implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @ManyToMany
+    @JoinColumn(name = "person_id")
+    private Collection<Person> person;
 
     @Column(name = "appointment_date")
     private LocalDate appointmentDate;
@@ -68,20 +66,12 @@ public class Appointment implements Serializable {
         this.id = id;
     }
 
-    public Staff getStaff() {
-        return staff;
+    public Collection<Person> getPerson() {
+        return person;
     }
 
-    public void setStaff(Staff staff) {
-        this.staff = staff;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public void setPerson(Collection<Person> person) {
+        this.person = person;
     }
 
     public LocalDate getAppointmentDate() {
@@ -150,8 +140,7 @@ public class Appointment implements Serializable {
         }
         Appointment that = (Appointment) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(staff, that.staff) &&
-                Objects.equals(client, that.client) &&
+                Objects.equals(person, that.person) &&
                 Objects.equals(appointmentDate, that.appointmentDate) &&
                 Objects.equals(startTime, that.startTime) &&
                 Objects.equals(endTime, that.endTime) &&
@@ -163,15 +152,14 @@ public class Appointment implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, staff, client, appointmentDate, startTime, endTime, location, notes, complete, invoice);
+        return Objects.hash(id, person, appointmentDate, startTime, endTime, location, notes, complete, invoice);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Appointment{");
         sb.append("id=").append(id);
-        sb.append(", staff=").append(staff);
-        sb.append(", client=").append(client);
+        sb.append(", person=").append(person);
         sb.append(", appointmentDate=").append(appointmentDate);
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);

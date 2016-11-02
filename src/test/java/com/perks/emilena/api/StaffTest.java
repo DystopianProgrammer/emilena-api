@@ -31,7 +31,7 @@ public class StaffTest {
         person.setSurname("Boyle");
         person.setEmail("emily.boyle@live.com");
         person.setTelephoneNumber("07730890337");
-        person.setContractType(ContractType.CONTRACT);
+        person.setContractType(ContractType.CONTRACTOR);
         person.setContractedHours(16);
 
         person.setAddress(address);
@@ -56,7 +56,7 @@ public class StaffTest {
         person.setSurname("Boyle");
         person.setEmail("emily.boyle@live.com");
         person.setTelephoneNumber("07730890337");
-        person.setContractType(ContractType.CONTRACT);
+        person.setContractType(ContractType.CONTRACTOR);
         person.setContractedHours(16);
 
         person.setAddress(address);

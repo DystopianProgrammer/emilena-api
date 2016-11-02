@@ -20,7 +20,10 @@ public class StaffDAO extends AbstractDAO<Staff> {
     }
 
     public Staff findById(Long id) {
-        return get(id);
+        Query query =
+                currentSession().createQuery("select distinct s from Staff s where s.id = :id");
+        query.setParameter("id", id);
+        return (Staff)query.uniqueResult();
     }
 
     public Staff create(Staff staff) {

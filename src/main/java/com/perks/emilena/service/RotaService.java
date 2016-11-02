@@ -186,7 +186,7 @@ public class RotaService {
 
             // With the ability to create manual appointments, this may lead to a conflict.
             // TODO Validation is required that we're not double booking.
-            assignment.setStaff((Staff) match.getPerson());
+            // assignment.setStaff((Staff) match.getPerson());
         }
 
         // post conditions

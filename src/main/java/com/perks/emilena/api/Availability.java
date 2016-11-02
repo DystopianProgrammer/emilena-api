@@ -3,16 +3,16 @@ package com.perks.emilena.api;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -63,13 +63,9 @@ public class Availability implements Serializable {
     /**
      * The person associated to this availability
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinColumn(name = "person_id")
-    private Person person;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
+    private Collection<Person> persons;
 
     public Long getId() {
         return id;
@@ -111,12 +107,12 @@ public class Availability implements Serializable {
         this.numberOfHours = numberOfHours;
     }
 
-    public Person getPerson() {
-        return person;
+    public Collection<Person> getPersons() {
+        return persons;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPerson(Collection<Person> persons) {
+        this.persons = persons;
     }
 
     @Override
@@ -133,12 +129,12 @@ public class Availability implements Serializable {
                 Objects.equals(toTime, that.toTime) &&
                 dayOfWeek == that.dayOfWeek &&
                 Objects.equals(numberOfHours, that.numberOfHours) &&
-                Objects.equals(person, that.person);
+                Objects.equals(persons, that.persons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours, person);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours, persons);
     }
 
     @Override
@@ -149,7 +145,7 @@ public class Availability implements Serializable {
         sb.append(", toTime=").append(toTime);
         sb.append(", dayOfWeek=").append(dayOfWeek);
         sb.append(", numberOfHours=").append(numberOfHours);
-        sb.append(", person=").append(person);
+        sb.append(", person=").append(persons);
         sb.append('}');
         return sb.toString();
     }
