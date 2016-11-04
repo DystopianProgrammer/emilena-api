@@ -1,11 +1,15 @@
 package com.perks.emilena.dao;
 
+import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,10 +30,11 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return (Staff)query.uniqueResult();
     }
 
-    public Staff create(Staff staff) {
-        return persist(staff);
-    }
-
+    /**
+     * Updates the current entity
+     * @param staff
+     * @return
+     */
     public Staff update(Staff staff) {
         return persist(staff);
     }
@@ -44,7 +49,7 @@ public class StaffDAO extends AbstractDAO<Staff> {
     }
 
     public List<Staff> findAll() {
-        return list(namedQuery("com.perks.emilena.Staff.findAll"));
+        return list(currentSession().createQuery("select s from Staff s"));
     }
 
     public List<Staff> findAllActive() {

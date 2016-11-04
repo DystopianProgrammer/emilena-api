@@ -1,14 +1,6 @@
 package com.perks.emilena.api;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -60,21 +52,6 @@ public class Availability implements Serializable {
     @Column(name = "number_of_hours")
     private Long numberOfHours;
 
-    /**
-     * The person associated to this availability
-     */
-    @ManyToMany
-    @JoinColumn(name = "person_id")
-    private Collection<Person> persons;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public LocalTime getFromTime() {
         return fromTime;
     }
@@ -107,34 +84,21 @@ public class Availability implements Serializable {
         this.numberOfHours = numberOfHours;
     }
 
-    public Collection<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPerson(Collection<Person> persons) {
-        this.persons = persons;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Availability that = (Availability) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(fromTime, that.fromTime) &&
                 Objects.equals(toTime, that.toTime) &&
                 dayOfWeek == that.dayOfWeek &&
-                Objects.equals(numberOfHours, that.numberOfHours) &&
-                Objects.equals(persons, that.persons);
+                Objects.equals(numberOfHours, that.numberOfHours);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours, persons);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours);
     }
 
     @Override
@@ -145,7 +109,6 @@ public class Availability implements Serializable {
         sb.append(", toTime=").append(toTime);
         sb.append(", dayOfWeek=").append(dayOfWeek);
         sb.append(", numberOfHours=").append(numberOfHours);
-        sb.append(", person=").append(persons);
         sb.append('}');
         return sb.toString();
     }

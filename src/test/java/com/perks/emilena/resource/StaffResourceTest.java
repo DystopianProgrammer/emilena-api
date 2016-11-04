@@ -51,7 +51,7 @@ public class StaffResourceTest {
         when(dao.findById(any(Long.class))).thenReturn(staff);
         when(dao.findAllActive()).thenReturn(Lists.newArrayList(staff));
         when(dao.clientsByStaffId(any(Long.class))).thenReturn(Lists.newArrayList(client));
-        when(dao.create(any(Staff.class))).thenReturn(staff);
+        when(dao.update(any(Staff.class))).thenReturn(staff);
         when(dao.update(any(Staff.class))).thenReturn(staff);
     }
 

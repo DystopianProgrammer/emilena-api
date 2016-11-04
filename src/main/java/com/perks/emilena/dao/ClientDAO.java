@@ -30,7 +30,7 @@ public class ClientDAO extends AbstractDAO<Client> {
     }
 
     public List<Client> findAll() {
-        return list(namedQuery("com.perks.emilena.Client.findAll"));
+        return list(currentSession().createQuery("select c from Client c"));
     }
 
     public List<Client> findAllActive() {

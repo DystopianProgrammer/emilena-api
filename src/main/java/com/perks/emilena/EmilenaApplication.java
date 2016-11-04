@@ -66,7 +66,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
         AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
         AlertsService alertsService = new AlertsService(appointmentDAO);
-        RotaService rotaService = new RotaService(clientDAO);
+        RotaService rotaService = new RotaService(clientDAO, staffDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));

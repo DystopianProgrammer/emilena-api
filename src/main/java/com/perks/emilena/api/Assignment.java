@@ -30,10 +30,7 @@ public class Assignment implements Serializable {
     private Long id;
 
     @OneToOne
-    private Staff staff;
-
-    @OneToOne
-    private Client client;
+    Person person;
 
     @Column(name = "day_of_week")
     @Enumerated(EnumType.STRING)
@@ -56,20 +53,12 @@ public class Assignment implements Serializable {
         this.id = id;
     }
 
-    public Staff getStaff() {
-        return staff;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setStaff(Staff staff) {
-        this.staff = staff;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public DayOfWeek getDayOfWeek() {
@@ -102,42 +91,5 @@ public class Assignment implements Serializable {
 
     public void setHours(Long hours) {
         this.hours = hours;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Assignment that = (Assignment) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(staff, that.staff) &&
-                Objects.equals(client, that.client) &&
-                dayOfWeek == that.dayOfWeek &&
-                Objects.equals(timeFrom, that.timeFrom) &&
-                Objects.equals(timeTo, that.timeTo) &&
-                Objects.equals(hours, that.hours);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, staff, client, dayOfWeek, timeFrom, timeTo, hours);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Assignment{");
-        sb.append("id=").append(id);
-        sb.append(", staff=").append(staff);
-        sb.append(", client=").append(client);
-        sb.append(", dayOfWeek=").append(dayOfWeek);
-        sb.append(", timeFrom=").append(timeFrom);
-        sb.append(", timeTo=").append(timeTo);
-        sb.append(", hours=").append(hours);
-        sb.append('}');
-        return sb.toString();
     }
 }

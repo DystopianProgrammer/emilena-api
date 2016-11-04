@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -28,7 +29,7 @@ public class Rota implements Serializable {
     private Long id;
 
     @Column(name = "week_commencing")
-    private LocalDateTime weekCommencing;
+    private LocalDate weekCommencing;
 
     @OneToMany(mappedBy = "id")
     private Collection<Assignment> monday;
@@ -59,11 +60,11 @@ public class Rota implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getWeekCommencing() {
+    public LocalDate getWeekCommencing() {
         return weekCommencing;
     }
 
-    public void setWeekCommencing(LocalDateTime weekCommencing) {
+    public void setWeekCommencing(LocalDate weekCommencing) {
         this.weekCommencing = weekCommencing;
     }
 

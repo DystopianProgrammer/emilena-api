@@ -8,6 +8,7 @@ import io.dropwizard.hibernate.UnitOfWork;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -32,5 +33,14 @@ public class AvailabilityResource {
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Availability> findAll() {
         return this.availabilityDAO.findAll();
+    }
+
+    @Path("/{id}")
+    @GET
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public List<Availability> findByPersonId(@PathParam("id") Long id) {
+        return this.availabilityDAO.findByPersonId(id);
     }
 }

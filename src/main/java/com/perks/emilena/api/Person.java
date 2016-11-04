@@ -1,20 +1,6 @@
 package com.perks.emilena.api;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,13 +12,15 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "person")
+@Table(name = "PERSON")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue(value = "P")
 public abstract class Person implements Serializable {
 
-	private static final long serialVersionUID = 1173286545163491540L;
+    private static final long serialVersionUID = 1173286545163491540L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -56,15 +44,10 @@ public abstract class Person implements Serializable {
     @Embedded
     private Address address;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "person_availability",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "availability_id", referencedColumnName = "avail_id")
-    )
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Availability> availabilities;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "person_absence",
             joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),

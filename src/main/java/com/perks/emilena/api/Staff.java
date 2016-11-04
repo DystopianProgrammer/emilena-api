@@ -3,14 +3,7 @@ package com.perks.emilena.api;
 import com.perks.emilena.api.type.ContractType;
 import com.perks.emilena.api.type.StaffType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Geoff Perks
@@ -18,10 +11,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "staff")
-@NamedQueries({
-        @NamedQuery(name = "com.perks.emilena.Staff.findAll",
-                    query = "select s from Staff s")
-})
+@DiscriminatorValue("S")
 public class Staff extends Person {
 
 	private static final long serialVersionUID = -4916650133488161794L;

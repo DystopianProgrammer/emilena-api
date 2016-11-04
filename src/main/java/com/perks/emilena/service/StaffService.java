@@ -30,7 +30,7 @@ public class StaffService implements PersonService<Staff> {
     @Override
     public Staff create(Staff person) {
         person.setActive(true);
-        person = staffDAO.create(person);
+        person = staffDAO.update(person);
         Serializable serializable = generateSystemUser(person);
         logger.info("Created staff {} with linked system user id {}", person.getId(), serializable);
         return person;
@@ -38,7 +38,7 @@ public class StaffService implements PersonService<Staff> {
 
     private Serializable generateSystemUser(Staff person) {
         SystemUser systemUser = new SystemUser();
-        systemUser.setStaff(person);
+        systemUser.setPerson(person);
         systemUser.setUserName(person.getEmail());
         systemUser.setRoleTypes(Lists.newArrayList(RoleType.STAFF));
         systemUser.setPassword("password123");

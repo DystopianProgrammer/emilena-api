@@ -12,8 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -36,7 +38,9 @@ public class RotaResource {
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
-    public Rota rota(@PathParam("date") Date date) {
-        return this.rotaService.rotaForWeek(LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()));
+    public Rota rota(@PathParam("date") String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        return this.rotaService.rotaForWeek(localDate);
     }
 }
