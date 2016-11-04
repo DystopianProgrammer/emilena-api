@@ -18,8 +18,6 @@ import java.util.Objects;
 @DiscriminatorValue(value = "P")
 public abstract class Person implements Serializable {
 
-    private static final long serialVersionUID = 1173286545163491540L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
@@ -47,21 +45,8 @@ public abstract class Person implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Availability> availabilities;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "person_absence",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "absence_id", referencedColumnName = "absence_id")
-    )
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Absence> absences;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "person_absence",
-            joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "appointment_id", referencedColumnName = "appt_id")
-    )
-    private Collection<Appointment> appointments;
 
     @Column(length = 1000)
     private String preferences;
@@ -144,14 +129,6 @@ public abstract class Person implements Serializable {
         this.absences = absences;
     }
 
-    public Collection<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(Collection<Appointment> appointments) {
-        this.appointments = appointments;
-    }
-
     public String getPreferences() {
         return preferences;
     }
@@ -204,7 +181,6 @@ public abstract class Person implements Serializable {
         sb.append(", address=").append(address);
         sb.append(", availabilities=").append(availabilities);
         sb.append(", absences=").append(absences);
-        sb.append(", appointments=").append(appointments);
         sb.append(", preferences='").append(preferences).append('\'');
         sb.append(", active=").append(active);
         sb.append('}');

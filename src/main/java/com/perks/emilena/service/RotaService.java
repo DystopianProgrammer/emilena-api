@@ -37,21 +37,7 @@ public class RotaService {
     }
 
     public Rota rotaForWeek(LocalDate localDate) {
-
-        List<Client> clients = clientDAO.findAll();
-        List<Staff> staff = staffDAO.findAll();
-
-        Rota rota = new Rota();
-        rota.setWeekCommencing(localDate);
-        rota.setMonday(assignments(DayOfWeek.MONDAY, clients, staff));
-        rota.setTuesday(assignments(DayOfWeek.TUESDAY, clients, staff));
-        rota.setWednesday(assignments(DayOfWeek.WEDNESDAY, clients, staff));
-        rota.setThursday(assignments(DayOfWeek.THURSDAY, clients, staff));
-        rota.setFriday(assignments(DayOfWeek.FRIDAY, clients, staff));
-        rota.setSaturday(assignments(DayOfWeek.SATURDAY, clients, staff));
-        rota.setSunday(assignments(DayOfWeek.SUNDAY, clients, staff));
-        
-        return rota;
+        return null;
     }
 
     private Collection<Assignment> assignments(DayOfWeek dayOfWeek, List<Client> clients, List<Staff> staff) {

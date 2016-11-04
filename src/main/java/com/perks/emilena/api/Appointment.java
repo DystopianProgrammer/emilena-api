@@ -26,10 +26,7 @@ import java.util.Objects;
 @Table(name = "appointment")
 public class Appointment implements Serializable {
 
-    private static final long serialVersionUID = -4912233433488161794L;
-
     @Id
-    @Column(name = "appt_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 

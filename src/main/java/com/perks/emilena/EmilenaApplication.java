@@ -1,30 +1,22 @@
 package com.perks.emilena;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.perks.emilena.api.Appointment;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
 import com.perks.emilena.dao.AbsenceDAO;
-import com.perks.emilena.dao.AppointmentDAO;
 import com.perks.emilena.dao.AvailabilityDAO;
 import com.perks.emilena.dao.ClientDAO;
 import com.perks.emilena.dao.StaffDAO;
 import com.perks.emilena.dao.SystemUserDAO;
 import com.perks.emilena.resource.AbsenceResource;
-import com.perks.emilena.resource.AlertsResource;
-import com.perks.emilena.resource.AppointmentResource;
 import com.perks.emilena.resource.AvailabilityResource;
 import com.perks.emilena.resource.ClientResource;
-import com.perks.emilena.resource.InvoiceResource;
 import com.perks.emilena.resource.RotaResource;
 import com.perks.emilena.resource.StaffResource;
 import com.perks.emilena.resource.UserResource;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
-import com.perks.emilena.service.AlertsService;
-import com.perks.emilena.service.AppointmentService;
-import com.perks.emilena.service.AppointmentServiceImpl;
 import com.perks.emilena.service.ClientService;
 import com.perks.emilena.service.RotaService;
 import com.perks.emilena.service.StaffService;
@@ -58,14 +50,11 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         ClientDAO clientDAO = new ClientDAO(scanningHibernate.getSessionFactory());
         AbsenceDAO absenceDAO = new AbsenceDAO(scanningHibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
-        AppointmentDAO appointmentDAO = new AppointmentDAO((scanningHibernate.getSessionFactory()));
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
 
         // Services
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
-        AppointmentService<Appointment> appointmentService = new AppointmentServiceImpl(appointmentDAO);
-        AlertsService alertsService = new AlertsService(appointmentDAO);
         RotaService rotaService = new RotaService(clientDAO, staffDAO);
 
         // Resources
@@ -74,9 +63,6 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new ClientResource(clientService, clientDAO));
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
-        environment.jersey().register(new AppointmentResource(appointmentService));
-        environment.jersey().register(new InvoiceResource(appointmentService));
-        environment.jersey().register(new AlertsResource(alertsService));
         environment.jersey().register(new RotaResource(rotaService));
 
         // Security

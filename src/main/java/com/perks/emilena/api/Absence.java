@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -26,10 +27,7 @@ import java.util.Objects;
 @Table(name = "absence")
 public class Absence implements Serializable {
 
-	private static final long serialVersionUID = -4724788202551456401L;
-
 	@Id
-    @Column(name = "absence_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -37,22 +35,10 @@ public class Absence implements Serializable {
     private AbsenceType absenceType;
 
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column(name = "reason")
     private String reason;
-
-    @ManyToMany
-    @JoinColumn(name = "person_id")
-    private Collection<Person> person;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public AbsenceType getAbsenceType() {
         return absenceType;
@@ -62,11 +48,11 @@ public class Absence implements Serializable {
         this.absenceType = absenceType;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -78,33 +64,20 @@ public class Absence implements Serializable {
         this.reason = reason;
     }
 
-    public Collection<Person> getPerson() {
-        return person;
-    }
-
-    public void setPerson(Collection<Person> person) {
-        this.person = person;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Absence absence = (Absence) o;
         return Objects.equals(id, absence.id) &&
                 absenceType == absence.absenceType &&
                 Objects.equals(date, absence.date) &&
-                Objects.equals(reason, absence.reason) &&
-                Objects.equals(person, absence.person);
+                Objects.equals(reason, absence.reason);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, absenceType, date, reason, person);
+        return Objects.hash(id, absenceType, date, reason);
     }
 
     @Override
@@ -114,7 +87,6 @@ public class Absence implements Serializable {
         sb.append(", absenceType=").append(absenceType);
         sb.append(", date=").append(date);
         sb.append(", reason='").append(reason).append('\'');
-        sb.append(", person=").append(person);
         sb.append('}');
         return sb.toString();
     }

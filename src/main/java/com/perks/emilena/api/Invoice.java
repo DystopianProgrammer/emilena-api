@@ -19,10 +19,7 @@ import java.util.Objects;
 @Table(name = "invoice")
 public class Invoice implements Serializable {
 
-    private static final long serialVersionUID = -4724562202551456401L;
-
     @Id
-    @Column(name = "invoice_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 

@@ -22,10 +22,7 @@ import java.util.Objects;
 @Table(name = "assignment")
 public class Assignment implements Serializable {
 
-    private static final long serialVersionUID = -4916650199922161794L;
-
     @Id
-    @Column(name = "assignment_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

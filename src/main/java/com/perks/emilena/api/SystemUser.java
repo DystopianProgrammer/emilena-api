@@ -32,10 +32,7 @@ import java.util.Objects;
 @Table(name = "system_user")
 public class SystemUser implements Serializable, Principal {
 
-    private static final long serialVersionUID = 1273286745163391540L;
-
     @Id
-    @Column(name = "su_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -51,7 +48,7 @@ public class SystemUser implements Serializable, Principal {
     private Person person;
 
     @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "tbl_roles", joinColumns = @JoinColumn(name = "su_id"))
+    @JoinTable(name = "tbl_roles", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "roles", nullable = false)
     @Enumerated(EnumType.STRING)
     private Collection<RoleType> roleTypes;
