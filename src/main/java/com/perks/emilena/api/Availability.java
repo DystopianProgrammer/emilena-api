@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -17,9 +16,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "availability")
-public class Availability implements Serializable {
+public class Availability {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -35,19 +34,18 @@ public class Availability implements Serializable {
     @Column(name = "to_time", nullable = false)
     private LocalTime toTime;
 
-    /**
-     * A representation for the day - this can be derived from date and time.
-     * This is inferred.
-     */
     @Column(name = "day_of_week")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
-    /**
-     * The number of hours for the given day that can be allocated.
-     */
-    @Column(name = "number_of_hours")
-    private Long numberOfHours;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalTime getFromTime() {
         return fromTime;
@@ -73,14 +71,6 @@ public class Availability implements Serializable {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public Long getNumberOfHours() {
-        return numberOfHours;
-    }
-
-    public void setNumberOfHours(Long numberOfHours) {
-        this.numberOfHours = numberOfHours;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,13 +79,12 @@ public class Availability implements Serializable {
         return Objects.equals(id, that.id) &&
                 Objects.equals(fromTime, that.fromTime) &&
                 Objects.equals(toTime, that.toTime) &&
-                dayOfWeek == that.dayOfWeek &&
-                Objects.equals(numberOfHours, that.numberOfHours);
+                dayOfWeek == that.dayOfWeek;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fromTime, toTime, dayOfWeek, numberOfHours);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek);
     }
 
     @Override
@@ -105,7 +94,6 @@ public class Availability implements Serializable {
         sb.append(", fromTime=").append(fromTime);
         sb.append(", toTime=").append(toTime);
         sb.append(", dayOfWeek=").append(dayOfWeek);
-        sb.append(", numberOfHours=").append(numberOfHours);
         sb.append('}');
         return sb.toString();
     }

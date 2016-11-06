@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(value = "P")
-public abstract class Person implements Serializable {
+public abstract class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,17 +44,16 @@ public abstract class Person implements Serializable {
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<Availability> availabilities;
+    @JoinColumn(name = "person_availability")
+    private List<Availability> availabilities;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<Absence> absences;
+    @JoinColumn(name = "person_absence")
+    private List<Absence> absences;
 
     @Column(length = 1000)
     private String preferences;
 
-    /**
-     * Used to indicate whether the person is active or not - rather than deleting the person.
-     */
     @Column(name = "active")
     private Boolean active;
 
@@ -113,19 +113,19 @@ public abstract class Person implements Serializable {
         this.address = address;
     }
 
-    public Collection<Availability> getAvailabilities() {
+    public List<Availability> getAvailabilities() {
         return availabilities;
     }
 
-    public void setAvailabilities(Collection<Availability> availabilities) {
+    public void setAvailabilities(List<Availability> availabilities) {
         this.availabilities = availabilities;
     }
 
-    public Collection<Absence> getAbsences() {
+    public List<Absence> getAbsences() {
         return absences;
     }
 
-    public void setAbsences(Collection<Absence> absences) {
+    public void setAbsences(List<Absence> absences) {
         this.absences = absences;
     }
 
@@ -147,12 +147,8 @@ public abstract class Person implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
         return Objects.equals(id, person.id) &&
                 Objects.equals(forename, person.forename) &&
@@ -161,12 +157,15 @@ public abstract class Person implements Serializable {
                 Objects.equals(dob, person.dob) &&
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
+                Objects.equals(availabilities, person.availabilities) &&
+                Objects.equals(absences, person.absences) &&
+                Objects.equals(preferences, person.preferences) &&
                 Objects.equals(active, person.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, forename, surname, email, dob, telephoneNumber, address, active);
+        return Objects.hash(id, forename, surname, email, dob, telephoneNumber, address, availabilities, absences, preferences, active);
     }
 
     @Override

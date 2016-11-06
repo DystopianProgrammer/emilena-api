@@ -1,6 +1,5 @@
 package com.perks.emilena.dao;
 
-import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import io.dropwizard.hibernate.AbstractDAO;
@@ -8,8 +7,6 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -57,4 +54,5 @@ public class StaffDAO extends AbstractDAO<Staff> {
         query.setParameter("isActive", true);
         return list(query);
     }
+
 }

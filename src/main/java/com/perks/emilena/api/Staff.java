@@ -10,16 +10,13 @@ import javax.persistence.*;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "staff")
 @DiscriminatorValue("S")
 public class Staff extends Person {
 
-	@Column(name = "contract_type")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
-    @Column(name = "staff_type")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private StaffType staffType;
 
     @Column(name = "contracted_hours")

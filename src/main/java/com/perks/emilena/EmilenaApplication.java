@@ -3,22 +3,12 @@ package com.perks.emilena;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
-import com.perks.emilena.dao.AbsenceDAO;
-import com.perks.emilena.dao.AvailabilityDAO;
-import com.perks.emilena.dao.ClientDAO;
-import com.perks.emilena.dao.StaffDAO;
-import com.perks.emilena.dao.SystemUserDAO;
-import com.perks.emilena.resource.AbsenceResource;
-import com.perks.emilena.resource.AvailabilityResource;
-import com.perks.emilena.resource.ClientResource;
-import com.perks.emilena.resource.RotaResource;
-import com.perks.emilena.resource.StaffResource;
-import com.perks.emilena.resource.UserResource;
+import com.perks.emilena.dao.*;
+import com.perks.emilena.resource.*;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
 import com.perks.emilena.service.ClientService;
-import com.perks.emilena.service.RotaService;
 import com.perks.emilena.service.StaffService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -55,7 +45,6 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         ClientService clientService = new ClientService(clientDAO);
         StaffService staffService = new StaffService(staffDAO, systemUserDAO);
-        RotaService rotaService = new RotaService(clientDAO, staffDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -63,7 +52,6 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new ClientResource(clientService, clientDAO));
         environment.jersey().register(new AbsenceResource(absenceDAO));
         environment.jersey().register(new UserResource());
-        environment.jersey().register(new RotaResource(rotaService));
 
         // Security
         //

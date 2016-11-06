@@ -1,8 +1,6 @@
 package com.perks.emilena.dao;
 
 import com.perks.emilena.api.Availability;
-import com.perks.emilena.api.Person;
-import com.perks.emilena.api.type.PersonType;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;

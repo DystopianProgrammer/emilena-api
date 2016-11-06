@@ -3,20 +3,7 @@ package com.perks.emilena.api;
 import com.perks.emilena.api.type.RoleType;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
@@ -30,7 +17,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "system_user")
-public class SystemUser implements Serializable, Principal {
+public class SystemUser implements Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

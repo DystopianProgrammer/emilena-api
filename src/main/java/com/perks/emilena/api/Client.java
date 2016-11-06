@@ -8,13 +8,10 @@ import java.util.Collection;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "client")
 @DiscriminatorValue("C")
 public class Client extends Person {
 
-	private static final long serialVersionUID = -2585794734130213464L;
-	
-	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Staff.class)
     @JoinTable(name = "clients_staff",
             joinColumns =
             @JoinColumn(name = "client_id", referencedColumnName = "id"),
