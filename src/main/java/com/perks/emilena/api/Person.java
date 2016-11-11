@@ -1,6 +1,9 @@
 package com.perks.emilena.api;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.perks.emilena.utils.PersonDeserializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +16,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonDeserialize(using = PersonDeserializer.class)
 @Entity
 @Table(name = "PERSON")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -167,21 +171,4 @@ public abstract class Person {
         return Objects.hash(id, forename, surname, email, dob, telephoneNumber, address, availabilities, absences, preferences, active);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Person{");
-        sb.append("id=").append(id);
-        sb.append(", forename='").append(forename).append('\'');
-        sb.append(", surname='").append(surname).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", dob=").append(dob);
-        sb.append(", telephoneNumber='").append(telephoneNumber).append('\'');
-        sb.append(", address=").append(address);
-        sb.append(", availabilities=").append(availabilities);
-        sb.append(", absences=").append(absences);
-        sb.append(", preferences='").append(preferences).append('\'');
-        sb.append(", active=").append(active);
-        sb.append('}');
-        return sb.toString();
-    }
 }

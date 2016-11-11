@@ -1,10 +1,6 @@
 package com.perks.emilena.api;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -19,6 +15,7 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "availability")
 public class Availability {
@@ -98,15 +95,4 @@ public class Availability {
         return Objects.hash(id, fromTime, toTime, dayOfWeek, person);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Availability{");
-        sb.append("id=").append(id);
-        sb.append(", fromTime=").append(fromTime);
-        sb.append(", toTime=").append(toTime);
-        sb.append(", dayOfWeek=").append(dayOfWeek);
-        sb.append(", person=").append(person);
-        sb.append('}');
-        return sb.toString();
-    }
 }

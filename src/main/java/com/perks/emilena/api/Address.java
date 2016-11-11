@@ -87,13 +87,4 @@ public class Address {
         return Objects.hash(houseNumber, firstLine, secondLine, town, postCode);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Address{");
-        sb.append("houseNumber='").append(houseNumber).append('\'');
-        sb.append(", town='").append(town).append('\'');
-        sb.append(", postCode='").append(postCode).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
 }

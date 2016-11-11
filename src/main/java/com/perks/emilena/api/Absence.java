@@ -88,15 +88,4 @@ public class Absence {
         return Objects.hash(id, absenceType, date, reason, person);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Absence{");
-        sb.append("id=").append(id);
-        sb.append(", absenceType=").append(absenceType);
-        sb.append(", date=").append(date);
-        sb.append(", reason='").append(reason).append('\'');
-        sb.append(", person=").append(person);
-        sb.append('}');
-        return sb.toString();
-    }
 }

@@ -3,7 +3,6 @@ package com.perks.emilena.dao;
 import com.perks.emilena.api.Availability;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.time.DayOfWeek;

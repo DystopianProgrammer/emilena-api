@@ -107,15 +107,4 @@ public class SystemUser implements Principal {
         return Objects.hash(id, userName, password, person, roleTypes);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("SystemUser{");
-        sb.append("id=").append(id);
-        sb.append(", userName='").append(userName).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", person=").append(person);
-        sb.append(", roleTypes=").append(roleTypes);
-        sb.append('}');
-        return sb.toString();
-    }
 }

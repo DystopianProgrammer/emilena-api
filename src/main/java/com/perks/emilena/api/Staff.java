@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.perks.emilena.api.type.ContractType;
 import com.perks.emilena.api.type.StaffType;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@JsonDeserialize(as = Staff.class)
 @Entity
 @DiscriminatorValue("S")
 public class Staff extends Person {

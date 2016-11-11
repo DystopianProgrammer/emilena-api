@@ -1,5 +1,7 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -7,6 +9,7 @@ import java.util.Collection;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@JsonDeserialize(as = Client.class)
 @Entity
 @DiscriminatorValue("C")
 public class Client extends Person {
