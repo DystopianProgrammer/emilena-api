@@ -1,35 +1,16 @@
 package com.perks.emilena.api;
 
-import java.time.LocalDateTime;
-
 /**
  * Created by 466707 on 05/11/2016.
  */
 public class Grouping {
 
-    LocalDateTime start;
+    private Client client;
 
-    LocalDateTime end;
+    private Staff staff;
 
-    Client client;
+    private Availability clientAvailability;
 
-    Staff staff;
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public void setStart(LocalDateTime start) {
-        this.start = start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
-    }
 
     public Client getClient() {
         return client;
@@ -45,5 +26,13 @@ public class Grouping {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public Availability getClientAvailability() {
+        return clientAvailability;
+    }
+
+    public void setClientAvailability(Availability clientAvailability) {
+        this.clientAvailability = clientAvailability;
     }
 }

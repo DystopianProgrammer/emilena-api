@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import com.perks.emilena.dao.StaffDAO;
-import com.perks.emilena.service.StaffService;
+import com.perks.emilena.service.PersonService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -12,6 +12,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.time.DayOfWeek;
 import java.util.List;
 
 /**
@@ -24,11 +26,11 @@ import java.util.List;
 public class StaffResource {
 
     private final StaffDAO staffDAO;
-    private final StaffService staffService;
+    private final PersonService personService;
 
-    public StaffResource(StaffService staffService, StaffDAO staffDAO) {
-        this.staffService = staffService;
+    public StaffResource(StaffDAO staffDAO, PersonService personService) {
         this.staffDAO = staffDAO;
+        this.personService = personService;
     }
 
     @GET
@@ -46,16 +48,7 @@ public class StaffResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Staff> findAll() {
-        return staffDAO.findAll();
-    }
-
-    @POST
-    @Path("/add")
-    @Timed
-    @UnitOfWork
-    @RolesAllowed(value = {"ADMIN"})
-    public Staff add(@Valid Staff staff) {
-        return staffService.create(staff);
+       return staffDAO.findAll();
     }
 
     @POST
@@ -63,11 +56,12 @@ public class StaffResource {
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
-    public Staff update(@Valid Staff staff) {
-        return staffDAO.update(staff);
+    public Response update(@Valid Staff staff) {
+        personService.update(staff);
+        return Response.ok().build();
     }
 
-    @Path("/staff/clients/{id}")
+    @Path("/clients/{id}")
     @GET
     @Timed
     @UnitOfWork
@@ -76,6 +70,13 @@ public class StaffResource {
         return staffDAO.clientsByStaffId(id.get());
     }
 
+    @Path("/availability/{day}")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Staff> availabilityFromDay(@PathParam("day") String dayOfWeek) {
+        return staffDAO.joinPersonAvailabilityByDayOfWeek(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
+    }
 
     @Path("/active")
     @GET

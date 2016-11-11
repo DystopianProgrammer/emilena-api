@@ -1,7 +1,9 @@
 package com.perks.emilena.service;
 
 import com.perks.emilena.api.Grouping;
-import com.perks.emilena.api.Person;
+import com.perks.emilena.dao.AvailabilityDAO;
+import com.perks.emilena.dao.ClientDAO;
+import com.perks.emilena.dao.StaffDAO;
 
 import java.time.DayOfWeek;
 import java.util.Optional;
@@ -11,20 +13,18 @@ import java.util.Optional;
  */
 public class GroupingService {
 
+    private final StaffDAO staffDAO;
+    private final ClientDAO clientDAO;
+    private final AvailabilityDAO availabilityDAO;
+
+    public GroupingService(StaffDAO staffDAO, ClientDAO clientDAO, AvailabilityDAO availabilityDAO) {
+        this.staffDAO = staffDAO;
+        this.clientDAO = clientDAO;
+        this.availabilityDAO = availabilityDAO;
+    }
 
     public Optional<Grouping> groupByLocalDateTime(DayOfWeek dayOfWeek) {
-
-        // we wanna get all the staff and all the clients for the given day
-        Grouping grouping = null;
-
-
-
-        return Optional.ofNullable(grouping);
+        return null;
     }
 
-
-
-    boolean hasDay(Person person, DayOfWeek dayOfWeek) {
-        return person.getAvailabilities().stream().anyMatch(a -> a.getDayOfWeek().equals(dayOfWeek));
-    }
 }

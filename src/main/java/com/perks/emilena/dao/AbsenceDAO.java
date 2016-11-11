@@ -16,6 +16,10 @@ public class AbsenceDAO extends AbstractDAO<Absence> {
         super(sessionFactory);
     }
 
+    public Absence update(Absence absence) {
+        return persist(absence);
+    }
+
     public List<Absence> findAll() {
         return list(namedQuery("com.perks.emilena.Absence.findAll"));
     }

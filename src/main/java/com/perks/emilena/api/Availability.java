@@ -1,7 +1,12 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -22,15 +27,9 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    /**
-     * The availability time from
-     */
     @Column(name = "from_time", nullable = false)
     private LocalTime fromTime;
 
-    /**
-     * The availability time to
-     */
     @Column(name = "to_time", nullable = false)
     private LocalTime toTime;
 
@@ -38,6 +37,9 @@ public class Availability {
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
     public Long getId() {
         return id;
@@ -71,6 +73,14 @@ public class Availability {
         this.dayOfWeek = dayOfWeek;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,12 +89,13 @@ public class Availability {
         return Objects.equals(id, that.id) &&
                 Objects.equals(fromTime, that.fromTime) &&
                 Objects.equals(toTime, that.toTime) &&
-                dayOfWeek == that.dayOfWeek;
+                dayOfWeek == that.dayOfWeek &&
+                Objects.equals(person, that.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fromTime, toTime, dayOfWeek);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek, person);
     }
 
     @Override
@@ -94,6 +105,7 @@ public class Availability {
         sb.append(", fromTime=").append(fromTime);
         sb.append(", toTime=").append(toTime);
         sb.append(", dayOfWeek=").append(dayOfWeek);
+        sb.append(", person=").append(person);
         sb.append('}');
         return sb.toString();
     }

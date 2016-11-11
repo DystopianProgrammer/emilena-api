@@ -5,8 +5,8 @@ import com.perks.emilena.api.Staff;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 /**
@@ -14,7 +14,6 @@ import java.util.List;
  * Date: 14/07/2016.
  */
 public class StaffDAO extends AbstractDAO<Staff> {
-
 
     public StaffDAO(SessionFactory sessionFactory) {
         super(sessionFactory);
@@ -24,16 +23,7 @@ public class StaffDAO extends AbstractDAO<Staff> {
         Query query =
                 currentSession().createQuery("select distinct s from Staff s where s.id = :id");
         query.setParameter("id", id);
-        return (Staff)query.uniqueResult();
-    }
-
-    /**
-     * Updates the current entity
-     * @param staff
-     * @return
-     */
-    public Staff update(Staff staff) {
-        return persist(staff);
+        return (Staff) query.uniqueResult();
     }
 
     public void delete(Staff staff) {
@@ -55,4 +45,9 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return list(query);
     }
 
+    public List<Staff> joinPersonAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
+        Query query = currentSession().createQuery("select s from Staff s join s.availabilities a where a.dayOfWeek = :dayOfWeek");
+        query.setParameter("dayOfWeek", dayOfWeek);
+        return list(query);
+    }
 }

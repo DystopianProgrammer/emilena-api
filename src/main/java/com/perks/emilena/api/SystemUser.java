@@ -4,7 +4,6 @@ import com.perks.emilena.api.type.RoleType;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Objects;

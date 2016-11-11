@@ -4,17 +4,19 @@ import com.google.common.collect.Lists;
 import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
+import com.perks.emilena.dao.ClientDAO;
+import com.perks.emilena.dao.StaffDAO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
 
 
@@ -25,6 +27,12 @@ import static org.mockito.Mockito.reset;
 public class GroupingServiceTest {
 
     @Mock
+    StaffDAO staffDAO;
+
+    @Mock
+    ClientDAO clientDAO;
+
+    @InjectMocks
     GroupingService groupingService;
 
     @Before
@@ -34,7 +42,7 @@ public class GroupingServiceTest {
 
     @After
     public void tearDown() {
-        reset(groupingService);
+        reset(clientDAO, staffDAO);
     }
 
 
@@ -42,7 +50,6 @@ public class GroupingServiceTest {
     public void shouldGroupClientWithPreferredStaff() {
 
         // given
-
         Availability clientsAvailability = new Availability();
         clientsAvailability.setDayOfWeek(DayOfWeek.MONDAY);
         clientsAvailability.setFromTime(LocalTime.now());
@@ -56,15 +63,7 @@ public class GroupingServiceTest {
         client.setAvailabilities(Lists.newArrayList(clientsAvailability));
         client.setStaff(Lists.newArrayList(staff));
 
-        GroupingService groupingService = new GroupingService ();
-        groupingService.groupByLocalDateTime(DayOfWeek.MONDAY).ifPresent(g -> {
-            assertThat(g).isNotNull();
-        });
-
-
-
-
-
+        groupingService.groupByLocalDateTime(DayOfWeek.MONDAY);
 
     }
 

@@ -3,7 +3,7 @@ package com.perks.emilena.resource;
 import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.dao.ClientDAO;
-import com.perks.emilena.service.ClientService;
+import com.perks.emilena.service.PersonService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -11,6 +11,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.time.DayOfWeek;
 import java.util.List;
 
 /**
@@ -21,12 +23,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientResource {
 
-    private final ClientService clientService;
     private final ClientDAO clientDAO;
+    private final PersonService personService;
 
-    public ClientResource(ClientService clientService, ClientDAO clientDAO) {
-        this.clientService = clientService;
+    public ClientResource(ClientDAO clientDAO, PersonService personService) {
         this.clientDAO = clientDAO;
+        this.personService = personService;
     }
 
     @Path("/all")
@@ -39,21 +41,13 @@ public class ClientResource {
     }
 
     @POST
-    @Path("/add")
-    @Timed
-    @UnitOfWork
-    @RolesAllowed(value = {"ADMIN", "STAFF"})
-    public Client add(@Valid Client client) {
-        return clientService.create(client);
-    }
-
-    @POST
     @Path("/update")
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
-    public Client update(@Valid Client client) {
-        return clientDAO.update(client);
+    public Response update(@Valid Client client) {
+        personService.update(client);
+        return Response.ok().build();
     }
 
     @GET
@@ -72,6 +66,14 @@ public class ClientResource {
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> findAllActive() {
         return clientDAO.findAllActive();
+    }
+
+    @Path("/availability/{day}")
+    @GET
+    @Timed
+    @UnitOfWork
+    public List<Client> availabilityFromDay(@PathParam("day") String dayOfWeek) {
+        return clientDAO.joinPersonAvailabilityByDayOfWeek(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
     }
 }
 

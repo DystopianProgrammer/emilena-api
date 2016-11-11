@@ -1,9 +1,9 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.annotation.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +12,7 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "PERSON")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -43,12 +44,10 @@ public abstract class Person {
     @Embedded
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "person_availability")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Availability> availabilities;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "person_absence")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Absence> absences;
 
     @Column(length = 1000)

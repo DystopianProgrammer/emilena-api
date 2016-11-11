@@ -5,6 +5,7 @@ import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 /**
@@ -21,14 +22,6 @@ public class ClientDAO extends AbstractDAO<Client> {
         return get(id);
     }
 
-    public Client create(Client client) {
-        return persist(client);
-    }
-
-    public Client update(Client client) {
-        return persist(client);
-    }
-
     public List<Client> findAll() {
         return list(currentSession().createQuery("select c from Client c"));
     }
@@ -36,6 +29,12 @@ public class ClientDAO extends AbstractDAO<Client> {
     public List<Client> findAllActive() {
         Query query = currentSession().createQuery("select c from Client c where c.active = :isActive");
         query.setParameter("isActive", true);
+        return list(query);
+    }
+
+    public List<Client> joinPersonAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
+        Query query = currentSession().createQuery("select c from Client c join c.availabilities a where a.dayOfWeek = :dayOfWeek");
+        query.setParameter("dayOfWeek", dayOfWeek);
         return list(query);
     }
 }
