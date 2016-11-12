@@ -31,6 +31,7 @@ public class RotaService {
                     rotaItem.setStaff(appointment.getStaff());
                     return rotaItem;
                 })
+                .filter(rotaItem -> rotaItem.getClient() != null && rotaItem.getStaff() != null)
                 .collect(Collectors.toList());
 
 

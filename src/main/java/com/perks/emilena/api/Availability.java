@@ -34,7 +34,6 @@ public class Availability implements Comparable<Availability> {
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
-    // TODO possibly remove this annotation. It may save us from the PersonDeserializer hack though.
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
@@ -100,7 +99,7 @@ public class Availability implements Comparable<Availability> {
     @Override
     public int compareTo(Availability other) {
 
-        if (this.person.getClass().isInstance(other.getPerson())) {
+        if (this.person == null || this.person.getClass().isInstance(other.getPerson())) {
             return 1;
         }
 

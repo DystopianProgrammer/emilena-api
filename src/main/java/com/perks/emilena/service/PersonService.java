@@ -37,9 +37,8 @@ public class PersonService {
 
         availabilities.forEach(this.availabilityDAO::update);
 
-        // FIXME put this back in
-//        if(person.getAbsences() != null) {
-//            person.getAbsences().forEach(this.absenceDAO::update);
-//        }
+        if(person.getAbsences() != null) {
+            person.getAbsences().forEach(this.absenceDAO::update);
+        }
     }
 }

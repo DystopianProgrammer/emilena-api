@@ -21,6 +21,6 @@ public class AbsenceDAO extends AbstractDAO<Absence> {
     }
 
     public List<Absence> findAll() {
-        return list(namedQuery("com.perks.emilena.Absence.findAll"));
+        return list(currentSession().createQuery("select a from Absence a"));
     }
 }

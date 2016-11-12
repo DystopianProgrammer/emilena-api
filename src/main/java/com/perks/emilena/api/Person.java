@@ -1,10 +1,5 @@
 package com.perks.emilena.api;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.perks.emilena.utils.PersonDeserializer;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -15,8 +10,6 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@JsonDeserialize(using = PersonDeserializer.class)
 @Entity
 @Table(name = "PERSON")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

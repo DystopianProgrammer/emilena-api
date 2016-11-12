@@ -23,7 +23,7 @@ public class AvailabilityDAO extends AbstractDAO<Availability> {
     }
 
     public List<Availability> findAll() {
-        return list(namedQuery("com.perks.emilena.Availability.findAll"));
+        return list(currentSession().createQuery("select a from Availability a"));
     }
 
     public List<Availability> findByPersonId(Long id) {
