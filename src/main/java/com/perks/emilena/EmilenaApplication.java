@@ -8,7 +8,9 @@ import com.perks.emilena.resource.*;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
+import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.PersonService;
+import com.perks.emilena.service.RotaService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -33,7 +35,6 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
     public void run(EmilenaConfiguration emilenaConfiguration, Environment environment) throws Exception {
 
         environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        environment.getObjectMapper().enableDefaultTyping();
 
         // DAOs
         StaffDAO staffDAO = new StaffDAO(scanningHibernate.getSessionFactory());
@@ -44,12 +45,15 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
 
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
+        AppointmentService appointmentService = new AppointmentService(availabilityDAO, absenceDAO);
+        RotaService rotaService = new RotaService(appointmentService);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
         environment.jersey().register(new StaffResource(staffDAO, personService));
         environment.jersey().register(new ClientResource(clientDAO, personService));
         environment.jersey().register(new AbsenceResource(absenceDAO));
+        environment.jersey().register(new RotaResource(rotaService));
         environment.jersey().register(new UserResource());
 
         // Security

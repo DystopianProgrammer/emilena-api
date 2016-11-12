@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -8,17 +9,16 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- *
  * In a Many-to-one relationship (Availability.* - Person.1) The availability represents a single day with the number of hours
  * for that day. A person can have many 'availabilities'
- *
+ * <p>
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "availability")
-public class Availability {
+public class Availability implements Comparable<Availability> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,6 +34,8 @@ public class Availability {
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
+    // TODO possibly remove this annotation. It may save us from the PersonDeserializer hack though.
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
@@ -95,4 +97,27 @@ public class Availability {
         return Objects.hash(id, fromTime, toTime, dayOfWeek, person);
     }
 
+    @Override
+    public int compareTo(Availability other) {
+
+        if (this.person.getClass().isInstance(other.getPerson())) {
+            return 1;
+        }
+
+        if (this.person instanceof Client && this.dayOfWeek.equals(other.dayOfWeek)) {
+            if (this.fromTime.equals(other.getFromTime()) || this.fromTime.isAfter(other.getFromTime()) &&
+                    this.toTime.equals(other.getToTime()) || this.toTime.isBefore(other.getToTime())) {
+                return 0;
+            }
+        }
+
+        if (this.person instanceof Staff && this.dayOfWeek.equals(other.dayOfWeek)) {
+            if (this.fromTime.equals(other.getFromTime()) || this.fromTime.isBefore(other.getFromTime()) &&
+                    this.toTime.equals(other.getToTime()) || this.toTime.isAfter(other.getToTime())) {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
 }
