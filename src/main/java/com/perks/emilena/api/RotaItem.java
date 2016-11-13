@@ -8,7 +8,7 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
-public class RotaItem {
+public class RotaItem implements Comparable<RotaItem> {
 
     private Long id;
     private DayOfWeek dayOfWeek;
@@ -63,6 +63,18 @@ public class RotaItem {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    @Override
+    public int compareTo(RotaItem other) {
+        if(this.getClient().equals(other.getClient()) && this.getDayOfWeek().equals(other.getDayOfWeek())
+                && this.getStart().equals(other.getStart())) {
+            return 0;
+        } else if(this.getStaff().equals(other.getStaff()) && this.getDayOfWeek().equals(other.getDayOfWeek())
+                && this.getStart().equals(other.getStart())) {
+            return 0;
+        }
+        return -1;
     }
 
     @Override

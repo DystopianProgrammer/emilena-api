@@ -92,7 +92,7 @@ public class AppointmentServiceTest {
         List<AppointmentService.Appointment> appointments = appointmentService.appointmentsByDate(LocalDate.now());
 
         assertThat(appointments).isNotNull();
-        assertThat(appointments.size()).isEqualTo(3);
+        assertThat(appointments.size()).isEqualTo(8);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class AppointmentServiceTest {
                 appointmentService.appointmentsByDate(LocalDate.of(2016, 10, 31)); // 31/10/2016 - Monday
 
         assertThat(appointments).isNotNull();
-        assertThat(appointments.size()).isEqualTo(2);
+        assertThat(appointments.size()).isEqualTo(6);
     }
 
     private Availability build(DayOfWeek day, LocalTime from, LocalTime to, Person person) {

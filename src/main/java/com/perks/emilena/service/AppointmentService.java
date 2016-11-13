@@ -33,9 +33,8 @@ public class AppointmentService {
 
 
     /**
-     *
      * TODO - fill in all the points
-     *
+     * <p>
      * The initial sweep, this could be improved with the sorting mechanism
      * perhaps do this with recursion and in parallel chunks - this needs some improvement
      * identify where any client & staff overlaps exist
@@ -76,10 +75,8 @@ public class AppointmentService {
         for (int i = 0; i < appointments.size(); i++) {
             boolean isAbsent = false;
             for (int k = 0; k < absences.size(); k++) {
-                if (absences.get(k).getDate().getDayOfWeek().equals(appointments.get(i).getDay()) &&
-                        isClientOrStaffAbsent(appointments.get(i), absences.get(k))) {
-                    isAbsent = true;
-                }
+                isAbsent = (absences.get(k).getDate().getDayOfWeek().equals(appointments.get(i).getDay()) &&
+                        isClientOrStaffAbsent(appointments.get(i), absences.get(k)));
             }
             if (!isAbsent) {
                 filtered.add(appointments.get(i));
@@ -91,7 +88,7 @@ public class AppointmentService {
     // A simple check to see whether it's client or staff who is absent
     private boolean isClientOrStaffAbsent(AppointmentService.Appointment appointment, Absence absence) {
         Person person = absence.getPerson();
-        if(person instanceof Client) {
+        if (person instanceof Client) {
             return (appointment.getClient().equals(person));
         } else {
             return appointment.getStaff().equals(person);
@@ -128,29 +125,18 @@ public class AppointmentService {
                         AppointmentService.Appointment appointment = new AppointmentService.Appointment((Staff) availability.getPerson(),
                                 (Client) other.getPerson(), other.getDayOfWeek(),
                                 other.getFromTime(), other.getToTime());
-                        if (checkAppointmentNotExist(appointment, appointments)) {
-                            appointments.add(appointment);
-                        }
+                        appointments.add(appointment);
                     } else {
                         AppointmentService.Appointment appointment = new AppointmentService.Appointment((Staff) other.getPerson(),
                                 (Client) availability.getPerson(), availability.getDayOfWeek(),
                                 availability.getFromTime(), availability.getToTime());
-                        if (checkAppointmentNotExist(appointment, appointments)) {
-                            appointments.add(appointment);
-                        }
+                        appointments.add(appointment);
                     }
                 }
             }
         }
 
         return appointments;
-    }
-
-    private boolean checkAppointmentNotExist(AppointmentService.Appointment appointment,
-                                             List<AppointmentService.Appointment> appointments) {
-        // return !appointments.stream().anyMatch(appt -> appt.getClient().equals(appointment.getClient()));
-        // FIXME null pointer on getClient
-        return true;
     }
 
     // any appointment will consist of a client and a staff who have overlapping availability times
