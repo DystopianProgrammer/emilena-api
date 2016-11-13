@@ -1,6 +1,7 @@
 package com.perks.emilena.dao;
 
 import com.perks.emilena.api.Availability;
+import com.perks.emilena.api.Person;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -32,18 +33,12 @@ public class AvailabilityDAO extends AbstractDAO<Availability> {
         return list(query);
     }
 
-    public List<Availability> findByPersonForDay(Long id, DayOfWeek dayOfWeek) {
+    public <T extends Person> List<Availability> findByDay(DayOfWeek dayOfWeek, Class<T> person) {
         Query query = currentSession()
-                .createQuery("select a from Availability a where a.person_availability = :id and a.day_of_week = :day");
-        query.setParameter("person_availability", id);
+                .createQuery("select a from Availability a join a.person p where a.dayOfWeek = :day and type(p) = :person");
         query.setParameter("day", dayOfWeek);
+        query.setParameter("person", person);
         return list(query);
     }
 
-    public List<Availability> findByDay(DayOfWeek dayOfWeek) {
-        Query query = currentSession()
-                .createQuery("select a from Availability a where a.day_of_week = :day");
-        query.setParameter("day", dayOfWeek);
-        return list(query);
-    }
 }

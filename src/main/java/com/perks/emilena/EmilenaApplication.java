@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.EmilenaConfiguration;
 import com.perks.emilena.dao.*;
-import com.perks.emilena.filter.RotaItemFilter;
 import com.perks.emilena.resource.*;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
-import com.perks.emilena.service.AppointmentService;
 import com.perks.emilena.service.PersonService;
+import com.perks.emilena.service.RotaItemService;
 import com.perks.emilena.service.RotaService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -44,13 +43,10 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
 
-        // filters
-        RotaItemFilter rotaItemFilter = new RotaItemFilter();
-
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
-        AppointmentService appointmentService = new AppointmentService(availabilityDAO, absenceDAO);
-        RotaService rotaService = new RotaService(appointmentService, rotaItemFilter);
+        RotaItemService rotaItemService = new RotaItemService(availabilityDAO, absenceDAO);
+        RotaService rotaService = new RotaService(rotaItemService);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));

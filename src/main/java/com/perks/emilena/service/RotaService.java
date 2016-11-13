@@ -2,11 +2,9 @@ package com.perks.emilena.service;
 
 import com.perks.emilena.api.Rota;
 import com.perks.emilena.api.RotaItem;
-import com.perks.emilena.filter.RotaItemFilter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Geoff Perks
@@ -14,35 +12,21 @@ import java.util.stream.Collectors;
  */
 public class RotaService {
 
-    private final AppointmentService appointmentService;
-    private final RotaItemFilter rotaItemFilter;
+    private final RotaItemService rotaItemService;
 
-    public RotaService(AppointmentService appointmentService, RotaItemFilter rotaItemFilter) {
-        this.appointmentService = appointmentService;
-        this.rotaItemFilter = rotaItemFilter;
+    public RotaService(RotaItemService rotaItemService) {
+        this.rotaItemService = rotaItemService;
     }
 
     public Rota create(LocalDate weekStarting) {
 
-        List<RotaItem> rotaItems = this.appointmentService.appointmentsByDate(weekStarting).stream()
-                .map(appointment -> {
-                    RotaItem rotaItem = new RotaItem();
-                    rotaItem.setDayOfWeek(appointment.getDay());
-                    rotaItem.setStart(appointment.getStart());
-                    rotaItem.setFinish(appointment.getFinish());
-                    rotaItem.setClient(appointment.getClient());
-                    rotaItem.setStaff(appointment.getStaff());
-                    return rotaItem;
-                })
-                .filter(rotaItem -> rotaItem.getClient() != null && rotaItem.getStaff() != null)
-                .collect(Collectors.toList());
-
+        List<RotaItem> rotaItems = rotaItemService.rotaItems(weekStarting);
 
         Rota rota = new Rota();
-        rota.setRotaItems(rotaItems);
         rota.setWeekStarting(weekStarting);
+        rota.setRotaItems(rotaItems);
 
-        return rotaItemFilter.removeDuplicates(rota);
+        return rota;
     }
 }
 
