@@ -42,6 +42,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         AbsenceDAO absenceDAO = new AbsenceDAO(scanningHibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
+        PersonDAO personDAO = new PersonDAO((scanningHibernate.getSessionFactory()));
 
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
@@ -50,6 +51,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
+        environment.jersey().register(new PersonResource(personDAO));
         environment.jersey().register(new StaffResource(staffDAO, personService));
         environment.jersey().register(new ClientResource(clientDAO, personService));
         environment.jersey().register(new AbsenceResource(absenceDAO));

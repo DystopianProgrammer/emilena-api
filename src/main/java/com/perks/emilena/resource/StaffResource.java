@@ -34,7 +34,7 @@ public class StaffResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/find/{id}")
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})

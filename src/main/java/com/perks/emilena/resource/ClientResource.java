@@ -51,7 +51,7 @@ public class ClientResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/find/{id}")
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})

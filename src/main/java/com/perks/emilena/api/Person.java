@@ -1,5 +1,7 @@
 package com.perks.emilena.api;
 
+import com.perks.emilena.api.type.PersonType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -20,6 +22,10 @@ public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PersonType personType;
 
     @NotNull
     @Column(name = "forename")
@@ -139,6 +145,14 @@ public abstract class Person {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public PersonType getPersonType() {
+        return personType;
+    }
+
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
     }
 
     @Override

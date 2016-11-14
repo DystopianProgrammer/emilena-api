@@ -9,7 +9,9 @@ import com.perks.emilena.dao.AbsenceDAO;
 import com.perks.emilena.dao.AvailabilityDAO;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.function.BiConsumer;
  * Date: 13/07/2016.
  */
 public class RotaItemService {
-    
+
     private final AvailabilityDAO availabilityDAO;
     private final AbsenceDAO absenceDAO;
 
@@ -43,9 +45,10 @@ public class RotaItemService {
         BiConsumer<DayOfWeek, List<RotaItem>> consumer = (d, l) -> {
             List<Availability> clientAvailabilities = this.availabilityDAO.findByDay(d, Client.class);
             List<Availability> staffAvailabilities = this.availabilityDAO.findByDay(d, Staff.class);
+            List<AllocationTracker> allocationTrackers = new ArrayList<>();
             // then pop a staff off the list, and find whether there's a match using a recursive call
             // WE CAN ONLY ALLOCATE THROUGH STAFF AVAILABILITY - NOT ENOUGH SUPPORT, THEN FTF NEEDS TO SORT THAT OUT!
-            allocateStaff(l, staffAvailabilities, clientAvailabilities, d);
+            allocateStaff(l, staffAvailabilities, clientAvailabilities, allocationTrackers, d);
         };
 
         List<RotaItem> rotaItems = new ArrayList<>();
@@ -64,6 +67,7 @@ public class RotaItemService {
     private void allocateStaff(List<RotaItem> items,
                                List<Availability> staffAvailabilities,
                                List<Availability> clientAvailabilities,
+                               List<AllocationTracker> allocationTrackers,
                                DayOfWeek dayOfWeek) {
 
         Preconditions.checkArgument(items != null, "items cannot be null");
@@ -72,35 +76,61 @@ public class RotaItemService {
 
         // we can't make an allocation in either of these scenarios
         if (clientAvailabilities.isEmpty()) return;
-        if (staffAvailabilities.isEmpty()) return;
 
-        Availability staffAvailability = staffAvailabilities.get(0);
-        Availability clientAvailability = clientAvailabilities.get(0);
+        for (Availability staffAvailability : staffAvailabilities) {
 
-        // check for a match
-        if (clientAvailability.getDayOfWeek().equals(staffAvailability.getDayOfWeek()) &&
-                clientAvailability.getFromTime().equals(staffAvailability.getFromTime()) ||
-                clientAvailability.getFromTime().isAfter(staffAvailability.getFromTime()) &&
-                        clientAvailability.getToTime().equals(staffAvailability.getToTime()) ||
-                clientAvailability.getToTime().isBefore(staffAvailability.getToTime())) {
+            Availability clientAvailability = clientAvailabilities.get(0);
 
-            if (!alreadyAllocated(clientAvailability, items)) {
-                // we have a match
-                RotaItem rotaItem = new RotaItem();
-                rotaItem.setStaff((Staff) staffAvailability.getPerson());
-                rotaItem.setClient((Client) clientAvailability.getPerson());
-                rotaItem.setStart(clientAvailability.getFromTime());
-                rotaItem.setFinish(clientAvailability.getToTime());
-                rotaItem.setDayOfWeek(dayOfWeek);
-                items.add(rotaItem);
+            if (allocationTrackers.stream().anyMatch(a ->
+                    a.isAllocated(clientAvailability, staffAvailability.getPerson().getId()))) {
+                System.out.println("SKIPPING");
+                continue;
+            }
+
+            // check for a match
+            // 1. client & staff day must be the same
+            // 2. client start time must be equal or after staff start time
+            // 3. client finish time must be before or equal to staff finish time
+            if (hasTimeMatch(clientAvailability, staffAvailability)) {
+
+                if (!alreadyAllocated(clientAvailability, items)) {
+                    // we have a match
+                    RotaItem rotaItem = new RotaItem();
+                    rotaItem.setStaff((Staff) staffAvailability.getPerson());
+                    rotaItem.setClient((Client) clientAvailability.getPerson());
+                    rotaItem.setStart(clientAvailability.getFromTime());
+                    rotaItem.setFinish(clientAvailability.getToTime());
+                    rotaItem.setDayOfWeek(dayOfWeek);
+                    items.add(rotaItem);
+
+                    // staff is not booked at this time
+                    allocationTrackers.add(new AllocationTracker(clientAvailability.getFromTime(),
+                            clientAvailability.getToTime(), dayOfWeek, staffAvailability.getPerson().getId()));
+                }
             }
         }
 
         // now remove that availability. It was either allocated, or couldn't find a match.
-        staffAvailabilities.remove(0);
         clientAvailabilities.remove(0);
 
-        allocateStaff(items, staffAvailabilities, clientAvailabilities, dayOfWeek);
+        allocateStaff(items, staffAvailabilities, clientAvailabilities, allocationTrackers, dayOfWeek);
+    }
+
+    // check for a match
+    // 1. client & staff day must be the same
+    // 2. client start time must be equal or after staff start time
+    // 3. client finish time must be before or equal to staff finish time
+    private boolean hasTimeMatch(Availability clientAvailability, Availability staffAvailability) {
+        // initial check
+        if (clientAvailability.getDayOfWeek().equals(staffAvailability.getDayOfWeek())) {
+            if (clientAvailability.getFromTime().equals(staffAvailability.getFromTime()) ||
+                    clientAvailability.getFromTime().isAfter(staffAvailability.getFromTime()) &&
+                            clientAvailability.getToTime().equals(staffAvailability.getToTime()) ||
+                    clientAvailability.getToTime().isBefore(staffAvailability.getToTime())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean alreadyAllocated(Availability client, List<RotaItem> items) {
@@ -108,6 +138,35 @@ public class RotaItemService {
                 Objects.equals(client.getPerson(), item.getClient()) &&
                 Objects.equals(client.getFromTime(), item.getStart()) &&
                 Objects.equals(client.getToTime(), item.getFinish())));
+    }
+
+    /**
+     * Class for tracking staff availability. Created at time of allocating staff
+     */
+    private static final class AllocationTracker {
+
+        private final LocalTime start;
+        private final LocalTime finish;
+        private final DayOfWeek day;
+        private final Long staffId;
+
+        public AllocationTracker(LocalTime start, LocalTime finish, DayOfWeek day, Long staffId) {
+            this.start = start;
+            this.finish = finish;
+            this.day = day;
+            this.staffId = staffId;
+        }
+
+        /**
+         * returns true if staff is allocated at this time, otherwise returns false;
+         *
+         * @param availability - the other availability
+         * @return true if allocated
+         */
+        private boolean isAllocated(Availability availability, Long staffId) {
+            long start = Duration.between(this.start, availability.getFromTime()).getSeconds();
+            return this.staffId.equals(staffId) && start < 3600L && day.equals(availability.getDayOfWeek());
+        }
     }
 
 }
