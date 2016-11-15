@@ -56,7 +56,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new StaffResource(staffDAO, personService));
         environment.jersey().register(new ClientResource(clientDAO, personService));
         environment.jersey().register(new AbsenceResource(absenceDAO));
-        environment.jersey().register(new RotaResource(rotaService));
+        environment.jersey().register(new RotaResource(rotaService, rotaDAO));
         environment.jersey().register(new UserResource());
 
         // Security

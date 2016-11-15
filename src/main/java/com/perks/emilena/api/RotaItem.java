@@ -26,10 +26,10 @@ public class RotaItem {
     @Column(name = "finish_time")
     private LocalTime finish;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Client client;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Staff staff;
 
     public Long getId() {

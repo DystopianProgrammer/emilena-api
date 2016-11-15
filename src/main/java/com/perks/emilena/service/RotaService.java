@@ -31,9 +31,5 @@ public class RotaService {
 
         return rota;
     }
-
-    public void update(Rota rota) {
-        this.rotaDAO.update(rota);
-    }
 }
 

@@ -2,16 +2,18 @@ package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Rota;
+import com.perks.emilena.dao.RotaDAO;
 import com.perks.emilena.service.RotaService;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.jersey.params.LongParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Created by Geoff Perks
@@ -23,9 +25,11 @@ import java.time.format.DateTimeFormatter;
 public class RotaResource {
 
     private final RotaService rotaService;
+    private final RotaDAO rotaDAO;
 
-    public RotaResource(RotaService rotaService) {
+    public RotaResource(RotaService rotaService, RotaDAO rotaDAO) {
         this.rotaService = rotaService;
+        this.rotaDAO = rotaDAO;
     }
 
     @GET
@@ -43,8 +47,25 @@ public class RotaResource {
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
-    public Response update(@Valid Rota rota) {
-        this.rotaService.update(rota);
-        return Response.ok().build();
+    public Rota update(@Valid Rota rota) {
+        return this.rotaDAO.update(rota);
+    }
+
+    @GET
+    @Path("/all")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public List<Rota> rota() {
+        return rotaDAO.fetchAll();
+    }
+
+    @GET
+    @Path("/find/{id}")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public Rota findById(@PathParam("id") LongParam id) {
+        return this.rotaDAO.findById(id.get());
     }
 }
