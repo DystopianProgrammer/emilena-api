@@ -2,6 +2,7 @@ package com.perks.emilena.service;
 
 import com.perks.emilena.api.Rota;
 import com.perks.emilena.api.RotaItem;
+import com.perks.emilena.dao.RotaDAO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 public class RotaService {
 
     private final RotaItemService rotaItemService;
+    private final RotaDAO rotaDAO;
 
-    public RotaService(RotaItemService rotaItemService) {
+    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO) {
         this.rotaItemService = rotaItemService;
+        this.rotaDAO = rotaDAO;
     }
 
     public Rota create(LocalDate weekStarting) {
@@ -27,6 +30,10 @@ public class RotaService {
         rota.setRotaItems(rotaItems);
 
         return rota;
+    }
+
+    public void update(Rota rota) {
+        this.rotaDAO.update(rota);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -8,13 +9,27 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@Entity
+@Table(name = "rota_item")
 public class RotaItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
+
+    @Column(name = "start_time")
     private LocalTime start;
+
+    @Column(name = "finish_time")
     private LocalTime finish;
+
+    @OneToOne
     private Client client;
+
+    @OneToOne
     private Staff staff;
 
     public Long getId() {

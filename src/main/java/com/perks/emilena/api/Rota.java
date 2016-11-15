@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -8,10 +9,20 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
+@Entity
+@Table(name = "rota")
 public class Rota {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(name = "week_commencing")
     private LocalDate weekStarting;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "rota_entry", joinColumns = { @JoinColumn(name = "rota_id") },
+            inverseJoinColumns = { @JoinColumn(name = "rota_item_id") })
     private List<RotaItem> rotaItems;
 
     public Long getId() {

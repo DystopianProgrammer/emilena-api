@@ -42,12 +42,13 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         AbsenceDAO absenceDAO = new AbsenceDAO(scanningHibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
-        PersonDAO personDAO = new PersonDAO((scanningHibernate.getSessionFactory()));
+        PersonDAO personDAO = new PersonDAO(scanningHibernate.getSessionFactory());
+        RotaDAO rotaDAO = new RotaDAO(scanningHibernate.getSessionFactory());
 
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
         RotaItemService rotaItemService = new RotaItemService(availabilityDAO, absenceDAO);
-        RotaService rotaService = new RotaService(rotaItemService);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));

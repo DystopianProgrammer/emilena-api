@@ -6,8 +6,10 @@ import com.perks.emilena.service.RotaService;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -34,5 +36,15 @@ public class RotaResource {
     public Rota rota(@PathParam("date") String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
         return rotaService.create(LocalDate.parse(date, formatter));
+    }
+
+    @POST
+    @Path("/update")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response update(@Valid Rota rota) {
+        this.rotaService.update(rota);
+        return Response.ok().build();
     }
 }
