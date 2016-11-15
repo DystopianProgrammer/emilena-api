@@ -37,4 +37,8 @@ public class ClientDAO extends AbstractDAO<Client> {
         query.setParameter("dayOfWeek", dayOfWeek);
         return list(query);
     }
+
+    public void delete(Client client) {
+        currentSession().delete(client);
+    }
 }

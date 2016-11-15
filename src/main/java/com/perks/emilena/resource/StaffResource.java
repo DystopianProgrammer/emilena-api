@@ -61,6 +61,16 @@ public class StaffResource {
         return Response.ok().build();
     }
 
+    @POST
+    @Path("/delete")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response delete(@Valid Staff staff) {
+        staffDAO.delete(staff);
+        return Response.ok().build();
+    }
+
     @Path("/clients/{id}")
     @GET
     @Timed

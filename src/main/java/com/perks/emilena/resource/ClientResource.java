@@ -50,6 +50,16 @@ public class ClientResource {
         return Response.ok().build();
     }
 
+    @POST
+    @Path("/delete")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response delete(@Valid Client client) {
+        clientDAO.delete(client);
+        return Response.ok().build();
+    }
+
     @GET
     @Path("/find/{id}")
     @Timed

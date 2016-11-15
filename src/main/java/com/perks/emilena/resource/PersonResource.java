@@ -6,11 +6,10 @@ import com.perks.emilena.dao.PersonDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.validation.Valid;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by Geoff Perks
@@ -33,5 +32,15 @@ public class PersonResource {
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Person findById(@PathParam("id") Long id) {
         return this.personDAO.findPersonById(id);
+    }
+
+    @POST
+    @Path("/delete")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response delete(@Valid Person person) {
+        personDAO.delete(person);
+        return Response.ok().build();
     }
 }

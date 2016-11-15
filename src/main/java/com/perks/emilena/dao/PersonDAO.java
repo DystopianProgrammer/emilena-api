@@ -17,4 +17,8 @@ public class PersonDAO extends AbstractDAO<Person> {
     public Person findPersonById(Long id) {
         return get(id);
     }
+
+    public void delete(Person p) {
+        currentSession().delete(p);
+    }
 }
