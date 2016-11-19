@@ -32,6 +32,9 @@ public class RotaItem {
     @OneToOne(fetch = FetchType.EAGER)
     private Staff staff;
 
+    @Column(name = "is_complete")
+    private boolean isComplete;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +81,14 @@ public class RotaItem {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
     }
 
     @Override

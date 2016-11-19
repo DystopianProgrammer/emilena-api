@@ -13,7 +13,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "PERSON")
+@Table(name = "person")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(value = "P")

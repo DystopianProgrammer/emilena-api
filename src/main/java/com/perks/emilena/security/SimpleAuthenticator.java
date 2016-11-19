@@ -25,7 +25,7 @@ public class SimpleAuthenticator implements Authenticator<BasicCredentials, Syst
     public Optional<SystemUser> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
         SystemUser systemUser =
                 systemUserDAO.findByUserName(basicCredentials.getUsername());
-        if (systemUser == null && systemUser.getPassword() == null) {
+        if (systemUser == null || systemUser.getPassword() == null) {
             return Optional.empty();
         }
 
