@@ -5,7 +5,6 @@ import com.perks.emilena.api.Traffic;
 import com.perks.emilena.dao.TrafficDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

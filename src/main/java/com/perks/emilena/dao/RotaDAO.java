@@ -7,7 +7,6 @@ import org.hibernate.SessionFactory;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Geoff Perks
@@ -27,17 +26,10 @@ public class RotaDAO extends AbstractDAO<Rota> {
         return list(currentSession().createQuery("select r from Rota r"));
     }
 
-    public Optional<Rota> findByWeekCommencing(LocalDate weekStarting) {
-        Rota rota = null;
-        try {
-            Query query = currentSession()
-                    .createQuery("select r from Rota r where r.weekStarting = :weekStarting");
-            query.setParameter("weekStarting", weekStarting);
-            rota = (Rota) query.uniqueResult();
-        } catch (Exception e) {
-            // no results, we're ok
-        }
-        return Optional.ofNullable(rota);
+    public List<Rota> findByWeekCommencing(LocalDate weekStarting) {
+        Query query = currentSession().createQuery("select r from Rota r where r.weekStarting = :weekStarting");
+        query.setParameter("weekStarting", weekStarting);
+        return list(query);
     }
 
     public Rota findById(Long id) {

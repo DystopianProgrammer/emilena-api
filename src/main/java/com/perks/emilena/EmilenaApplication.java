@@ -49,7 +49,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
         RotaItemService rotaItemService = new RotaItemService(availabilityDAO, absenceDAO);
-        RotaService rotaService = new RotaService(rotaItemService, rotaDAO);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, personDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));

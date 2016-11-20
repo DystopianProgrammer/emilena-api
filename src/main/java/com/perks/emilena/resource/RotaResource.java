@@ -42,6 +42,15 @@ public class RotaResource {
         return rotaService.create(LocalDate.parse(date, formatter));
     }
 
+    @GET
+    @Path("/unallocated/{id}")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public List<RotaService.Unallocated> unallocated(@PathParam("id") LongParam id) {
+        return rotaService.unallocated(id.get());
+    }
+
     @POST
     @Path("/update")
     @Timed
