@@ -8,9 +8,7 @@ import com.perks.emilena.resource.*;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
-import com.perks.emilena.service.PersonService;
-import com.perks.emilena.service.RotaItemService;
-import com.perks.emilena.service.RotaService;
+import com.perks.emilena.service.*;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -44,12 +42,15 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
         PersonDAO personDAO = new PersonDAO(scanningHibernate.getSessionFactory());
         RotaDAO rotaDAO = new RotaDAO(scanningHibernate.getSessionFactory());
+        RotaItemDAO rotaItemDAO = new RotaItemDAO(scanningHibernate.getSessionFactory());
         TrafficDAO trafficDAO = new TrafficDAO((scanningHibernate.getSessionFactory()));
+        InvoiceDAO invoiceDAO = new InvoiceDAO(scanningHibernate.getSessionFactory());
 
         // Services
         PersonService personService = new PersonService(availabilityDAO, absenceDAO);
         RotaItemService rotaItemService = new RotaItemService(availabilityDAO, absenceDAO);
         RotaService rotaService = new RotaService(rotaItemService, rotaDAO, personDAO);
+        InvoiceService invoiceService = new InvoiceServiceImpl(invoiceDAO, rotaDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -60,6 +61,8 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new RotaResource(rotaService, rotaDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new TrafficResource(trafficDAO));
+        environment.jersey().register(new InvoiceResource(invoiceDAO, invoiceService));
+        environment.jersey().register(new RotaItemResource(rotaItemDAO));
 
         // Security
         //
@@ -98,4 +101,5 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                     return configuration.getDataSourceFactory();
                 }
             };
+
 }

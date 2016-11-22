@@ -37,4 +37,8 @@ public class RotaDAO extends AbstractDAO<Rota> {
         query.setParameter("id", id);
         return (Rota) query.uniqueResult();
     }
+
+    public void delete(Rota rota) {
+        currentSession().delete(rota);
+    }
 }

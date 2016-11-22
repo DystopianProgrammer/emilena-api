@@ -2,6 +2,7 @@ package com.perks.emilena.api;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -20,6 +21,9 @@ public class RotaItem {
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
+    @Column(name = "support_date")
+    private LocalDate supportDate;
+
     @Column(name = "start_time")
     private LocalTime start;
 
@@ -31,9 +35,6 @@ public class RotaItem {
 
     @OneToOne(fetch = FetchType.EAGER)
     private Staff staff;
-
-    @Column(name = "is_complete")
-    private boolean isComplete;
 
     public Long getId() {
         return id;
@@ -49,6 +50,14 @@ public class RotaItem {
 
     public void setDayOfWeek(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
+
+    public LocalDate getSupportDate() {
+        return supportDate;
+    }
+
+    public void setSupportDate(LocalDate supportDate) {
+        this.supportDate = supportDate;
     }
 
     public LocalTime getStart() {
@@ -83,14 +92,6 @@ public class RotaItem {
         this.staff = staff;
     }
 
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean complete) {
-        isComplete = complete;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,6 +99,7 @@ public class RotaItem {
         RotaItem rotaItem = (RotaItem) o;
         return Objects.equals(id, rotaItem.id) &&
                 dayOfWeek == rotaItem.dayOfWeek &&
+                Objects.equals(supportDate, rotaItem.supportDate) &&
                 Objects.equals(start, rotaItem.start) &&
                 Objects.equals(finish, rotaItem.finish) &&
                 Objects.equals(client, rotaItem.client) &&
@@ -106,6 +108,6 @@ public class RotaItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dayOfWeek, start, finish, client, staff);
+        return Objects.hash(id, dayOfWeek, supportDate, start, finish, client, staff);
     }
 }

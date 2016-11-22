@@ -27,6 +27,7 @@ public class PersonService {
         List<Availability> availabilities = person.getAvailabilities().stream()
                 .map(availability -> {
                     Availability a = new Availability();
+                    person.setActive(true);
                     a.setPerson(person);
                     a.setFromTime(availability.getFromTime());
                     a.setToTime(availability.getToTime());

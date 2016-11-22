@@ -54,6 +54,8 @@ public class RotaItemService {
         List<RotaItem> rotaItems = new ArrayList<>();
         Arrays.stream(DayOfWeek.values()).forEach(d -> consumer.accept(d, rotaItems));
 
+        addSupportDate(rotaItems, date);
+
         return rotaItems;
     }
 
@@ -83,7 +85,6 @@ public class RotaItemService {
 
             if (allocationTrackers.stream().anyMatch(a ->
                     a.isAllocated(clientAvailability, staffAvailability.getPerson().getId()))) {
-                System.out.println("SKIPPING");
                 continue;
             }
 
@@ -138,6 +139,21 @@ public class RotaItemService {
                 Objects.equals(client.getPerson(), item.getClient()) &&
                 Objects.equals(client.getFromTime(), item.getStart()) &&
                 Objects.equals(client.getToTime(), item.getFinish())));
+    }
+
+    private void addSupportDate(List<RotaItem> items, LocalDate rotaForDate) {
+        items.forEach(item -> {
+            switch(item.getDayOfWeek()) {
+                case MONDAY: item.setSupportDate(LocalDate.from(rotaForDate)); break;
+                case TUESDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(1)); break;
+                case WEDNESDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(2)); break;
+                case THURSDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(3)); break;
+                case FRIDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(4)); break;
+                case SATURDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(5)); break;
+                case SUNDAY: item.setSupportDate(LocalDate.from(rotaForDate).plusDays(6)); break;
+                default: throw new RuntimeException("A date is required for a rota item");
+            }
+        });
     }
 
     /**

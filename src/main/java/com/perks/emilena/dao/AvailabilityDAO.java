@@ -33,6 +33,10 @@ public class AvailabilityDAO extends AbstractDAO<Availability> {
         return list(query);
     }
 
+    public void delete(Availability availability) {
+        currentSession().delete(availability);
+    }
+
     public <T extends Person> List<Availability> findByDay(DayOfWeek dayOfWeek, Class<T> person) {
         Query query = currentSession()
                 .createQuery("select a from Availability a join a.person p where a.dayOfWeek = :day and type(p) = :person");
