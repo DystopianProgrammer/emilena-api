@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static java.time.temporal.TemporalAdjusters.next;
-
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
@@ -43,9 +41,8 @@ public class RotaService {
     public Rota create(LocalDate weekStarting) {
 
         List<RotaItem> rotaItems = rotaItemService.rotaItems(weekStarting);
-
         Rota rota = new Rota();
-        rota.setWeekStarting(weekStarting.with(next(DayOfWeek.MONDAY)));
+        rota.setWeekStarting(weekStarting);
         rota.setRotaItems(rotaItems);
 
         return rota;
@@ -82,7 +79,6 @@ public class RotaService {
         }
 
         Availability availability = availabilities.get(0);
-
 
         boolean present = rotaItems.stream()
                 .filter(rotaItem -> rotaItem.getDayOfWeek().equals(dayOfWeek))

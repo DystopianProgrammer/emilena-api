@@ -11,9 +11,13 @@ import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static java.time.temporal.TemporalAdjusters.next;
 
 /**
  * Created by Geoff Perks
@@ -37,9 +41,18 @@ public class RotaResource {
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
-    public Rota rota(@PathParam("date") String date) {
+    public Response rota(@PathParam("date") String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
-        return rotaService.create(LocalDate.parse(date, formatter));
+        LocalDate requestedDate = LocalDate.parse(date, formatter);
+
+        // first check that we haven't got a generated rota for this week.
+        LocalDate weekCommencing = requestedDate.with(next(DayOfWeek.MONDAY));
+        List<Rota> commencing = rotaDAO.findByWeekCommencing(weekCommencing);
+
+        if(commencing.isEmpty()) {
+            return Response.ok(rotaService.create(weekCommencing)).build();
+        }
+        return Response.status(Response.Status.CONFLICT).build();
     }
 
     @GET
@@ -58,6 +71,16 @@ public class RotaResource {
     @RolesAllowed(value = {"ADMIN"})
     public Rota update(@Valid Rota rota) {
         return this.rotaDAO.update(rota);
+    }
+
+    @POST
+    @Path("/delete")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response delete(@Valid Rota rota) {
+        this.rotaDAO.delete(rota);
+        return Response.accepted().build();
     }
 
     @GET
