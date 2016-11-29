@@ -11,7 +11,7 @@ database:
     hibernate.generate_statistics: true
     hibernate.show_sql: true
     hibernate.format_sql: true
-    #hibernate.hbm2ddl.auto: create
+    # hibernate.hbm2ddl.auto: create
 
   maxWaitForConnection: 1s
   validationQuery: "/* MyApplication Health Check */ SELECT 1"
@@ -38,3 +38,16 @@ logging:
       target: stdout
 
 authenticationCachePolicy: maximumSize=10000, expireAfterAccess=10m
+
+applicationConfiguration:
+  postCodeServiceUrl: https://api.getAddress.io
+  apiKey: dGbZcT7WWkO_nexga6c0bA6513
+  googleMapsDistanceMatrixApiUrl: https://maps.googleapis.com
+  googleMapsDistanceMatrixApiKey: AIzaSyAW05lFGQ9dq7-syLtIMfslSRCkSSQ0B4A
+  maxDistanceRadius: 20
+  minDistanceRadius: 0
+  theme: default
+  organisation: The Frances Taylor Foundation
+  # possible values = CLIENT, STAFF, RANDOM
+  defaultAddress: CLIENT
+

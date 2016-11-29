@@ -14,11 +14,14 @@ import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+
+import javax.ws.rs.client.Client;
 
 /**
  * Created by Geoff Perks
@@ -30,39 +33,45 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         new EmilenaApplication().run(args);
     }
 
+    @Override
     public void run(EmilenaConfiguration emilenaConfiguration, Environment environment) throws Exception {
 
         environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+        // Jersey client
+        final Client client = new JerseyClientBuilder(environment)
+                .using(emilenaConfiguration.getJerseyClientConfiguration())
+                .build(getName());
+
         // DAOs
         StaffDAO staffDAO = new StaffDAO(scanningHibernate.getSessionFactory());
         ClientDAO clientDAO = new ClientDAO(scanningHibernate.getSessionFactory());
-        AbsenceDAO absenceDAO = new AbsenceDAO(scanningHibernate.getSessionFactory());
         AvailabilityDAO availabilityDAO = new AvailabilityDAO(scanningHibernate.getSessionFactory());
         SystemUserDAO systemUserDAO = new SystemUserDAO(scanningHibernate.getSessionFactory());
-        PersonDAO personDAO = new PersonDAO(scanningHibernate.getSessionFactory());
         RotaDAO rotaDAO = new RotaDAO(scanningHibernate.getSessionFactory());
         RotaItemDAO rotaItemDAO = new RotaItemDAO(scanningHibernate.getSessionFactory());
         TrafficDAO trafficDAO = new TrafficDAO((scanningHibernate.getSessionFactory()));
         InvoiceDAO invoiceDAO = new InvoiceDAO(scanningHibernate.getSessionFactory());
 
         // Services
-        PersonService personService = new PersonService(availabilityDAO, absenceDAO);
-        RotaItemService rotaItemService = new RotaItemService(availabilityDAO, absenceDAO);
-        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, personDAO);
-        InvoiceService invoiceService = new InvoiceServiceImpl(invoiceDAO, rotaDAO);
+        LocationService locationService = new LocationService(client, emilenaConfiguration.getApplicationConfiguration());
+        AppointmentService appointmentService =
+                new AppointmentService(emilenaConfiguration.getApplicationConfiguration(), locationService);
+        RotaItemService rotaItemService = new RotaItemService(staffDAO, clientDAO, appointmentService);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO);
+        InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
-        environment.jersey().register(new PersonResource(personDAO));
-        environment.jersey().register(new StaffResource(staffDAO, personService));
-        environment.jersey().register(new ClientResource(clientDAO, personService));
-        environment.jersey().register(new AbsenceResource(absenceDAO));
+        environment.jersey().register(new StaffResource(staffDAO));
+        environment.jersey().register(new ClientResource(clientDAO));
         environment.jersey().register(new RotaResource(rotaService, rotaDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new TrafficResource(trafficDAO));
         environment.jersey().register(new InvoiceResource(invoiceDAO, invoiceService));
         environment.jersey().register(new RotaItemResource(rotaItemDAO));
+        environment.jersey().register(new ConfigurationResource(emilenaConfiguration.getApplicationConfiguration()));
+        environment.jersey().register(new ExternalServiceResource(client, emilenaConfiguration.getApplicationConfiguration()));
 
         // Security
         //

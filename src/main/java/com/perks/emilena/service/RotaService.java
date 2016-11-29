@@ -1,19 +1,15 @@
 package com.perks.emilena.service;
 
-import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Person;
 import com.perks.emilena.api.Rota;
-import com.perks.emilena.api.RotaItem;
-import com.perks.emilena.dao.PersonDAO;
 import com.perks.emilena.dao.RotaDAO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -21,99 +17,46 @@ import java.util.stream.Collectors;
  */
 public class RotaService {
 
+    private static final int MAX_WEEKS = 24;
+
     private final RotaItemService rotaItemService;
     private final RotaDAO rotaDAO;
-    private final PersonDAO personDAO;
 
-    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO, PersonDAO personDAO) {
+    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO) {
         this.rotaItemService = rotaItemService;
         this.rotaDAO = rotaDAO;
-        this.personDAO = personDAO;
     }
 
-    /**
-     * Simple calls on the DAO to create a new Rota. The service commits the week starting date to the first
-     * Monday from the date specified in the method.
-     *
-     * @param weekStarting - the date the request was made, the first Monday from this date is determined.
-     * @return the generated rota based on availability
-     */
-    public Rota create(LocalDate weekStarting) {
-
-        List<RotaItem> rotaItems = rotaItemService.rotaItems(weekStarting);
+    public Rota create(LocalDate weekCommencing) {
         Rota rota = new Rota();
-        rota.setWeekStarting(weekStarting);
-        rota.setRotaItems(rotaItems);
-
+        rota.setWeekStarting(weekCommencing);
+        rota.setRotaItems(rotaItemService.rotaItems(weekCommencing));
         return rota;
     }
 
-    /**
-     * Finds all people who have specified availabilities but no association for an appointment.
-     *
-     * @param id of the rota
-     * @return
-     */
-    public List<Unallocated> unallocated(Long id) {
-
-        List<Unallocated> unallocatedItems = new ArrayList<>();
-        List<Availability> availabilities = personDAO.listActive().stream()
-                .map(Person::getAvailabilities)
-                .flatMap(a -> a.stream())
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<RotaItem> rotaItems = rotaDAO.findById(id).getRotaItems();
-        Consumer<DayOfWeek> dayOfWeekConsumer = (day -> compare(availabilities, rotaItems, day, unallocatedItems));
-        Arrays.stream(DayOfWeek.values()).forEach(dayOfWeekConsumer);
-
-        return unallocatedItems;
+    public List<LocalDate> weeks() {
+        LocalDate current = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        List<LocalDate> dates = new ArrayList<>();
+        dates.add(current);
+        return addWeeks(current, dates);
     }
 
-    private void compare(List<Availability> availabilities,
-                         List<RotaItem> rotaItems,
-                         DayOfWeek dayOfWeek, List<Unallocated> unallocatedItems) {
+    private List<LocalDate> addWeeks(LocalDate date, List<LocalDate> dates) {
 
-        if (availabilities.size() == 0) {
-            return;
-        }
+        Objects.requireNonNull(date, "date must not be null");
+        Objects.requireNonNull(dates, "dates must not be null");
 
-        Availability availability = availabilities.get(0);
+        if(dates.size() == MAX_WEEKS) { return dates; }
 
-        boolean present = rotaItems.stream()
-                .filter(rotaItem -> rotaItem.getDayOfWeek().equals(dayOfWeek))
-                .filter(rotaIem -> rotaIem.getClient().equals(availability.getPerson())
-                        || rotaIem.getStaff().equals(availability.getPerson()))
-                .findAny()
-                .isPresent();
+        LocalDate next = LocalDate.from(date).with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        dates.add(next);
 
-        if (!present) {
-            unallocatedItems.add(new Unallocated(availability.getPerson(), availability.getDayOfWeek()));
-        }
-
-        availabilities.remove(0);
-
-        compare(availabilities, rotaItems, dayOfWeek, unallocatedItems);
+        return addWeeks(next, dates);
     }
 
-
-    public static final class Unallocated {
-
-        private final Person person;
-        private final DayOfWeek day;
-
-        public Unallocated(Person person, DayOfWeek day) {
-            this.person = person;
-            this.day = day;
-        }
-
-        public Person getPerson() {
-            return person;
-        }
-
-        public DayOfWeek getDay() {
-            return day;
-        }
+    List<Person> unallocated(Long id) {
+        List<Person> people = new ArrayList<>();
+        return people;
     }
 }
 

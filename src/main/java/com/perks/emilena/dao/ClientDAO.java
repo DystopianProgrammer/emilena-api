@@ -1,5 +1,6 @@
 package com.perks.emilena.dao;
 
+import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Query;
@@ -18,6 +19,10 @@ public class ClientDAO extends AbstractDAO<Client> {
         super(sessionFactory);
     }
 
+    public void create(Client client) {
+        persist(client);
+    }
+
     public Client findById(Long id) {
         return get(id);
     }
@@ -33,9 +38,18 @@ public class ClientDAO extends AbstractDAO<Client> {
     }
 
     public List<Client> joinPersonAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
-        Query query = currentSession().createQuery("select c from Client c join c.availabilities a where a.dayOfWeek = :dayOfWeek");
+        Query query = currentSession().createQuery(
+                "select c from Client c join c.availabilities a where a.dayOfWeek = :dayOfWeek");
         query.setParameter("dayOfWeek", dayOfWeek);
         return list(query);
+    }
+
+    public Client findActiveByAvailability(Availability availability) {
+        Query query =
+                currentSession().createQuery(
+                        "select c from Client c join c.availabilities a where a = :availability and c.active = true");
+        query.setParameter("availability", availability);
+        return uniqueResult(query);
     }
 
     public void delete(Client client) {

@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import com.perks.emilena.dao.StaffDAO;
-import com.perks.emilena.service.PersonService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -26,11 +25,9 @@ import java.util.List;
 public class StaffResource {
 
     private final StaffDAO staffDAO;
-    private final PersonService personService;
 
-    public StaffResource(StaffDAO staffDAO, PersonService personService) {
+    public StaffResource(StaffDAO staffDAO) {
         this.staffDAO = staffDAO;
-        this.personService = personService;
     }
 
     @GET
@@ -51,13 +48,24 @@ public class StaffResource {
        return staffDAO.findAll();
     }
 
+
+    @POST
+    @Path("/create")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN"})
+    public Response create(@Valid Staff staff) {
+        staffDAO.create(staff);
+        return Response.ok().build();
+    }
+
     @POST
     @Path("/update")
     @Timed
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response update(@Valid Staff staff) {
-        personService.update(staff);
+        staffDAO.create(staff);
         return Response.ok().build();
     }
 

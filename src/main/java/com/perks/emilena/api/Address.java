@@ -1,18 +1,19 @@
 package com.perks.emilena.api;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
-@Embeddable
+@Entity
+@Table(name = "address")
 public class Address {
 
-	@Column(name = "house_number")
-    private String houseNumber;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "first_line")
     private String firstLine;
@@ -24,15 +25,11 @@ public class Address {
     private String town;
 
     @Column(name = "post_code")
-        private String postCode;
+    private String postCode;
 
-    public String getHouseNumber() {
-        return houseNumber;
-    }
-
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
-    }
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     public String getFirstLine() {
         return firstLine;
@@ -66,25 +63,37 @@ public class Address {
         this.postCode = postCode;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(houseNumber, address.houseNumber) &&
+        return Objects.equals(id, address.id) &&
                 Objects.equals(firstLine, address.firstLine) &&
                 Objects.equals(secondLine, address.secondLine) &&
                 Objects.equals(town, address.town) &&
-                Objects.equals(postCode, address.postCode);
+                Objects.equals(postCode, address.postCode) &&
+                Objects.equals(location, address.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(houseNumber, firstLine, secondLine, town, postCode);
+        return Objects.hash(id, firstLine, secondLine, town, postCode, location);
     }
-
 }

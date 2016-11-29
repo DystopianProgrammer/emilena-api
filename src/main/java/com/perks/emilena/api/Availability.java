@@ -1,8 +1,5 @@
 package com.perks.emilena.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -15,10 +12,9 @@ import java.util.Objects;
  * Created by Geoff Perks
  * Date: 13/07/2016.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "availability")
-public class Availability implements Comparable<Availability> {
+public class Availability {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,11 +29,6 @@ public class Availability implements Comparable<Availability> {
     @Column(name = "day_of_week")
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
-
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
-    private Person person;
 
     public Long getId() {
         return id;
@@ -71,13 +62,6 @@ public class Availability implements Comparable<Availability> {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -87,36 +71,12 @@ public class Availability implements Comparable<Availability> {
         return Objects.equals(id, that.id) &&
                 Objects.equals(fromTime, that.fromTime) &&
                 Objects.equals(toTime, that.toTime) &&
-                dayOfWeek == that.dayOfWeek &&
-                Objects.equals(person, that.person);
+                dayOfWeek == that.dayOfWeek;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fromTime, toTime, dayOfWeek, person);
+        return Objects.hash(id, fromTime, toTime, dayOfWeek);
     }
 
-    @Override
-    public int compareTo(Availability other) {
-
-        if (this.person == null || this.person.getClass().isInstance(other.getPerson())) {
-            return 1;
-        }
-
-        if (this.person instanceof Client && this.dayOfWeek.equals(other.dayOfWeek)) {
-            if (this.fromTime.equals(other.getFromTime()) || this.fromTime.isAfter(other.getFromTime()) &&
-                    this.toTime.equals(other.getToTime()) || this.toTime.isBefore(other.getToTime())) {
-                return 0;
-            }
-        }
-
-        if (this.person instanceof Staff && this.dayOfWeek.equals(other.dayOfWeek)) {
-            if (this.fromTime.equals(other.getFromTime()) || this.fromTime.isBefore(other.getFromTime()) &&
-                    this.toTime.equals(other.getToTime()) || this.toTime.isAfter(other.getToTime())) {
-                return 0;
-            }
-        }
-
-        return 1;
-    }
 }

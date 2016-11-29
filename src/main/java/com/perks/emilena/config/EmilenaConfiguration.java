@@ -3,6 +3,7 @@ package com.perks.emilena.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.cache.CacheBuilderSpec;
 import io.dropwizard.Configuration;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 
 import javax.validation.Valid;
@@ -22,6 +23,16 @@ public class EmilenaConfiguration extends Configuration {
     @Valid
     @NotNull
     @JsonProperty
+    private JerseyClientConfiguration jerseyClient = new JerseyClientConfiguration();
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+
+    @Valid
+    @NotNull
+    @JsonProperty
     private CacheBuilderSpec authenticationCachePolicy;
 
     public DataSourceFactory getDataSourceFactory() {
@@ -30,5 +41,13 @@ public class EmilenaConfiguration extends Configuration {
 
     public CacheBuilderSpec getAuthenticationCachePolicy() {
         return authenticationCachePolicy;
+    }
+
+    public JerseyClientConfiguration getJerseyClientConfiguration() {
+        return jerseyClient;
+    }
+
+    public ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
     }
 }

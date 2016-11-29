@@ -13,7 +13,7 @@ import java.util.Objects;
  * Date: 13/07/2016.
  */
 @Entity
-@Table(name = "person")
+@Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "surname", "telephone_number" }))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(value = "P")
@@ -35,7 +35,7 @@ public abstract class Person {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "date_of_birth")
@@ -44,14 +44,13 @@ public abstract class Person {
     @Column(name = "telephone_number")
     private String telephoneNumber;
 
-    @Embedded
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
     private Address address;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="person_id")
     private List<Availability> availabilities;
-
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<Absence> absences;
 
     @Column(length = 1000)
     private String preferences;
@@ -123,14 +122,6 @@ public abstract class Person {
         this.availabilities = availabilities;
     }
 
-    public List<Absence> getAbsences() {
-        return absences;
-    }
-
-    public void setAbsences(List<Absence> absences) {
-        this.absences = absences;
-    }
-
     public String getPreferences() {
         return preferences;
     }
@@ -161,6 +152,7 @@ public abstract class Person {
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
         return Objects.equals(id, person.id) &&
+                personType == person.personType &&
                 Objects.equals(forename, person.forename) &&
                 Objects.equals(surname, person.surname) &&
                 Objects.equals(email, person.email) &&
@@ -168,14 +160,12 @@ public abstract class Person {
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
                 Objects.equals(availabilities, person.availabilities) &&
-                Objects.equals(absences, person.absences) &&
                 Objects.equals(preferences, person.preferences) &&
                 Objects.equals(active, person.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, forename, surname, email, dob, telephoneNumber, address, availabilities, absences, preferences, active);
+        return Objects.hash(id, personType, forename, surname, email, dob, telephoneNumber, address, availabilities, preferences, active);
     }
-
 }
