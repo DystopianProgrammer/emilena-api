@@ -58,7 +58,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         AppointmentService appointmentService =
                 new AppointmentService(emilenaConfiguration.getApplicationConfiguration(), locationService);
         RotaItemService rotaItemService = new RotaItemService(staffDAO, clientDAO, appointmentService);
-        RotaService rotaService = new RotaService(rotaItemService, rotaDAO);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffDAO, clientDAO);
         InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO);
 
         // Resources
