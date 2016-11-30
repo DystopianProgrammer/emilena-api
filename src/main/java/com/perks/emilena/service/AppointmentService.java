@@ -47,7 +47,7 @@ public class AppointmentService {
      * @return the remaining available time
      */
     public Long timeRemainingForDay(long current, long next, long total) {
-        return null;
+        return (total - current) + next;
     }
 
     /**
