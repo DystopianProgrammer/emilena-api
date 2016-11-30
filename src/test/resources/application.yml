@@ -37,6 +37,11 @@ logging:
       timeZone: UTC
       target: stdout
 
+jerseyClient:
+  timeout: 5s
+  connectionTimeout: 5s
+  connectionRequestTimeout: 5s
+
 authenticationCachePolicy: maximumSize=10000, expireAfterAccess=10m
 
 applicationConfiguration:
