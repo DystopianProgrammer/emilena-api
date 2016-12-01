@@ -44,13 +44,9 @@ public class RotaResource {
     public Response rota(@PathParam("date") String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
         LocalDate requestedDate = LocalDate.parse(date, formatter);
-
-        // first check that we haven't got a generated rota for this week.
-        LocalDate weekCommencing = requestedDate.with(next(DayOfWeek.MONDAY));
-        List<Rota> commencing = rotaDAO.findByWeekCommencing(weekCommencing);
-
+        List<Rota> commencing = rotaDAO.findByWeekCommencing(requestedDate);
         if(commencing.isEmpty()) {
-            return Response.ok(rotaService.create(weekCommencing)).build();
+            return Response.ok(rotaService.create(requestedDate)).build();
         }
         return Response.status(Response.Status.CONFLICT).build();
     }
@@ -99,5 +95,14 @@ public class RotaResource {
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Rota findById(@PathParam("id") LongParam id) {
         return this.rotaDAO.findById(id.get());
+    }
+
+    @GET
+    @Path("/weeks")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public Response weeks() {
+        return Response.ok(this.rotaService.weeks()).build();
     }
 }
