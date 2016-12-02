@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by Geoff Perks
@@ -55,6 +56,11 @@ public class ApplicationConfiguration {
     @NotNull
     @JsonProperty
     private String organisation;
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private BigDecimal defaultHourlyRate;
 
     public String getPostCodeServiceUrl() {
         return postCodeServiceUrl;
@@ -126,5 +132,13 @@ public class ApplicationConfiguration {
 
     public void setOrganisation(String organisation) {
         this.organisation = organisation;
+    }
+
+    public BigDecimal getDefaultHourlyRate() {
+        return defaultHourlyRate;
+    }
+
+    public void setDefaultHourlyRate(BigDecimal defaultHourlyRate) {
+        this.defaultHourlyRate = defaultHourlyRate;
     }
 }

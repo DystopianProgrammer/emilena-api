@@ -1,9 +1,7 @@
 package com.perks.emilena.service;
 
 import com.perks.emilena.api.*;
-import com.perks.emilena.dao.ClientDAO;
 import com.perks.emilena.dao.RotaDAO;
-import com.perks.emilena.dao.StaffDAO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

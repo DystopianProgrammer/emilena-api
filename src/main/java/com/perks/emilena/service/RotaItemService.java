@@ -8,10 +8,11 @@ import com.perks.emilena.value.Appointment;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 /**
  * Created by Geoff Perks
@@ -35,14 +36,19 @@ public class RotaItemService {
         List<Client> clients = this.clientService.listAllActiveClients();
         List<RotaItem> rotaItems = new ArrayList<>();
 
-        Consumer<DayOfWeek> dayOfWeekConsumer = (dayOfWeek) -> transform(staff, clients, dayOfWeek, rotaItems);
+        Consumer<DayOfWeek> dayOfWeekConsumer = (dayOfWeek) -> transform(staff, clients, dayOfWeek, weekCommencing, rotaItems);
 
-        Arrays.stream(DayOfWeek.values()).forEach(dayOfWeekConsumer);
+        stream(DayOfWeek.values()).forEach(dayOfWeekConsumer);
 
         return rotaItems;
     }
 
-    private void transform(List<Staff> staff, List<Client> clients, DayOfWeek dayOfWeek, List<RotaItem> rotaItems) {
+    private void transform(List<Staff> staff,
+                           List<Client> clients,
+                           DayOfWeek dayOfWeek,
+                           LocalDate weekCommencing,
+                           List<RotaItem> rotaItems) {
+        LocalDate forDate = weekCommencing.plusDays(dayOfWeek.getValue());
         List<Appointment> appointments =
                 appointmentService.pairByConfigurableLocationRadius(staff, clients, dayOfWeek);
         List<RotaItem> items = appointments.stream()
@@ -51,6 +57,7 @@ public class RotaItemService {
                     item.setStaff(a.getStaff());
                     item.setClient(a.getClient());
                     item.setDayOfWeek(dayOfWeek);
+                    item.setSupportDate(forDate);
                     item.setStart(a.getStart());
                     item.setFinish(a.getFinish());
                     return item;

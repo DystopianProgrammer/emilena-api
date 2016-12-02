@@ -13,6 +13,7 @@ import com.perks.emilena.resource.*;
 import com.perks.emilena.security.CustomCredentialAuthFilter;
 import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
+import com.perks.emilena.serializer.MoneySerializer;
 import com.perks.emilena.service.*;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -27,6 +28,7 @@ import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import javax.ws.rs.client.Client;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +49,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         SimpleModule module = new SimpleModule();
+        module.addSerializer(BigDecimal.class, new MoneySerializer());
         module.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         module.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm")));
         module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
@@ -76,7 +79,7 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
                 new AppointmentService(emilenaConfiguration.getApplicationConfiguration(), locationService);
         RotaItemService rotaItemService = new RotaItemService(staffService, clientService, appointmentService);
         RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
-        InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO);
+        InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO, emilenaConfiguration.getApplicationConfiguration());
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
