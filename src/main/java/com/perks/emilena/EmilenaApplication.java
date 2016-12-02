@@ -1,13 +1,7 @@
 package com.perks.emilena;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -31,13 +25,8 @@ import io.dropwizard.hibernate.ScanningHibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import javax.ws.rs.client.Client;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -80,17 +69,19 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         InvoiceDAO invoiceDAO = new InvoiceDAO(scanningHibernate.getSessionFactory());
 
         // Services
+        ClientService clientService = new ClientService(clientDAO, staffDAO);
+        StaffService staffService = new StaffService(clientDAO, staffDAO);
         LocationService locationService = new LocationService(client, emilenaConfiguration.getApplicationConfiguration());
         AppointmentService appointmentService =
                 new AppointmentService(emilenaConfiguration.getApplicationConfiguration(), locationService);
-        RotaItemService rotaItemService = new RotaItemService(staffDAO, clientDAO, appointmentService);
-        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffDAO, clientDAO);
+        RotaItemService rotaItemService = new RotaItemService(staffService, clientService, appointmentService);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
         InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
-        environment.jersey().register(new StaffResource(staffDAO));
-        environment.jersey().register(new ClientResource(clientDAO));
+        environment.jersey().register(new StaffResource(staffService));
+        environment.jersey().register(new ClientResource(clientService));
         environment.jersey().register(new RotaResource(rotaService, rotaDAO));
         environment.jersey().register(new UserResource());
         environment.jersey().register(new TrafficResource(trafficDAO));

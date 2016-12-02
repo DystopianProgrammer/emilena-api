@@ -2,7 +2,7 @@ package com.perks.emilena.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import com.perks.emilena.api.Client;
-import com.perks.emilena.dao.ClientDAO;
+import com.perks.emilena.service.ClientService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
@@ -22,10 +22,10 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientResource {
 
-    private final ClientDAO clientDAO;
+    private final ClientService clientService;
 
-    public ClientResource(ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+    public ClientResource(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @Path("/all")
@@ -34,7 +34,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> findAll() {
-        return clientDAO.findAll();
+        return clientService.listAllClients();
     }
 
     @POST
@@ -43,7 +43,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response create(@Valid Client client) {
-        clientDAO.create(client);
+        clientService.updateClient(client);
         return Response.ok().build();
     }
 
@@ -53,7 +53,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response update(@Valid Client client) {
-        clientDAO.create(client);
+        clientService.updateClient(client);
         return Response.ok().build();
     }
 
@@ -63,7 +63,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response delete(@Valid Client client) {
-        clientDAO.delete(client);
+        clientService.deleteClient(client);
         return Response.ok().build();
     }
 
@@ -73,7 +73,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Client findPerson(@PathParam("id") LongParam id) {
-        return clientDAO.findById(id.get());
+        return clientService.findById(id.get());
     }
 
     @Path("/active")
@@ -82,7 +82,7 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public List<Client> findAllActive() {
-        return clientDAO.findAllActive();
+        return clientService.listAllActiveClients();
     }
 
     @Path("/availability/{day}")
@@ -90,7 +90,7 @@ public class ClientResource {
     @Timed
     @UnitOfWork
     public List<Client> availabilityFromDay(@PathParam("day") String dayOfWeek) {
-        return clientDAO.joinPersonAvailabilityByDayOfWeek(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
+        return clientService.listClientsByAvailability(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
     }
 }
 

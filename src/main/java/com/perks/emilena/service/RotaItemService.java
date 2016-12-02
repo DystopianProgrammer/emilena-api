@@ -3,8 +3,6 @@ package com.perks.emilena.service;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.RotaItem;
 import com.perks.emilena.api.Staff;
-import com.perks.emilena.dao.ClientDAO;
-import com.perks.emilena.dao.StaffDAO;
 import com.perks.emilena.value.Appointment;
 
 import java.time.DayOfWeek;
@@ -21,20 +19,20 @@ import java.util.stream.Collectors;
  */
 public class RotaItemService {
 
-    private final StaffDAO staffDAO;
-    private final ClientDAO clientDAO;
+    private final StaffService staffService;
+    private final ClientService clientService;
     private final AppointmentService appointmentService;
 
-    public RotaItemService(StaffDAO staffDAO, ClientDAO clientDAO, AppointmentService appointmentService) {
-        this.staffDAO = staffDAO;
-        this.clientDAO = clientDAO;
+    public RotaItemService(StaffService staffService, ClientService clientService, AppointmentService appointmentService) {
+        this.staffService = staffService;
+        this.clientService = clientService;
         this.appointmentService = appointmentService;
     }
 
     public List<RotaItem> rotaItems(LocalDate weekCommencing) {
 
-        List<Staff> staff = this.staffDAO.findAllActive();
-        List<Client> clients = this.clientDAO.findAllActive();
+        List<Staff> staff = this.staffService.listAllActiveStaff();
+        List<Client> clients = this.clientService.listAllActiveClients();
         List<RotaItem> rotaItems = new ArrayList<>();
 
         Consumer<DayOfWeek> dayOfWeekConsumer = (dayOfWeek) -> transform(staff, clients, dayOfWeek, rotaItems);

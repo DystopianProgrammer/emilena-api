@@ -8,7 +8,10 @@ import com.perks.emilena.dao.StaffDAO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -23,14 +26,14 @@ public class RotaService {
 
     private final RotaItemService rotaItemService;
     private final RotaDAO rotaDAO;
-    private final StaffDAO staffDAO;
-    private final ClientDAO clientDAO;
+    private final StaffService staffService;
+    private final ClientService clientService;
 
-    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO, StaffDAO staffDAO, ClientDAO clientDAO) {
+    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO, StaffService staffService, ClientService clientService) {
         this.rotaItemService = rotaItemService;
         this.rotaDAO = rotaDAO;
-        this.staffDAO = staffDAO;
-        this.clientDAO = clientDAO;
+        this.staffService = staffService;
+        this.clientService = clientService;
     }
 
     public Rota create(LocalDate weekCommencing) {
@@ -65,8 +68,8 @@ public class RotaService {
     public Set<Person> unallocated(Long id) {
 
         List<RotaItem> rotaItems = this.rotaDAO.findById(id).getRotaItems();
-        List<Staff> activeStaff = this.staffDAO.findAllActive();
-        List<Client> activeClients = this.clientDAO.findAllActive();
+        List<Staff> activeStaff = this.staffService.listAllActiveStaff();
+        List<Client> activeClients = this.clientService.listAllActiveClients();
 
         List<Client> clients = rotaItems.stream()
                 .map(RotaItem::getClient)
