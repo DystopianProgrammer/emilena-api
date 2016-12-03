@@ -13,7 +13,6 @@ import com.perks.emilena.value.DistanceMatrix;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -32,22 +31,6 @@ public class AppointmentService {
     public AppointmentService(ApplicationConfiguration applicationConfiguration, LocationService locationService) {
         this.applicationConfiguration = applicationConfiguration;
         this.locationService = locationService;
-    }
-
-    /**
-     * Calculates the remaining time available for a person for a given day. For example, if the person is contracted
-     * to do a 7 hour day, and they work from 9am - 5pm, but do several 1 hour appointments through the course of the
-     * day, then this needs to be tracked and accounted for.
-     * <p>
-     * The formula: remaining = (total - current) + next
-     *
-     * @param current - the current remaining time
-     * @param next    - the next appointment/scheduling time
-     * @param total   - the total time for the day i.e. duration
-     * @return the remaining available time
-     */
-    public Long timeRemainingForDay(long current, long next, long total) {
-        return (total - current) + next;
     }
 
     /**
@@ -103,35 +86,62 @@ public class AppointmentService {
 
     private void appointments(List<Appointment> appointments, TemporalStore sts, TemporalStore cts, DistanceMatrix dm) {
 
-        Objects.requireNonNull(appointments);
-        Objects.requireNonNull(sts);
-        Objects.requireNonNull(cts);
-        Objects.requireNonNull(dm);
+        requireNonNull(appointments);
+        requireNonNull(sts);
+        requireNonNull(cts);
+        requireNonNull(dm);
 
         if (locationService.convertMetersToMiles(dm.getMeters()) <= applicationConfiguration.getMaxDistanceRadius()) {
+
+            Appointment.Builder builder = new Appointment.Builder()
+                    .staff((Staff) sts.getPerson())
+                    .client((Client) cts.getPerson())
+                    .distanceMatrix(dm)
+                    .start(cts.getAvailability().getFromTime())
+                    .finish(cts.getAvailability().getToTime());
+
             // this is where we decide to use the client or staff's address
             if (applicationConfiguration.getDefaultAddress().equals(PersonType.CLIENT)) {
-                Appointment appointment = new Appointment.Builder()
-                        .staff((Staff) sts.getPerson())
-                        .client((Client) cts.getPerson())
-                        .address(cts.getPerson().getAddress())
-                        .distanceMatrix(dm)
-                        .start(cts.getAvailability().getFromTime())
-                        .finish(cts.getAvailability().getToTime())
-                        .build();
-                appointments.add(appointment);
+                builder.address(cts.getPerson().getAddress());
             } else {
-                Appointment appointment = new Appointment.Builder()
-                        .staff((Staff) sts.getPerson())
-                        .client((Client) cts.getPerson())
-                        .address(sts.getPerson().getAddress())
-                        .distanceMatrix(dm)
-                        .start(cts.getAvailability().getFromTime())
-                        .finish(cts.getAvailability().getToTime())
-                        .build();
+                builder.address(sts.getPerson().getAddress());
+            }
+
+            Appointment appointment = builder.build();
+
+            // then check that we haven't already added an appointment for the client
+            // and that the client has availability that day
+            long clientCount = appointments.stream()
+                    .filter(a -> a.getClient().getId().equals(appointment.getClient().getId()))
+                    .filter(a -> a.getStart().equals(appointment.getStart()))
+                    .filter(a -> a.getFinish().equals(appointment.getFinish()))
+                    .count();
+
+            // then do the same for the staff ensuring we haven't overlapped
+            long staffCount = appointments.stream()
+                    .filter(a -> a.getStaff().getId().equals(appointment.getStaff().getId()))
+                    .count();
+
+            if(clientCount == 0 && staffCount == 0) {
                 appointments.add(appointment);
             }
         }
+    }
+
+    /**
+     * Calculates the remaining time available for a person for a given day. For example, if the person is contracted
+     * to do a 7 hour day, and they work from 9am - 5pm, but do several 1 hour appointments through the course of the
+     * day, then this needs to be tracked and accounted for.
+     * <p>
+     * The formula: remaining = (total - current) + next
+     *
+     * @param current - the current remaining time
+     * @param next    - the next appointment/scheduling time
+     * @param total   - the total time for the day i.e. duration
+     * @return the remaining available time
+     */
+    private Long timeRemainingForDay(long current, long next, long total) {
+        return (total - current) + next;
     }
 
     private List<TemporalStore> sortByPersonType(List<TemporalStore> temporalStores, PersonType type) {

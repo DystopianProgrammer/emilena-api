@@ -49,7 +49,7 @@ applicationConfiguration:
   apiKey: dGbZcT7WWkO_nexga6c0bA6513
   googleMapsDistanceMatrixApiUrl: https://maps.googleapis.com
   googleMapsDistanceMatrixApiKey: AIzaSyAW05lFGQ9dq7-syLtIMfslSRCkSSQ0B4A
-  maxDistanceRadius: 20
+  maxDistanceRadius: 40
   minDistanceRadius: 0
   theme: default
   organisation: The Frances Taylor Foundation
