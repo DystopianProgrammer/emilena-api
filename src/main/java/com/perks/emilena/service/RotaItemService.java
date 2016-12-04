@@ -48,7 +48,7 @@ public class RotaItemService {
                            DayOfWeek dayOfWeek,
                            LocalDate weekCommencing,
                            List<RotaItem> rotaItems) {
-        LocalDate forDate = weekCommencing.plusDays(dayOfWeek.getValue());
+        LocalDate forDate = weekCommencing.plusDays(dayOfWeek.getValue() - 1);
         List<Appointment> appointments =
                 appointmentService.pairByConfigurableLocationRadius(staff, clients, dayOfWeek);
         List<RotaItem> items = appointments.stream()
