@@ -5,8 +5,7 @@ import com.perks.emilena.dao.ClientDAO;
 import com.perks.emilena.dao.StaffDAO;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * More a delegate than a service really, but creates a separation from the resources and the DAOs and faciliates
@@ -29,11 +28,13 @@ public abstract class PersonService {
         requireNonNull(person, "person must not be null");
         requireNonNull(person.getForename(), "forename must not be null");
         requireNonNull(person.getSurname(), "surname must not be null");
+        requireNonNull(person.getAddress(), "person address must not be null");
 
         String forename = capitalise(person.getForename());
         String surname = capitalise(person.getSurname());
         person.setForename(forename);
         person.setSurname(surname);
+        person.getAddress().setPostCode(upperCase(person.getAddress().getPostCode()));
         return person;
     }
 

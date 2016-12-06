@@ -4,6 +4,7 @@ import com.perks.emilena.api.Address;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 /**
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 public class Appointment {
 
     private final DistanceMatrix distanceMatrix;
+    private final DayOfWeek dayOfWeek;
     private final Client client;
     private final Staff staff;
     private final LocalTime start;
@@ -21,6 +23,7 @@ public class Appointment {
 
     public static class Builder {
         private DistanceMatrix distanceMatrix;
+        private DayOfWeek dayOfWeek;
         private Client client;
         private Staff staff;
         private LocalTime start;
@@ -29,6 +32,11 @@ public class Appointment {
 
         public Builder distanceMatrix(DistanceMatrix dm) {
             this.distanceMatrix = dm;
+            return this;
+        }
+
+        public Builder dayOfWeek(DayOfWeek day) {
+            this.dayOfWeek = day;
             return this;
         }
 
@@ -64,6 +72,7 @@ public class Appointment {
 
     private Appointment(Builder builder) {
         this.distanceMatrix = builder.distanceMatrix;
+        this.dayOfWeek = builder.dayOfWeek;
         this.staff = builder.staff;
         this.client = builder.client;
         this.start = builder.start;
@@ -73,6 +82,10 @@ public class Appointment {
 
     public DistanceMatrix getDistanceMatrix() {
         return distanceMatrix;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
     }
 
     public Client getClient() {

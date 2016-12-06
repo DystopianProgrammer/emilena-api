@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Created by Geoff Perks
  * Date: 13/07/2016.
@@ -21,7 +23,7 @@ import java.util.Optional;
 public class LocationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocationService.class);
-    private static final Double METERS_IN_MILE = 1609.344;
+    private static final Double METERS_PER_MILE = 1609.344;
 
     private final Client client;
     private final ApplicationConfiguration applicationConfiguration;
@@ -50,15 +52,15 @@ public class LocationService {
             try {
                 distanceMatrix = new DistanceMatrixMapper().transformResponse(response.readEntity(HashMap.class));
             }catch(UnknownAddressMappingError e) {
-                LOG.error("Could not resolve address mapping for either {} or {}", origin, destination, e);
+                LOG.warn("Could not resolve address mapping for either {} or {}", origin, destination, e);
             }
-            return Optional.ofNullable(distanceMatrix);
+            return ofNullable(distanceMatrix);
         }
 
         return Optional.empty();
     }
 
     public Double convertMetersToMiles(Long meters) {
-        return meters / METERS_IN_MILE;
+        return meters / METERS_PER_MILE;
     }
 }

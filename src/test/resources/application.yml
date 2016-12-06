@@ -56,4 +56,8 @@ applicationConfiguration:
   # possible values = CLIENT, STAFF, RANDOM
   defaultAddress: CLIENT
   defaultHourlyRate: 10.75
+  allowableIntervalBetweenAppointments: 60
+  maxIterations: 3
+  dateFormat: dd-MM-yyyy
+  timeFormat: HH:mm
 

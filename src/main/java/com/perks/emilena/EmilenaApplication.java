@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.perks.emilena.api.SystemUser;
+import com.perks.emilena.config.ApplicationConfiguration;
 import com.perks.emilena.config.EmilenaConfiguration;
 import com.perks.emilena.dao.*;
 import com.perks.emilena.resource.*;
@@ -31,7 +32,8 @@ import javax.ws.rs.client.Client;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
  * Created by Geoff Perks
@@ -46,14 +48,21 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
     @Override
     public void run(EmilenaConfiguration emilenaConfiguration, Environment environment) throws Exception {
 
+        ApplicationConfiguration applicationConfiguration = emilenaConfiguration.getApplicationConfiguration();
+
         environment.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+        // jackson serializer/deserializers
         SimpleModule module = new SimpleModule();
         module.addSerializer(BigDecimal.class, new MoneySerializer());
-        module.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        module.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm")));
-        module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-        module.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern("HH:mm")));
+        module.addSerializer(LocalDate.class,
+                new LocalDateSerializer(ofPattern(applicationConfiguration.getDateFormat())));
+        module.addSerializer(LocalTime.class,
+                new LocalTimeSerializer(ofPattern(applicationConfiguration.getTimeFormat())));
+        module.addDeserializer(LocalDate.class,
+                new LocalDateDeserializer(ofPattern(applicationConfiguration.getDateFormat())));
+        module.addDeserializer(LocalTime.class,
+                new LocalTimeDeserializer(ofPattern(applicationConfiguration.getTimeFormat())));
         environment.getObjectMapper().registerModule(module);
 
         // Jersey client
@@ -74,12 +83,12 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         // Services
         ClientService clientService = new ClientService(clientDAO, staffDAO);
         StaffService staffService = new StaffService(clientDAO, staffDAO);
-        LocationService locationService = new LocationService(client, emilenaConfiguration.getApplicationConfiguration());
-        AppointmentService appointmentService =
-                new AppointmentService(emilenaConfiguration.getApplicationConfiguration(), locationService);
-        RotaItemService rotaItemService = new RotaItemService(staffService, clientService, appointmentService);
+        LocationService locationService = new LocationService(client, applicationConfiguration);
+        AllocationService allocationService = new AllocationService(locationService, applicationConfiguration);
+        AppointmentService appointmentService = new AppointmentService(applicationConfiguration);
+        RotaItemService rotaItemService = new RotaItemService(staffService, clientService, appointmentService, allocationService);
         RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
-        InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO, emilenaConfiguration.getApplicationConfiguration());
+        InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO, applicationConfiguration);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));
@@ -90,8 +99,8 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         environment.jersey().register(new TrafficResource(trafficDAO));
         environment.jersey().register(new InvoiceResource(invoiceDAO, invoiceService));
         environment.jersey().register(new RotaItemResource(rotaItemDAO));
-        environment.jersey().register(new ConfigurationResource(emilenaConfiguration.getApplicationConfiguration()));
-        environment.jersey().register(new ExternalServiceResource(client, emilenaConfiguration.getApplicationConfiguration()));
+        environment.jersey().register(new ConfigurationResource(applicationConfiguration));
+        environment.jersey().register(new ExternalServiceResource(client, applicationConfiguration));
 
         // Security
         //

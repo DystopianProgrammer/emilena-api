@@ -62,6 +62,29 @@ public class ApplicationConfiguration {
     @JsonProperty
     private BigDecimal defaultHourlyRate;
 
+    @Valid
+    @NotNull
+    @JsonProperty
+    private Long allowableIntervalBetweenAppointments;
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private String dateFormat;
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private String timeFormat;
+
+    /**
+     * This will decrease fetch time on rota generation the higher the number!
+     */
+    @Valid
+    @NotNull
+    @JsonProperty
+    private Integer maxIterations;
+
     public String getPostCodeServiceUrl() {
         return postCodeServiceUrl;
     }
@@ -140,5 +163,37 @@ public class ApplicationConfiguration {
 
     public void setDefaultHourlyRate(BigDecimal defaultHourlyRate) {
         this.defaultHourlyRate = defaultHourlyRate;
+    }
+
+    public Long getAllowableIntervalBetweenAppointments() {
+        return allowableIntervalBetweenAppointments;
+    }
+
+    public void setAllowableIntervalBetweenAppointments(Long allowableIntervalBetweenAppointments) {
+        this.allowableIntervalBetweenAppointments = allowableIntervalBetweenAppointments;
+    }
+
+    public Integer getMaxIterations() {
+        return maxIterations;
+    }
+
+    public void setMaxIterations(Integer maxIterations) {
+        this.maxIterations = maxIterations;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
     }
 }
