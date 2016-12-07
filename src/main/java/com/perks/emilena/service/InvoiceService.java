@@ -8,6 +8,7 @@ import com.perks.emilena.dao.InvoiceDAO;
 import com.perks.emilena.dao.RotaDAO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Set;
 import java.util.function.Function;
@@ -46,8 +47,8 @@ public class InvoiceService {
         };
 
         Predicate<RotaItem> rotaItemPredicate = (rotaItem) -> {
-            Invoice invoice = invoiceDAO.findByRotaItem(rotaItem);
-            return (invoice == null);
+            // check we're only producing invoices for past weeks
+            return LocalDate.now().plusDays(1).isAfter(rotaItem.getSupportDate());
         };
 
         return rotaDAO.fetchAll()

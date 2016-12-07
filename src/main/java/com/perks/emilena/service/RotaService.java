@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class RotaService {
 
-    private static final int MAX_WEEKS = 12;
+    private static final int MAX_WEEKS = 2;
 
     private final RotaItemService rotaItemService;
     private final RotaDAO rotaDAO;
