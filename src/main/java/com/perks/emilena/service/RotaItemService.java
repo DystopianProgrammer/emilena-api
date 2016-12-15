@@ -1,21 +1,22 @@
 package com.perks.emilena.service;
 
+import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.RotaItem;
 import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.type.PersonType;
-import com.perks.emilena.value.Appointment;
-import com.perks.emilena.value.TemporalStore;
+import com.perks.emilena.config.ApplicationConfiguration;
+import com.perks.emilena.dao.AvailabilityDAO;
+import com.perks.emilena.util.TimeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.perks.emilena.util.TimeUtil.isBookable;
 import static java.util.Arrays.stream;
 
 /**
@@ -24,66 +25,135 @@ import static java.util.Arrays.stream;
  */
 public class RotaItemService {
 
-    private final StaffService staffService;
-    private final ClientService clientService;
-    private final AppointmentService appointmentService;
-    private final AllocationService allocationService;
+    private static final Logger LOG = LoggerFactory.getLogger(RotaItemService.class);
 
-    public RotaItemService(StaffService staffService,
-                           ClientService clientService,
-                           AppointmentService appointmentService,
-                           AllocationService allocationService) {
+    private final LocationService locationService;
+    private final ApplicationConfiguration configuration;
+    private final AvailabilityDAO availabilityDAO;
 
-        this.staffService = staffService;
-        this.clientService = clientService;
-        this.appointmentService = appointmentService;
-        this.allocationService = allocationService;
+    public RotaItemService(LocationService locationService,
+                           ApplicationConfiguration configuration, AvailabilityDAO availabilityDAO) {
+
+        this.locationService = locationService;
+        this.configuration = configuration;
+        this.availabilityDAO = availabilityDAO;
     }
 
     public List<RotaItem> rotaItems(LocalDate weekCommencing) {
 
-        List<Staff> staff = this.staffService.listAllActiveStaff();
-        List<Client> clients = this.clientService.listAllActiveClients();
+        List<RotaItem> rotaItems = new ArrayList<>();
 
-        Function<DayOfWeek, List<RotaItem>> itemMapper = (day) -> this.transform(staff, clients, day, weekCommencing);
+        stream(DayOfWeek.values()).forEach(dayOfWeek ->
+                addRotaItems(dayOfWeek, rotaItems, weekCommencing.plusDays(dayOfWeek.ordinal())));
 
-        return stream(DayOfWeek.values())
-                .flatMap(day -> itemMapper.apply(day).stream())
-                .collect(Collectors.toList());
+        return rotaItems;
     }
 
-    private List<RotaItem> transform(List<Staff> staff,
-                                     List<Client> clients,
-                                     DayOfWeek dayOfWeek,
-                                     LocalDate weekCommencing) {
+    // per day operation
+    private void addRotaItems(DayOfWeek dayOfWeek, List<RotaItem> rotaItems, LocalDate localDate) {
 
+        LOG.info("Fetching all availabilities and filtering by active person for {}", dayOfWeek);
+        List<Availability> availabilities = availabilityDAO.findForDayOfWeek(dayOfWeek).stream()
+                .filter(a -> a.getPerson() != null)
+                .filter(a -> a.getPerson().getActive())
+                .collect(Collectors.toList());
 
-        // reduce by availability for the day of the week
-        Map<PersonType, List<TemporalStore>> temporalStoreMap =
-                appointmentService.reduceByAvailability(staff, clients, dayOfWeek);
+        LOG.info("Separating availabilities by Staff");
+        List<Availability> staffAvailabilities = availabilities.stream()
+                .filter(a -> a.getPerson().getPersonType().equals(PersonType.STAFF))
+                .collect(Collectors.toList());
 
-        // group the temporal stores into buckets of acceptable radii and return unevenly distributed groups of
-        // appointments
-        List<List<Appointment>> appointmentMatrix =
-                this.allocationService.allocateByRadius(temporalStoreMap.getOrDefault(PersonType.STAFF, newArrayList()),
-                        temporalStoreMap.getOrDefault(PersonType.CLIENT, newArrayList()));
+        LOG.info("Separating availabilities by Client");
+        List<Availability> clientAvailabilities = availabilities.stream()
+                .filter(a -> a.getPerson().getPersonType().equals(PersonType.CLIENT))
+                .collect(Collectors.toList());
 
-        // we need to even distribute staff across the appointments
-        List<Appointment> appointments = appointmentService.distributeGroupedAppointments(appointmentMatrix);
-
-        // finally transform to Rota Items!
-        return appointments.stream()
+        LOG.info("Mapping Client availabilities to RotaItems");
+        Set<RotaItem> unassignedItems = clientAvailabilities.stream()
                 .map(a -> {
                     RotaItem item = new RotaItem();
-                    item.setStaff(a.getStaff());
-                    item.setClient(a.getClient());
+                    item.setStart(a.getFromTime());
+                    item.setFinish(a.getToTime());
+                    item.setClient((Client) a.getPerson());
                     item.setDayOfWeek(dayOfWeek);
-                    item.setSupportDate(weekCommencing.plusDays(dayOfWeek.ordinal()));
-                    item.setStart(a.getStart());
-                    item.setFinish(a.getFinish());
+                    item.setSupportDate(localDate);
                     return item;
                 })
+                .distinct()
+                .collect(Collectors.toSet());
+
+        LOG.info("Allocating Staff to RotaItems for {}", dayOfWeek);
+        Set<RotaItem> assignedItems = new HashSet<>();
+        unassignedItems.forEach(i -> assign(assignedItems, i, staffAvailabilities));
+
+        LOG.info("Finalising sorted RotaItems for {}", dayOfWeek);
+        List<RotaItem> sorted = assignedItems.stream()
+                .filter(i -> i.getStaff() != null)
+                .distinct()
                 .collect(Collectors.toList());
+
+        rotaItems.addAll(sorted);
     }
 
+    /**
+     * Staff and client must be within the specified radius.
+     * Staff and client must have matching availability time
+     * Staff must not overlap self
+     * Staff must have reasonable travelling time for each appointment
+     * Staff may have a single availability spanning the entire day. So we need to track their remaining time
+     *
+     * @param assignedItems       - RotaItems with both client and staff
+     * @param rotaItem            - the current unassigned rota item consisting over only a client
+     * @param staffAvailabilities - a list of staff availabilities
+     */
+    private void assign(Set<RotaItem> assignedItems, RotaItem rotaItem, List<Availability> staffAvailabilities) {
+
+        Collections.shuffle(staffAvailabilities);
+
+        // has this availability already been assigned?
+        boolean isAssigned = assignedItems.stream()
+                .filter(ai -> ai.getStaff().equals(rotaItem.getStaff()))
+                .anyMatch(ai -> ai.getStart().equals(rotaItem.getStart()));
+
+        if (!isAssigned) {
+
+            for (Availability availability : staffAvailabilities) {
+
+                // is there an overlap?
+                if (hasOverlap(availability, assignedItems)) continue;
+
+                // is it bookable
+                if (isBookable(rotaItem.getStart(), rotaItem.getFinish(),
+                        availability.getFromTime(), availability.getToTime())) {
+
+                    //FIXME temporary with the google quota
+                    rotaItem.setStaff((Staff) availability.getPerson());
+                    assignedItems.add(rotaItem);
+                    return;
+
+                    // FIXME - put this back in - is it within the specified radius
+                    // validateRadiusAndAdd(assignedItems, rotaItem, availability);
+                }
+            }
+        }
+    }
+
+    private boolean hasOverlap(Availability availability, Set<RotaItem> assignedItems) {
+        return assignedItems.stream()
+                .anyMatch(rotaItem -> TimeUtil.hasOverlap(rotaItem, availability));
+    }
+
+    // Temporarily removed while quota in place
+    private void validateRadiusAndAdd(Set<RotaItem> assignedItems, RotaItem rotaItem, Availability availability) {
+        locationService.distanceMatrix(availability.getPerson().getAddress().getPostCode(),
+                rotaItem.getClient().getAddress().getPostCode())
+                .ifPresent(dm -> {
+                    if (configuration.getMaxDistanceRadius() >=
+                            locationService.convertMetersToMiles(dm.getMeters())) {
+                        // if yes to all of the above, then assign
+                        rotaItem.setStaff((Staff) availability.getPerson());
+                        assignedItems.add(rotaItem);
+                    }
+                });
+    }
 }

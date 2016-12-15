@@ -92,7 +92,7 @@ public class StaffResource {
     @Timed
     @UnitOfWork
     public List<Staff> availabilityFromDay(@PathParam("day") String dayOfWeek) {
-        return staffService.joinPersonAvailabilityByDayOfWeek(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
+        return staffService.listStaffAvailabilityByDayOfWeek(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
     }
 
     @Path("/active")

@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "rota_item")
-public class RotaItem {
+public class RotaItem implements Comparable<RotaItem> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -109,5 +109,12 @@ public class RotaItem {
     @Override
     public int hashCode() {
         return Objects.hash(id, dayOfWeek, supportDate, start, finish, client, staff);
+    }
+
+    @Override
+    public int compareTo(RotaItem other) {
+        if(Objects.equals(this.getClient().getId(), other.getClient().getId()) &&
+                this.getStart().equals(other.getStart())) { return 0; }
+        return -1;
     }
 }

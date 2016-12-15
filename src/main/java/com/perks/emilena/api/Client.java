@@ -1,9 +1,11 @@
 package com.perks.emilena.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -28,5 +30,15 @@ public class Client extends Person {
 
     public void setStaff(Collection<Staff> staff) {
         this.staff = staff;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        if(Objects.equals(this.getId(), o.getId()) &&
+                StringUtils.equalsIgnoreCase(this.getForename(), o.getForename()) &&
+                StringUtils.equalsIgnoreCase(this.getSurname(), o.getSurname())) {
+            return 0;
+        }
+        return -1;
     }
 }

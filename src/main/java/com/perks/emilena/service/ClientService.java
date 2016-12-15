@@ -41,7 +41,7 @@ public class ClientService extends PersonService {
     }
 
     public List<Client> listClientsByAvailability(DayOfWeek dayOfWeek) {
-        return clientDAO.joinPersonAvailabilityByDayOfWeek(dayOfWeek);
+        return clientDAO.clientAvailabilityByDayOfWeek(dayOfWeek);
     }
 
 }

@@ -45,7 +45,7 @@ public class StaffService extends PersonService {
         return this.staffDAO.clientsByStaffId(id);
     }
 
-    public List<Staff> joinPersonAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
-        return this.joinPersonAvailabilityByDayOfWeek(dayOfWeek);
+    public List<Staff> listStaffAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
+        return this.staffDAO.staffAvailabilityByDayOfWeek(dayOfWeek);
     }
 }

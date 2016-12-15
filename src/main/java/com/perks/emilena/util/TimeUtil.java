@@ -1,11 +1,10 @@
 package com.perks.emilena.util;
 
-import com.perks.emilena.aggregator.TimeAggregator;
-import com.perks.emilena.api.Person;
-import com.perks.emilena.value.Appointment;
+import com.perks.emilena.api.Availability;
+import com.perks.emilena.api.RotaItem;
 
+import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,68 +14,40 @@ import static java.util.Objects.requireNonNull;
  */
 public class TimeUtil {
 
-    /**
-     * Returns the false if two appointments clash. That is if
-     * 1) Each start time is the same
-     * 2) Each finish time is the same
-     * 3) The current appointment start time is between the other appointment's start and end times
-     * 4) the current appointment end time is between the other appointment's start end time times
-     * 5) the current appointment end time overlaps the duration until the other appointment's start time
-     *
-     * @param current   the current appointment
-     * @param other     the other appointment to compare with
-     * @param allowable the interval between appointments - in minutes
-     * @return true if there is an overlap, false if it's safe
-     */
-    public static boolean isOverlap(Appointment current, Appointment other, Long allowable) {
 
-        requireNonNull(current);
-        requireNonNull(other);
-        requireNonNull(allowable);
+    public static boolean hasOverlap(RotaItem rotaItem, Availability availability) {
 
-        return compare(current.getStart(), current.getFinish(), other.getStart(), other.getFinish(), allowable);
+        requireNonNull(rotaItem);
+        requireNonNull(availability);
+
+        LocalTime rotaItemStart = rotaItem.getStart();
+        LocalTime rotaItemFinish = rotaItem.getFinish();
+
+        long appointmentLength = Duration.between(rotaItemStart, rotaItemFinish).toHours();
+
+        if(rotaItemStart.equals(availability.getFromTime())) return true;
+        if(rotaItemFinish.equals(availability.getFromTime())) return true; // maybe
+
+//        Long durationFromAvailToRotaItem =
+//                Duration.between(availability.getFromTime(), rotaItem.getFinish()).toHours();
+//
+//        if(appointmentLength - durationFromAvailToRotaItem > 60L) return true; // TODO configurable
+
+        return false;
     }
 
-    /**
-     * Checks whether staff start and finish times are bookable for a given appointment time.
-     *
-     * @param staffStart
-     * @param staffFinish
-     * @param apptStart
-     * @param apptFinish
-     * @return true if bookable, otherwise false
-     */
-    public static boolean isBookable(LocalTime staffStart,
-                                   LocalTime staffFinish,
-                                   LocalTime apptStart,
-                                   LocalTime apptFinish) {
+    public static boolean isBookable(LocalTime clientStart, LocalTime clientEnd,
+                                   LocalTime staffStart, LocalTime staffEnd) {
 
+        requireNonNull(clientStart);
+        requireNonNull(clientEnd);
         requireNonNull(staffStart);
-        requireNonNull(staffFinish);
-        requireNonNull(apptStart);
-        requireNonNull(apptFinish);
+        requireNonNull(staffEnd);
 
-        return (staffStart.isBefore(apptStart) || staffStart.equals(apptStart) &&
-                staffFinish.isAfter(apptFinish) || staffFinish.equals(apptFinish));
-    }
-
-    private static boolean compare(LocalTime start1,
-                                   LocalTime finish1,
-                                   LocalTime start2,
-                                   LocalTime finish2,
-                                   Long allowable) {
-
-        requireNonNull(start1);
-        requireNonNull(finish1);
-        requireNonNull(start2);
-        requireNonNull(finish2);
-        requireNonNull(allowable);
-
-        if (start1.equals(start2)) return true;
-        if (finish1.equals(finish2)) return true;
-        if (start1.isAfter(start2) && start1.isBefore(finish2)) return true;
-        if (finish1.isAfter(start2) && finish1.isBefore(finish2)) return true;
-        if (ChronoUnit.MINUTES.between(finish1, start2) < allowable) return true;
+        if (clientStart.equals(staffStart)) return true;
+        if (clientEnd.equals(staffEnd)) return true;
+        if (clientStart.isAfter(staffStart) && clientStart.isBefore(staffEnd)) return true;
+        if (clientEnd.isAfter(staffStart) && clientEnd.isBefore(staffEnd)) return true;
 
         return false;
     }

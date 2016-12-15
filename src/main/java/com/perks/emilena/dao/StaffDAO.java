@@ -1,6 +1,5 @@
 package com.perks.emilena.dao;
 
-import com.perks.emilena.api.Availability;
 import com.perks.emilena.api.Client;
 import com.perks.emilena.api.Staff;
 import io.dropwizard.hibernate.AbstractDAO;
@@ -50,19 +49,11 @@ public class StaffDAO extends AbstractDAO<Staff> {
         return list(query);
     }
 
-    public List<Staff> joinPersonAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
+    public List<Staff> staffAvailabilityByDayOfWeek(DayOfWeek dayOfWeek) {
         Query query =
                 currentSession().createQuery(
                         "select s from Staff s join s.availabilities a where a.dayOfWeek = :dayOfWeek");
         query.setParameter("dayOfWeek", dayOfWeek);
         return list(query);
-    }
-
-    public Staff findActiveByAvailability(Availability availability) {
-        Query query =
-                currentSession().createQuery(
-                        "select s from Staff s join s.availabilities a where a = :availability and s.active = true");
-        query.setParameter("availability", availability);
-        return uniqueResult(query);
     }
 }

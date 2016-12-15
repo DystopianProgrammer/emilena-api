@@ -84,9 +84,8 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         ClientService clientService = new ClientService(clientDAO, staffDAO);
         StaffService staffService = new StaffService(clientDAO, staffDAO);
         LocationService locationService = new LocationService(client, applicationConfiguration);
-        AllocationService allocationService = new AllocationService(locationService, applicationConfiguration);
-        AppointmentService appointmentService = new AppointmentService(applicationConfiguration);
-        RotaItemService rotaItemService = new RotaItemService(staffService, clientService, appointmentService, allocationService);
+        RotaItemService rotaItemService =
+                new RotaItemService(locationService, applicationConfiguration, availabilityDAO);
         RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
         InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO, applicationConfiguration);
 

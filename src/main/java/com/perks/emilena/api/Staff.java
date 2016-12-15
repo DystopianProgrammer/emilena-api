@@ -3,8 +3,10 @@ package com.perks.emilena.api;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.perks.emilena.api.type.ContractType;
 import com.perks.emilena.api.type.StaffType;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by Geoff Perks
@@ -58,5 +60,15 @@ public class Staff extends Person {
 
     public void setSystemUser(SystemUser systemUser) {
         this.systemUser = systemUser;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        if(Objects.equals(this.getId(), o.getId()) &&
+                StringUtils.equalsIgnoreCase(this.getForename(), o.getForename()) &&
+                StringUtils.equalsIgnoreCase(this.getSurname(), o.getSurname())) {
+            return 0;
+        }
+        return -1;
     }
 }

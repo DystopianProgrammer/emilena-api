@@ -17,7 +17,7 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(value = "P")
-public abstract class Person {
+public abstract class Person implements Comparable<Person> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -159,13 +159,11 @@ public abstract class Person {
                 Objects.equals(dob, person.dob) &&
                 Objects.equals(telephoneNumber, person.telephoneNumber) &&
                 Objects.equals(address, person.address) &&
-                Objects.equals(availabilities, person.availabilities) &&
-                Objects.equals(preferences, person.preferences) &&
                 Objects.equals(active, person.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, personType, forename, surname, email, dob, telephoneNumber, address, availabilities, preferences, active);
+        return Objects.hash(id, personType, forename, surname, email, dob, telephoneNumber, address, active);
     }
 }

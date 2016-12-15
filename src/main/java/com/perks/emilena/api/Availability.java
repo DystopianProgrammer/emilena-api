@@ -1,5 +1,7 @@
 package com.perks.emilena.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -14,7 +16,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "availability")
-public class Availability {
+public class Availability implements Comparable<Availability> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +31,10 @@ public class Availability {
     @Column(name = "day_of_week")
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Person person;
 
     public Long getId() {
         return id;
@@ -62,6 +68,13 @@ public class Availability {
         this.dayOfWeek = dayOfWeek;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -79,4 +92,16 @@ public class Availability {
         return Objects.hash(id, fromTime, toTime, dayOfWeek);
     }
 
+    @Override
+    public int compareTo(Availability other) {
+        int value;
+        if (this.dayOfWeek.equals(other.dayOfWeek)) {
+            value = 0;
+        } else if (this.dayOfWeek.ordinal() < other.dayOfWeek.ordinal()) {
+            value = -1;
+        } else {
+            value = 1;
+        }
+        return value;
+    }
 }
