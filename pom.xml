@@ -6,7 +6,7 @@
 
     <groupId>com.perks.emilena</groupId>
     <artifactId>emilena-api</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-RELEASE</version>
 
     <properties>
         <dropwizard.version>1.0.0</dropwizard.version>
