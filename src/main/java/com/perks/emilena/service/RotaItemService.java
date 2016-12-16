@@ -7,17 +7,20 @@ import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.type.PersonType;
 import com.perks.emilena.config.ApplicationConfiguration;
 import com.perks.emilena.dao.AvailabilityDAO;
-import com.perks.emilena.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.perks.emilena.util.TimeUtil.isBookable;
 import static java.util.Arrays.stream;
+import static java.util.Collections.shuffle;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Created by Geoff Perks
@@ -41,16 +44,18 @@ public class RotaItemService {
 
     public List<RotaItem> rotaItems(LocalDate weekCommencing) {
 
-        List<RotaItem> rotaItems = new ArrayList<>();
+        Set<RotaItem> rotaItems = new HashSet<>();
 
         stream(DayOfWeek.values()).forEach(dayOfWeek ->
                 addRotaItems(dayOfWeek, rotaItems, weekCommencing.plusDays(dayOfWeek.ordinal())));
 
-        return rotaItems;
+
+        List<RotaItem> filtered = new ArrayList<>(rotaItems);
+        return filtered;
     }
 
     // per day operation
-    private void addRotaItems(DayOfWeek dayOfWeek, List<RotaItem> rotaItems, LocalDate localDate) {
+    private void addRotaItems(DayOfWeek dayOfWeek, Set<RotaItem> rotaItems, LocalDate localDate) {
 
         LOG.info("Fetching all availabilities and filtering by active person for {}", dayOfWeek);
         List<Availability> availabilities = availabilityDAO.findForDayOfWeek(dayOfWeek).stream()
@@ -84,7 +89,14 @@ public class RotaItemService {
 
         LOG.info("Allocating Staff to RotaItems for {}", dayOfWeek);
         Set<RotaItem> assignedItems = new HashSet<>();
-        unassignedItems.forEach(i -> assign(assignedItems, i, staffAvailabilities));
+
+        // 1st sweep
+        List<Availability> bucket = new ArrayList<>();
+        unassignedItems.forEach(i -> assign(assignedItems, i, staffAvailabilities, bucket));
+
+        // 2nd sweep
+        List<Availability> disposable = new ArrayList<>();
+        unassignedItems.forEach(i -> assign(assignedItems, i, bucket, disposable));
 
         LOG.info("Finalising sorted RotaItems for {}", dayOfWeek);
         List<RotaItem> sorted = assignedItems.stream()
@@ -106,44 +118,34 @@ public class RotaItemService {
      * @param rotaItem            - the current unassigned rota item consisting over only a client
      * @param staffAvailabilities - a list of staff availabilities
      */
-    private void assign(Set<RotaItem> assignedItems, RotaItem rotaItem, List<Availability> staffAvailabilities) {
+    private void assign(Set<RotaItem> assignedItems, RotaItem rotaItem, List<Availability> staffAvailabilities,
+                        List<Availability> bucket) {
 
-        Collections.shuffle(staffAvailabilities);
+        shuffle(staffAvailabilities);
 
-        // has this availability already been assigned?
-        boolean isAssigned = assignedItems.stream()
-                .filter(ai -> ai.getStaff().equals(rotaItem.getStaff()))
-                .anyMatch(ai -> ai.getStart().equals(rotaItem.getStart()));
+        for (Availability availability : staffAvailabilities) {
 
-        if (!isAssigned) {
+            // is there an overlap?
+            if (isConflicting(availability, assignedItems)) {
+                bucket.add(availability);
+                continue;
+            }
 
-            for (Availability availability : staffAvailabilities) {
-
-                // is there an overlap?
-                if (hasOverlap(availability, assignedItems)) continue;
-
-                // is it bookable
-                if (isBookable(rotaItem.getStart(), rotaItem.getFinish(),
-                        availability.getFromTime(), availability.getToTime())) {
-
-                    //FIXME temporary with the google quota
-                    rotaItem.setStaff((Staff) availability.getPerson());
-                    assignedItems.add(rotaItem);
-                    return;
-
-                    // FIXME - put this back in - is it within the specified radius
-                    // validateRadiusAndAdd(assignedItems, rotaItem, availability);
-                }
+            // is it bookable
+            if (isBookable(rotaItem.getStart(), rotaItem.getFinish(),
+                    availability.getFromTime(), availability.getToTime())) {
+                validateRadiusAndAdd(assignedItems, rotaItem, availability);
+            } else {
+                bucket.add(availability);
             }
         }
     }
 
-    private boolean hasOverlap(Availability availability, Set<RotaItem> assignedItems) {
+    private boolean isConflicting(Availability availability, Set<RotaItem> assignedItems) {
         return assignedItems.stream()
-                .anyMatch(rotaItem -> TimeUtil.hasOverlap(rotaItem, availability));
+                .anyMatch(rotaItem -> checkConflict(rotaItem, availability));
     }
 
-    // Temporarily removed while quota in place
     private void validateRadiusAndAdd(Set<RotaItem> assignedItems, RotaItem rotaItem, Availability availability) {
         locationService.distanceMatrix(availability.getPerson().getAddress().getPostCode(),
                 rotaItem.getClient().getAddress().getPostCode())
@@ -156,4 +158,27 @@ public class RotaItemService {
                     }
                 });
     }
+
+    private boolean checkConflict(RotaItem rotaItem, Availability availability) {
+
+        requireNonNull(rotaItem);
+        requireNonNull(availability);
+
+        LocalTime rotaItemStart = rotaItem.getStart();
+        LocalTime rotaItemFinish = rotaItem.getFinish();
+
+        if (availability.getPerson().equals(rotaItem.getStaff())) {
+            long durationFromStartHours = Duration.between(rotaItemStart, availability.getFromTime()).toHours();
+            if (durationFromStartHours < 1L) {
+                return true;
+            }
+            long durationFromFinishHours = Duration.between(rotaItemFinish, availability.getToTime()).toHours();
+            if (durationFromFinishHours < 1L) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
