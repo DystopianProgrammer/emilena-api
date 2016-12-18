@@ -6,6 +6,8 @@ import com.perks.emilena.dao.RotaDAO;
 import com.perks.emilena.service.RotaService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -14,7 +16,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Geoff Perks
@@ -25,6 +31,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class RotaResource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RotaResource.class);
     private final RotaService rotaService;
     private final RotaDAO rotaDAO;
 
@@ -41,11 +48,7 @@ public class RotaResource {
     public Response rota(@PathParam("date") String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
         LocalDate requestedDate = LocalDate.parse(date, formatter);
-        List<Rota> commencing = rotaDAO.findByWeekCommencing(requestedDate);
-        if(commencing.isEmpty()) {
-            return Response.ok(rotaService.create(requestedDate)).build();
-        }
-        return Response.status(Response.Status.CONFLICT).build();
+        return Response.ok(rotaService.create(requestedDate)).build();
     }
 
     @GET
@@ -92,6 +95,29 @@ public class RotaResource {
     @RolesAllowed(value = {"ADMIN", "STAFF"})
     public Rota findById(@PathParam("id") LongParam id) {
         return this.rotaDAO.findById(id.get());
+    }
+
+    @GET
+    @Path("/find-by-week/{date}")
+    @Timed
+    @UnitOfWork
+    @RolesAllowed(value = {"ADMIN", "STAFF"})
+    public Response findByDate(@PathParam("date") String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate requestedDate = LocalDate.parse(date, formatter);
+        TemporalField temporalField = WeekFields.of(Locale.UK).dayOfWeek();
+        LocalDate localDate = requestedDate.with(temporalField, 1);
+        Long id = null;
+        try {
+            id = rotaDAO.findByWeekCommencing(localDate).stream().map(r -> r.getId()).reduce(Long::max).get();
+        } catch (NoSuchElementException e) {
+            LOG.error("Could not get rota with id {}", id, e);
+        }
+        if (id != null) {
+            return Response.ok(rotaDAO.findById(id)).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @GET

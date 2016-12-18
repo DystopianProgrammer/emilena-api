@@ -6,10 +6,9 @@ import com.perks.emilena.dao.RotaDAO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -36,8 +35,9 @@ public class RotaService {
 
     public Rota create(LocalDate weekCommencing) {
         Rota rota = new Rota();
-        rota.setWeekStarting(weekCommencing);
-        rota.setRotaItems(rotaItemService.rotaItems(weekCommencing));
+        TemporalField temporalField = WeekFields.of(Locale.UK).dayOfWeek();
+        rota.setWeekStarting(weekCommencing.with(temporalField, 1));
+        rota.setRotaItems(rotaItemService.rotaItems(weekCommencing.with(temporalField, 1)));
         return rota;
     }
 

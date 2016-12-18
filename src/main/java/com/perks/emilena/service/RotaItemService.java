@@ -164,19 +164,7 @@ public class RotaItemService {
         requireNonNull(rotaItem);
         requireNonNull(availability);
 
-        LocalTime rotaItemStart = rotaItem.getStart();
-        LocalTime rotaItemFinish = rotaItem.getFinish();
-
-        if (availability.getPerson().equals(rotaItem.getStaff())) {
-            long durationFromStartHours = Duration.between(rotaItemStart, availability.getFromTime()).toHours();
-            if (durationFromStartHours < 1L) {
-                return true;
-            }
-            long durationFromFinishHours = Duration.between(rotaItemFinish, availability.getToTime()).toHours();
-            if (durationFromFinishHours < 1L) {
-                return true;
-            }
-        }
+        // FIXME requires some thought!!
 
         return false;
     }

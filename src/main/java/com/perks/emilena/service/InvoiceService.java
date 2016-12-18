@@ -10,6 +10,7 @@ import com.perks.emilena.dao.RotaDAO;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,10 +47,22 @@ public class InvoiceService {
             return invoice;
         };
 
+        List<Invoice> invoices = invoiceDAO.fetchAll();
+
         return rotaDAO.fetchAll()
                 .stream()
                 .map(Rota::getRotaItems)
                 .flatMap(items -> items.stream())
+                .filter(ri -> {
+                    for(Invoice invoice : invoices) {
+                        if(invoice.getRotaItem().getClient().equals(ri.getClient()) &&
+                                invoice.getRotaItem().getSupportDate().equals(ri.getSupportDate()) &&
+                                invoice.getRotaItem().getStart().equals(ri.getStart())) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
                 .map(invoiceFunction)
                 .collect(Collectors.toSet());
     }
