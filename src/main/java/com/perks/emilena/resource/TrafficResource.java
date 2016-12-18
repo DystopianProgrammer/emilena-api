@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -42,6 +44,7 @@ public class TrafficResource {
     @Timed
     @UnitOfWork
     public Response update(@Valid Traffic traffic) {
+        traffic.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         this.trafficDAO.create(traffic);
         return Response.ok().build();
     }

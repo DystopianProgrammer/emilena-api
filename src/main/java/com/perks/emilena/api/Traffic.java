@@ -1,6 +1,7 @@
 package com.perks.emilena.api;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -21,6 +22,9 @@ public class Traffic {
     @Column(name = "ip_address")
     private String ipAddress;
 
+    @Column(name = "traffic_date")
+    private String date;
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -35,6 +39,14 @@ public class Traffic {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override
