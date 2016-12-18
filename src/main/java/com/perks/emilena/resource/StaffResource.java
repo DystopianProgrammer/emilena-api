@@ -54,7 +54,11 @@ public class StaffResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response create(@Valid Staff staff) {
-        staffService.updateStaff(staff);
+        try {
+            staffService.updateStaff(staff);
+        } catch(Exception e) {
+            return Response.status(Response.Status.CONFLICT).entity("Person already exists").build();
+        }
         return Response.ok().build();
     }
 
@@ -64,7 +68,11 @@ public class StaffResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response update(@Valid Staff staff) {
-        staffService.updateStaff(staff);
+        try {
+            staffService.updateStaff(staff);
+        } catch(Exception e) {
+            return Response.status(Response.Status.CONFLICT).entity("Person already exists").build();
+        }
         return Response.ok().build();
     }
 

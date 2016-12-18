@@ -46,16 +46,10 @@ public class InvoiceService {
             return invoice;
         };
 
-        Predicate<RotaItem> rotaItemPredicate = (rotaItem) -> {
-            // check we're only producing invoices for past weeks
-            return LocalDate.now().plusDays(1).isAfter(rotaItem.getSupportDate());
-        };
-
         return rotaDAO.fetchAll()
                 .stream()
                 .map(Rota::getRotaItems)
                 .flatMap(items -> items.stream())
-                .filter(rotaItemPredicate)
                 .map(invoiceFunction)
                 .collect(Collectors.toSet());
     }

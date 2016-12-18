@@ -43,7 +43,11 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response create(@Valid Client client) {
-        clientService.updateClient(client);
+        try {
+            clientService.updateClient(client);
+        } catch (Exception e) {
+            return Response.status(Response.Status.CONFLICT).entity("Person already exists").build();
+        }
         return Response.ok().build();
     }
 
@@ -53,7 +57,11 @@ public class ClientResource {
     @UnitOfWork
     @RolesAllowed(value = {"ADMIN"})
     public Response update(@Valid Client client) {
-        clientService.updateClient(client);
+        try {
+            clientService.updateClient(client);
+        } catch (Exception e) {
+            return Response.status(Response.Status.CONFLICT).entity("Person already exists").build();
+        }
         return Response.ok().build();
     }
 

@@ -52,7 +52,7 @@ applicationConfiguration:
   maxDistanceRadius: 40
   minDistanceRadius: 0
   theme: default
-  organisation: The Frances Taylor Foundation
+  organisation: Some Organisation
   # possible values = CLIENT, STAFF, RANDOM
   defaultAddress: CLIENT
   defaultHourlyRate: 10.75
