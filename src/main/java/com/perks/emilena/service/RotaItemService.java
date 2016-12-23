@@ -153,13 +153,18 @@ public class RotaItemService {
 
         if (proposedItems.size() == 0) return;
 
-        RotaItem proposedItem = proposedItems.get(0);
+        Random random = new Random();
+        int nextInt = random.nextInt(proposedItems.size());
+        RotaItem proposedItem = proposedItems.get(nextInt);
+
         boolean anyMatch = assigned.stream()
                 .anyMatch(ri -> this.timeConflictValidator.isValid(ri, proposedItem));
         if (!anyMatch) {
             rotaItem.setStaff(proposedItem.getStaff());
             assigned.add(rotaItem);
-            proposedItems.remove(0);
+        } else {
+            proposedItems.remove(nextInt);
+            createEntry(assigned, proposedItems, rotaItem);
         }
     }
 
