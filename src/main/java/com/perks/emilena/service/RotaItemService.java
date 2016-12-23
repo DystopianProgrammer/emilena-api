@@ -92,8 +92,9 @@ public class RotaItemService {
                 .collect(Collectors.toSet());
 
         LOG.info("Allocating Staff to RotaItems for {}", dayOfWeek);
+        List<RotaItem> assigned = new ArrayList<>();
         List<RotaItem> assignedItems = unassignedItems.stream()
-                .map(rotaItem -> assign(rotaItem, staffAvailabilities))
+                .map(rotaItem -> assign(assigned, rotaItem, staffAvailabilities))
                 .flatMap(rotaItems -> rotaItems.stream())
                 .filter(rotaItem -> rotaItem.getStaff() != null)
                 .distinct()
@@ -112,7 +113,7 @@ public class RotaItemService {
      * @param rotaItem            - the current unassigned rota item consisting over only a client
      * @param staffAvailabilities - a list of staff availabilities
      */
-    private List<RotaItem> assign(RotaItem rotaItem, List<Availability> staffAvailabilities) {
+    private List<RotaItem> assign(List<RotaItem> assigned, RotaItem rotaItem, List<Availability> staffAvailabilities) {
 
         shuffle(staffAvailabilities);
 
@@ -123,10 +124,10 @@ public class RotaItemService {
                 .collect(Collectors.toList());
 
         // now we have a proposed list of potential availabilities
-        return processProposals(rotaItem, availabilities);
+        return processProposals(assigned, rotaItem, availabilities);
     }
 
-    private List<RotaItem> processProposals(RotaItem rotaItem, List<Availability> availabilities) {
+    private List<RotaItem> processProposals(List<RotaItem> assigned, RotaItem rotaItem, List<Availability> availabilities) {
 
         List<RotaItem> proposedItems = availabilities.stream()
                 .map(a -> {
@@ -143,8 +144,6 @@ public class RotaItemService {
 
         shuffle(proposedItems);
 
-        List<RotaItem> assigned = new ArrayList<>();
-
         createEntry(assigned, proposedItems, rotaItem);
 
         return assigned;
@@ -152,25 +151,15 @@ public class RotaItemService {
 
     private void createEntry(List<RotaItem> assigned, List<RotaItem> proposedItems, RotaItem rotaItem) {
 
-        if(proposedItems.size() == 0) return;
+        if (proposedItems.size() == 0) return;
 
         RotaItem proposedItem = proposedItems.get(0);
-        if(assigned.size() == 0) {
+        boolean anyMatch = assigned.stream()
+                .anyMatch(ri -> this.timeConflictValidator.isValid(ri, proposedItem));
+        if (!anyMatch) {
             rotaItem.setStaff(proposedItem.getStaff());
             assigned.add(rotaItem);
             proposedItems.remove(0);
-            return;
-        } else {
-            boolean anyMatch = assigned.stream()
-                    .anyMatch(ri -> this.timeConflictValidator.isValid(ri, proposedItem));
-            if(!anyMatch) {
-                rotaItem.setStaff(proposedItem.getStaff());
-                assigned.add(rotaItem);
-                proposedItems.remove(0);
-            } else {
-                proposedItems.remove(0);
-                createEntry(assigned, proposedItems, rotaItem);
-            }
         }
     }
 
