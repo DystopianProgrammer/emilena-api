@@ -1,5 +1,7 @@
 package com.perks.emilena.api;
 
+import com.google.common.base.MoreObjects;
+
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -116,5 +118,15 @@ public class RotaItem implements Comparable<RotaItem> {
         if(Objects.equals(this.getClient().getId(), other.getClient().getId()) &&
                 this.getStart().equals(other.getStart())) { return 0; }
         return -1;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("startTime", start)
+                .add("finishTime", finish)
+                .add("dayOfWeek", dayOfWeek)
+                .add("client", client.getId())
+                .toString();
     }
 }

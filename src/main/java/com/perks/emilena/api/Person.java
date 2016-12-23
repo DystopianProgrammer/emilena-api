@@ -1,5 +1,6 @@
 package com.perks.emilena.api;
 
+import com.google.common.base.MoreObjects;
 import com.perks.emilena.api.type.PersonType;
 
 import javax.persistence.*;
@@ -165,5 +166,15 @@ public abstract class Person implements Comparable<Person> {
     @Override
     public int hashCode() {
         return Objects.hash(id, personType, forename, surname, email, dob, telephoneNumber, address, active);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("first name", forename)
+                .add("surname", surname)
+                .add("email", email)
+                .add("person type", personType)
+                .toString();
     }
 }

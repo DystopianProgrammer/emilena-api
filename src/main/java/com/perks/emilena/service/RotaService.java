@@ -2,6 +2,7 @@ package com.perks.emilena.service;
 
 import com.perks.emilena.api.*;
 import com.perks.emilena.dao.RotaDAO;
+import com.perks.emilena.validation.ValidateCompare;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,7 +27,10 @@ public class RotaService {
     private final StaffService staffService;
     private final ClientService clientService;
 
-    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO, StaffService staffService, ClientService clientService) {
+
+    public RotaService(RotaItemService rotaItemService, RotaDAO rotaDAO,
+                       StaffService staffService, ClientService clientService) {
+
         this.rotaItemService = rotaItemService;
         this.rotaDAO = rotaDAO;
         this.staffService = staffService;

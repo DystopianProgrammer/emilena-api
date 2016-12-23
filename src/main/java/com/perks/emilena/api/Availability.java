@@ -1,6 +1,7 @@
 package com.perks.emilena.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
@@ -103,5 +104,15 @@ public class Availability implements Comparable<Availability> {
             value = 1;
         }
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("fromTime", fromTime)
+                .add("toTime", toTime)
+                .add("dayOfWeek", dayOfWeek)
+                .add("person", person)
+                .toString();
     }
 }

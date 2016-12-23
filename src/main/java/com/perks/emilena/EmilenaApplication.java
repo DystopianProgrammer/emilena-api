@@ -6,6 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.perks.emilena.api.Availability;
+import com.perks.emilena.api.RotaItem;
+import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.SystemUser;
 import com.perks.emilena.config.ApplicationConfiguration;
 import com.perks.emilena.config.EmilenaConfiguration;
@@ -16,6 +19,10 @@ import com.perks.emilena.security.SimpleAuthenticator;
 import com.perks.emilena.security.SimpleAuthorizer;
 import com.perks.emilena.serializer.MoneySerializer;
 import com.perks.emilena.service.*;
+import com.perks.emilena.validation.ValidateBookableAppointment;
+import com.perks.emilena.validation.ValidateCompare;
+import com.perks.emilena.validation.ValidateDistanceBetween;
+import com.perks.emilena.validation.ValidateTimeConflict;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -80,14 +87,19 @@ public class EmilenaApplication extends Application<EmilenaConfiguration> {
         TrafficDAO trafficDAO = new TrafficDAO((scanningHibernate.getSessionFactory()));
         InvoiceDAO invoiceDAO = new InvoiceDAO(scanningHibernate.getSessionFactory());
 
-        // Services
+
+        // Services & validators
         ClientService clientService = new ClientService(clientDAO, staffDAO);
         StaffService staffService = new StaffService(clientDAO, staffDAO);
         LocationService locationService = new LocationService(client, applicationConfiguration);
+        ValidateCompare<Staff, com.perks.emilena.api.Client> distanceBetweenValidator =
+                new ValidateDistanceBetween(locationService, applicationConfiguration);
+        ValidateCompare<RotaItem, Availability> bookableValidator = new ValidateBookableAppointment();
+        ValidateCompare<RotaItem, RotaItem> timeConflictValidator = new ValidateTimeConflict();
         RotaItemService rotaItemService =
-                new RotaItemService(locationService, applicationConfiguration, availabilityDAO);
-        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
+                new RotaItemService(availabilityDAO, distanceBetweenValidator, bookableValidator, timeConflictValidator);
         InvoiceService invoiceService = new InvoiceService(invoiceDAO, rotaDAO, applicationConfiguration);
+        RotaService rotaService = new RotaService(rotaItemService, rotaDAO, staffService, clientService);
 
         // Resources
         environment.jersey().register(new AvailabilityResource(availabilityDAO));

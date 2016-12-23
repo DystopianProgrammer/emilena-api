@@ -7,6 +7,7 @@ import com.perks.emilena.api.Staff;
 import com.perks.emilena.api.type.PersonType;
 import com.perks.emilena.config.ApplicationConfiguration;
 import com.perks.emilena.dao.AvailabilityDAO;
+import com.perks.emilena.validation.ValidateCompare;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,32 +31,35 @@ public class RotaItemService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RotaItemService.class);
 
-    private final LocationService locationService;
-    private final ApplicationConfiguration configuration;
     private final AvailabilityDAO availabilityDAO;
+    private final ValidateCompare<Staff, Client> distanceBetweenValidator;
+    private final ValidateCompare<RotaItem, Availability> bookableValidator;
+    private final ValidateCompare<RotaItem, RotaItem> timeConflictValidator;
 
-    public RotaItemService(LocationService locationService,
-                           ApplicationConfiguration configuration, AvailabilityDAO availabilityDAO) {
+    public RotaItemService(AvailabilityDAO availabilityDAO,
+                           ValidateCompare<Staff, Client> distanceBetweenValidator,
+                           ValidateCompare<RotaItem, Availability> bookableValidator,
+                           ValidateCompare<RotaItem, RotaItem> timeConflictValidator) {
 
-        this.locationService = locationService;
-        this.configuration = configuration;
         this.availabilityDAO = availabilityDAO;
+        this.distanceBetweenValidator = distanceBetweenValidator;
+        this.bookableValidator = bookableValidator;
+        this.timeConflictValidator = timeConflictValidator;
     }
 
     public List<RotaItem> rotaItems(LocalDate weekCommencing) {
 
-        Set<RotaItem> rotaItems = new HashSet<>();
+        // stream through each day of the week
+        List<RotaItem> rotaItems = stream(DayOfWeek.values())
+                .map(dayOfWeek -> addRotaItems(dayOfWeek, weekCommencing.plusDays(dayOfWeek.ordinal())))
+                .flatMap(ris -> ris.stream())
+                .collect(Collectors.toList());
 
-        stream(DayOfWeek.values()).forEach(dayOfWeek ->
-                addRotaItems(dayOfWeek, rotaItems, weekCommencing.plusDays(dayOfWeek.ordinal())));
-
-
-        List<RotaItem> filtered = new ArrayList<>(rotaItems);
-        return filtered;
+        return new ArrayList<>(rotaItems);
     }
 
     // per day operation
-    private void addRotaItems(DayOfWeek dayOfWeek, Set<RotaItem> rotaItems, LocalDate localDate) {
+    private List<RotaItem> addRotaItems(DayOfWeek dayOfWeek, LocalDate localDate) {
 
         LOG.info("Fetching all availabilities and filtering by active person for {}", dayOfWeek);
         List<Availability> availabilities = availabilityDAO.findForDayOfWeek(dayOfWeek).stream()
@@ -88,23 +92,14 @@ public class RotaItemService {
                 .collect(Collectors.toSet());
 
         LOG.info("Allocating Staff to RotaItems for {}", dayOfWeek);
-        Set<RotaItem> assignedItems = new HashSet<>();
-
-        // 1st sweep
-        List<Availability> bucket = new ArrayList<>();
-        unassignedItems.forEach(i -> assign(assignedItems, i, staffAvailabilities, bucket));
-
-        // 2nd sweep
-        List<Availability> disposable = new ArrayList<>();
-        unassignedItems.forEach(i -> assign(assignedItems, i, bucket, disposable));
-
-        LOG.info("Finalising sorted RotaItems for {}", dayOfWeek);
-        List<RotaItem> sorted = assignedItems.stream()
-                .filter(i -> i.getStaff() != null)
+        List<RotaItem> assignedItems = unassignedItems.stream()
+                .map(rotaItem -> assign(rotaItem, staffAvailabilities))
+                .flatMap(rotaItems -> rotaItems.stream())
+                .filter(rotaItem -> rotaItem.getStaff() != null)
                 .distinct()
                 .collect(Collectors.toList());
 
-        rotaItems.addAll(sorted);
+        return assignedItems;
     }
 
     /**
@@ -114,59 +109,69 @@ public class RotaItemService {
      * Staff must have reasonable travelling time for each appointment
      * Staff may have a single availability spanning the entire day. So we need to track their remaining time
      *
-     * @param assignedItems       - RotaItems with both client and staff
      * @param rotaItem            - the current unassigned rota item consisting over only a client
      * @param staffAvailabilities - a list of staff availabilities
      */
-    private void assign(Set<RotaItem> assignedItems, RotaItem rotaItem, List<Availability> staffAvailabilities,
-                        List<Availability> bucket) {
+    private List<RotaItem> assign(RotaItem rotaItem, List<Availability> staffAvailabilities) {
 
         shuffle(staffAvailabilities);
 
-        for (Availability availability : staffAvailabilities) {
+        // filter availabilities that can be used
+        List<Availability> availabilities = staffAvailabilities.stream()
+                .filter(availability -> this.bookableValidator.isValid(rotaItem, availability))
+                .filter(availability -> this.distanceBetweenValidator.isValid((Staff) availability.getPerson(), rotaItem.getClient()))
+                .collect(Collectors.toList());
 
-            // is there an overlap?
-            if (isConflicting(availability, assignedItems)) {
-                bucket.add(availability);
-                continue;
-            }
+        // now we have a proposed list of potential availabilities
+        return processProposals(rotaItem, availabilities);
+    }
 
-            // is it bookable
-            if (isBookable(rotaItem.getStart(), rotaItem.getFinish(),
-                    availability.getFromTime(), availability.getToTime())) {
-                validateRadiusAndAdd(assignedItems, rotaItem, availability);
+    private List<RotaItem> processProposals(RotaItem rotaItem, List<Availability> availabilities) {
+
+        List<RotaItem> proposedItems = availabilities.stream()
+                .map(a -> {
+                    RotaItem proposedItem = new RotaItem();
+                    proposedItem.setStaff((Staff) a.getPerson());
+                    proposedItem.setStart(rotaItem.getStart());
+                    proposedItem.setFinish(rotaItem.getFinish());
+                    proposedItem.setDayOfWeek(rotaItem.getDayOfWeek());
+                    proposedItem.setSupportDate(rotaItem.getSupportDate());
+                    proposedItem.setClient(rotaItem.getClient());
+                    return proposedItem;
+                })
+                .collect(Collectors.toList());
+
+        shuffle(proposedItems);
+
+        List<RotaItem> assigned = new ArrayList<>();
+
+        createEntry(assigned, proposedItems, rotaItem);
+
+        return assigned;
+    }
+
+    private void createEntry(List<RotaItem> assigned, List<RotaItem> proposedItems, RotaItem rotaItem) {
+
+        if(proposedItems.size() == 0) return;
+
+        RotaItem proposedItem = proposedItems.get(0);
+        if(assigned.size() == 0) {
+            rotaItem.setStaff(proposedItem.getStaff());
+            assigned.add(rotaItem);
+            proposedItems.remove(0);
+            return;
+        } else {
+            boolean anyMatch = assigned.stream()
+                    .anyMatch(ri -> this.timeConflictValidator.isValid(ri, proposedItem));
+            if(!anyMatch) {
+                rotaItem.setStaff(proposedItem.getStaff());
+                assigned.add(rotaItem);
+                proposedItems.remove(0);
             } else {
-                bucket.add(availability);
+                proposedItems.remove(0);
+                createEntry(assigned, proposedItems, rotaItem);
             }
         }
-    }
-
-    private boolean isConflicting(Availability availability, Set<RotaItem> assignedItems) {
-        return assignedItems.stream()
-                .anyMatch(rotaItem -> checkConflict(rotaItem, availability));
-    }
-
-    private void validateRadiusAndAdd(Set<RotaItem> assignedItems, RotaItem rotaItem, Availability availability) {
-        locationService.distanceMatrix(availability.getPerson().getAddress().getPostCode(),
-                rotaItem.getClient().getAddress().getPostCode())
-                .ifPresent(dm -> {
-                    if (configuration.getMaxDistanceRadius() >=
-                            locationService.convertMetersToMiles(dm.getMeters())) {
-                        // if yes to all of the above, then assign
-                        rotaItem.setStaff((Staff) availability.getPerson());
-                        assignedItems.add(rotaItem);
-                    }
-                });
-    }
-
-    private boolean checkConflict(RotaItem rotaItem, Availability availability) {
-
-        requireNonNull(rotaItem);
-        requireNonNull(availability);
-
-        // FIXME requires some thought!!
-
-        return false;
     }
 
 }
