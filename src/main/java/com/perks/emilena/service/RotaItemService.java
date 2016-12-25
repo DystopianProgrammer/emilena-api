@@ -100,7 +100,38 @@ public class RotaItemService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        return assignedItems;
+        LOG.info("Removing duplicate and overlapping entries for {}", dayOfWeek);
+        List<RotaItem> finalisedList = new ArrayList<>();
+        clean(assignedItems, finalisedList);
+
+        return finalisedList;
+    }
+
+    private void clean(List<RotaItem> assignedItems, List<RotaItem> finalisedList) {
+
+        if(assignedItems.size() == 0) return;
+
+        RotaItem rotaItem = assignedItems.get(0);
+        if(finalisedList.size() == 0) {
+            finalisedList.add(rotaItem);
+        } else {
+            boolean isValid = true;
+            for(RotaItem test : finalisedList) {
+                if(!this.timeConflictValidator.isValid(rotaItem, test)) {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if(isValid) {
+                finalisedList.add(rotaItem);
+            }
+        }
+
+        assignedItems.remove(0);
+
+
+        clean(assignedItems, finalisedList);
     }
 
     /**
@@ -151,21 +182,10 @@ public class RotaItemService {
 
     private void createEntry(List<RotaItem> assigned, List<RotaItem> proposedItems, RotaItem rotaItem) {
 
-        if (proposedItems.size() == 0) return;
-
-        Random random = new Random();
-        int nextInt = random.nextInt(proposedItems.size());
-        RotaItem proposedItem = proposedItems.get(nextInt);
-
-        boolean anyMatch = assigned.stream()
-                .anyMatch(ri -> this.timeConflictValidator.isValid(ri, proposedItem));
-        if (!anyMatch) {
-            rotaItem.setStaff(proposedItem.getStaff());
-            assigned.add(rotaItem);
-        } else {
-            proposedItems.remove(nextInt);
-            createEntry(assigned, proposedItems, rotaItem);
-        }
+        proposedItems.forEach(ri -> {
+            rotaItem.setStaff(ri.getStaff());
+            assigned.add(ri);
+        });
     }
 
 }
