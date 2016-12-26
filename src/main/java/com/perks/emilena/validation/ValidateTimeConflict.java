@@ -22,11 +22,14 @@ public class ValidateTimeConflict implements ValidateCompare<RotaItem, RotaItem>
     @Override
     public Boolean isValid(RotaItem existing, RotaItem proposed) {
 
-            if (proposed.getStart().equals(existing.getStart())) return false;
-            if (proposed.getFinish().equals(existing.getFinish())) return false;
-            if (proposed.getStart().isAfter(existing.getStart()) &&
-                    proposed.getFinish().isBefore(existing.getFinish())) return false;
-        
+            if(existing.getStaff().equals(proposed.getStaff()) ||
+                    existing.getClient().equals(proposed.getClient())) {
+                if (proposed.getStart().equals(existing.getStart())) return false;
+                if (proposed.getFinish().equals(existing.getFinish())) return false;
+                if (proposed.getStart().isAfter(existing.getStart()) &&
+                        proposed.getStart().isBefore(existing.getFinish())) return false;
+            }
+
         return true;
     }
 }
